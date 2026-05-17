@@ -6,6 +6,7 @@ import CausalGraph from './views/CausalGraph'
 import DecayAlerts from './views/DecayAlerts'
 import KnowledgeMap from './views/KnowledgeMap'
 import CounterfactualLab from './views/CounterfactualLab'
+import PixelSnow from './components/PixelSnow'
 
 export const DataContext = createContext(null)
 
@@ -272,6 +273,22 @@ export default function App() {
 
   return (
     <DataContext.Provider value={{ data, loading, error, fetchAllData, currentRepo, API }}>
+      <div className="pixel-snow-bg">
+        <PixelSnow
+          color="#ffffff"
+          flakeSize={0.01}
+          minFlakeSize={1.25}
+          pixelResolution={300}
+          speed={0.5}
+          density={0.2}
+          direction={125}
+          brightness={0.9}
+          depthFade={8}
+          farPlane={20}
+          gamma={0.4545}
+          variant="snowflake"
+        />
+      </div>
       <div className="app-shell">
         <nav className="sidebar">
           <div className="sidebar-logo">NEXUS</div>
