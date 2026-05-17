@@ -1,0 +1,279 @@
+{
+  "nexus_output": {
+    "repository": ".",
+    "analysis_window": "1 year",
+    "window_cutoff_date": "2025-05-17",
+    "analysis_timestamp": "2026-05-17T06:50:22.375912+00:00",
+    "total_dprs": 2,
+    "dprs_within_window": 2,
+    "dprs_pre_window_active": 0,
+    "dprs": [
+      {
+        "dpr_id": "DPR-001",
+        "title": "Final submission commit",
+        "component": "Other",
+        "within_window": true,
+        "decision_date": "2026-05",
+        "decision": "Final submission commit",
+        "rejected_alternatives": [],
+        "explicit_constraints": [],
+        "implicit_assumptions": [
+          "INFERRED: Assumes Final submission commit is stable",
+          "INFERRED: Assumes current design patterns remain valid"
+        ],
+        "intended_durability": "short-term",
+        "durability_reasoning": "Regular commit without explicit reasoning",
+        "causal_dependencies": [],
+        "files_involved": [
+          ".gitignore",
+          "Nexus_Architecture (1).pdf",
+          "analyses/WordPress/output/counterfactual_traces.json",
+          "analyses/WordPress/output/decay_monitor_report.json",
+          "analyses/WordPress/output/knowledge_concentration.json",
+          "analyses/WordPress/output/nexus_data.json",
+          "analyses/WordPress/output/nexus_layer1_dprs.json",
+          "analyses/requests/output/counterfactual_traces.json",
+          "analyses/requests/output/decay_monitor_report.json",
+          "analyses/requests/output/knowledge_concentration.json",
+          "analyses/requests/output/nexus_data.json",
+          "analyses/requests/output/nexus_layer1_dprs.json",
+          "api_server.py",
+          "audit.py",
+          "audit_api.py",
+          "fix_data.py",
+          "nexus-dashboard/index.html",
+          "nexus-dashboard/nexus_data.json",
+          "nexus_architecture_text.txt",
+          "nexus_layer2/counterfactual_sim.py",
+          "nexus_layer2/decay_monitor.py",
+          "nexus_layer2/enrich_graph.py",
+          "nexus_layer2/gemini_query.py",
+          "nexus_layer2/knowledge_concentration.py",
+          "nexus_layer2/llm_provider.py",
+          "nexus_layer2/merge_nexus_data.py",
+          "nexus_layer2/models.py",
+          "nexus_layer2/neo4j_loader.py",
+          "nexus_layer2/risk_report_pdf.py",
+          "nexus_layer2/submission_export.py",
+          "nexus_layer2/weaviate_ingest.py",
+          "nexus_risk_report.pdf",
+          "postgres-analysis/output/counterfactual_traces.json",
+          "postgres-analysis/output/decay_monitor_report.json",
+          "postgres-analysis/output/knowledge_concentration.json",
+          "postgres-analysis/output/nexus_data.json",
+          "postgres-analysis/output/nexus_risk_report.pdf",
+          "pyrightconfig.json",
+          "repo_analyzer.py",
+          "requirements.txt",
+          "submission/bob_session_export.json",
+          "submission/demo_script.md",
+          "submission/submission_form.md",
+          "test_wordpress_scan.py"
+        ],
+        "commit_refs": [
+          "3888c8e2"
+        ],
+        "involved_humans": [
+          "User"
+        ],
+        "assumption_decay_risk": "low",
+        "decay_risk_reasoning": "Standard commit",
+        "blast_radius_estimate": "low",
+        "blast_radius_reasoning": "Regular change",
+        "active_workarounds": []
+      },
+      {
+        "dpr_id": "DPR-002",
+        "title": "Add nexus_layer2 implementation and postgres analysis tools",
+        "component": "Other",
+        "within_window": true,
+        "decision_date": "2026-05",
+        "decision": "Add nexus_layer2 implementation and postgres analysis tools",
+        "rejected_alternatives": [],
+        "explicit_constraints": [],
+        "implicit_assumptions": [
+          "INFERRED: Assumes Add nexus_layer2 implementatio is stable",
+          "INFERRED: Assumes current design patterns remain valid"
+        ],
+        "intended_durability": "short-term",
+        "durability_reasoning": "Regular commit without explicit reasoning",
+        "causal_dependencies": [],
+        "files_involved": [
+          ".bob/mcp.json",
+          "nexus_layer2/README.md",
+          "nexus_layer2/__pycache__/cypher_queries.cpython-311.pyc",
+          "nexus_layer2/__pycache__/models.cpython-311.pyc",
+          "nexus_layer2/__pycache__/nl_query.cpython-311.pyc",
+          "nexus_layer2/__pycache__/verify_graph.cpython-311.pyc",
+          "nexus_layer2/cypher_queries.py",
+          "nexus_layer2/graph_builder.py",
+          "nexus_layer2/models.py",
+          "nexus_layer2/nl_query.py",
+          "nexus_layer2/query_cli.py",
+          "nexus_layer2/test_query_cli.py",
+          "nexus_layer2/verify_graph.py",
+          "postgres-analysis/generate_nexus_output.ps1",
+          "postgres-analysis/nexus_layer1_analyzer.ps1",
+          "postgres-analysis/output/NEXUS_LAYER1_COMPLETE_ANALYSIS.md",
+          "postgres-analysis/output/REPOSITORY_VALIDATION.md",
+          "postgres-analysis/output/nexus_layer1_dprs.json",
+          "postgres-analysis/postgres"
+        ],
+        "commit_refs": [
+          "18370860"
+        ],
+        "involved_humans": [
+          "Vivek-Singh-7625"
+        ],
+        "assumption_decay_risk": "low",
+        "decay_risk_reasoning": "Standard commit",
+        "blast_radius_estimate": "low",
+        "blast_radius_reasoning": "Regular change",
+        "active_workarounds": []
+      }
+    ],
+    "assumption_decay_prescan": [],
+    "ctg_edges": [
+      {
+        "from_dpr": "DPR-001",
+        "to_dpr": "DPR-002",
+        "relationship": "temporal_precedes",
+        "explanation": "Decision made before",
+        "within_window": true
+      },
+      {
+        "from_dpr": "DPR-001",
+        "to_dpr": "DPR-002",
+        "relationship": "related",
+        "explanation": "Architectural decisions in same system",
+        "within_window": true
+      },
+      {
+        "from_dpr": "DPR-001",
+        "to_dpr": "DPR-002",
+        "relationship": "related",
+        "explanation": "Architectural decisions in same system",
+        "within_window": true
+      },
+      {
+        "from_dpr": "DPR-001",
+        "to_dpr": "DPR-002",
+        "relationship": "related",
+        "explanation": "Architectural decisions in same system",
+        "within_window": true
+      },
+      {
+        "from_dpr": "DPR-001",
+        "to_dpr": "DPR-002",
+        "relationship": "related",
+        "explanation": "Architectural decisions in same system",
+        "within_window": true
+      },
+      {
+        "from_dpr": "DPR-001",
+        "to_dpr": "DPR-002",
+        "relationship": "related",
+        "explanation": "Architectural decisions in same system",
+        "within_window": true
+      },
+      {
+        "from_dpr": "DPR-001",
+        "to_dpr": "DPR-002",
+        "relationship": "related",
+        "explanation": "Architectural decisions in same system",
+        "within_window": true
+      },
+      {
+        "from_dpr": "DPR-001",
+        "to_dpr": "DPR-002",
+        "relationship": "related",
+        "explanation": "Architectural decisions in same system",
+        "within_window": true
+      },
+      {
+        "from_dpr": "DPR-001",
+        "to_dpr": "DPR-002",
+        "relationship": "related",
+        "explanation": "Architectural decisions in same system",
+        "within_window": true
+      },
+      {
+        "from_dpr": "DPR-001",
+        "to_dpr": "DPR-002",
+        "relationship": "related",
+        "explanation": "Architectural decisions in same system",
+        "within_window": true
+      },
+      {
+        "from_dpr": "DPR-001",
+        "to_dpr": "DPR-002",
+        "relationship": "related",
+        "explanation": "Architectural decisions in same system",
+        "within_window": true
+      },
+      {
+        "from_dpr": "DPR-001",
+        "to_dpr": "DPR-002",
+        "relationship": "related",
+        "explanation": "Architectural decisions in same system",
+        "within_window": true
+      },
+      {
+        "from_dpr": "DPR-001",
+        "to_dpr": "DPR-002",
+        "relationship": "related",
+        "explanation": "Architectural decisions in same system",
+        "within_window": true
+      },
+      {
+        "from_dpr": "DPR-001",
+        "to_dpr": "DPR-002",
+        "relationship": "related",
+        "explanation": "Architectural decisions in same system",
+        "within_window": true
+      },
+      {
+        "from_dpr": "DPR-001",
+        "to_dpr": "DPR-002",
+        "relationship": "related",
+        "explanation": "Architectural decisions in same system",
+        "within_window": true
+      },
+      {
+        "from_dpr": "DPR-001",
+        "to_dpr": "DPR-002",
+        "relationship": "related",
+        "explanation": "Architectural decisions in same system",
+        "within_window": true
+      },
+      {
+        "from_dpr": "DPR-001",
+        "to_dpr": "DPR-002",
+        "relationship": "related",
+        "explanation": "Architectural decisions in same system",
+        "within_window": true
+      },
+      {
+        "from_dpr": "DPR-001",
+        "to_dpr": "DPR-002",
+        "relationship": "related",
+        "explanation": "Architectural decisions in same system",
+        "within_window": true
+      },
+      {
+        "from_dpr": "DPR-001",
+        "to_dpr": "DPR-002",
+        "relationship": "related",
+        "explanation": "Architectural decisions in same system",
+        "within_window": true
+      },
+      {
+        "from_dpr": "DPR-001",
+        "to_dpr": "DPR-002",
+        "relationship": "related",
+        "explanation": "Architectural decisions in same system",
+        "within_window": true
+      }
+    ]
+  }
+}

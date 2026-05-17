@@ -1,0 +1,23 @@
+# Nexus Decision Provenance Agent - Sample Configuration
+# ======================================================
+# This file demonstrates the INPUT CONTRACT format specified in the Nexus specification
+
+# Repository path (required)
+# Can be a local path or will be cloned if URL
+REPOSITORY      : ./postgres-analysis/postgres
+
+# Analysis window (required)
+# Options: "1 year", "2 years", "3 years", "5 years", "all time"
+ANALYSIS_WINDOW : 2 years
+
+# Priority areas (optional)
+# Options: "all" or comma-separated list of components
+# Available components: MVCC, WAL, BufferManager, IndexAM, ProcessModel, 
+#                       LockManager, QueryOptimizer, Replication, PageSize,
+#                       TransactionID, TOAST, ExtensionAPI, Parser, 
+#                       Autovacuum, Checkpointing
+PRIORITY_AREAS  : all
+
+# Minimum DPRs to extract (required)
+# The agent will extract at least this many Decision Provenance Records
+MIN_DPRS        : 25

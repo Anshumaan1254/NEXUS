@@ -1,0 +1,14 @@
+{
+  "nexus_output": {
+    "repository": "postgres-analysis\\postgres",
+    "analysis_window": "1 year",
+    "window_cutoff_date": "2025-05-17",
+    "analysis_timestamp": "2026-05-17T06:47:49.005614+00:00",
+    "total_dprs": 0,
+    "dprs_within_window": 0,
+    "dprs_pre_window_active": 0,
+    "dprs": [],
+    "assumption_decay_prescan": [],
+    "ctg_edges": []
+  }
+}
