@@ -10,7 +10,7 @@ import PixelSnow from './components/PixelSnow'
 
 export const DataContext = createContext(null)
 
-const API = 'http://localhost:8000'
+const API = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 const DEFAULT_REPO = 'https://github.com/postgres/postgres'
 const DEFAULT_WINDOW = '1year'
 const WINDOWS = [
