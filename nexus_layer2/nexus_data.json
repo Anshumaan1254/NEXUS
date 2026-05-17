@@ -1,0 +1,3934 @@
+{
+  "meta": {
+    "repository": "https://github.com/Anshumaan1254/ARKA.git",
+    "analysis_window": "1year",
+    "generated_at": "2026-05-17T10:21:28.732187+00:00",
+    "total_dprs": 31,
+    "total_nodes": 145,
+    "total_relationships": 58,
+    "components": [
+      "Auth",
+      "Backend",
+      "Backend, Database",
+      "Database",
+      "Database, Backend",
+      "Development Process / Data Analysis",
+      "Frontend",
+      "Frontend, Backend",
+      "Frontend, Backend, Database",
+      "ML Service",
+      "Overall System",
+      "Storage",
+      "Storage, Backend"
+    ]
+  },
+  "dprs": [
+    {
+      "id": "DPR-001",
+      "title": "Initial Cloud Provider Selection (Azure)",
+      "component": "Overall System",
+      "blast_radius": "critical",
+      "decay_risk": "high",
+      "within_window": true,
+      "decision_date": "2025-12-27",
+      "decision": "The initial architectural decision was to leverage Microsoft Azure services for core backend infrastructure, including authentication, storage, database, and specialized AI services.",
+      "implicit_assumptions": [
+        "INFERRED: Azure services would meet all functional and non-functional requirements (cost, performance, ease of use).",
+        "INFERRED: The development team possessed sufficient expertise with Azure services.",
+        "INFERRED: Azure's pricing model was suitable for the project's budget and scalability needs."
+      ],
+      "explicit_constraints": [
+        "Vendor lock-in to Azure ecosystem",
+        "Reliance on Azure SDKs and service APIs",
+        "Requires Azure account and subscription management"
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        "backend/config/azure-auth.config.js",
+        "backend/config/azure-blob.config.js",
+        "backend/config/azure-cosmos.config.js",
+        "backend/config/azure-face.config.js",
+        "backend/config/azure-vision.config.js"
+      ],
+      "involved_humans": [
+        "Anshumaan Singh"
+      ],
+      "rejected_alternatives": [
+        "Amazon Web Services (AWS)",
+        "Google Cloud Platform (GCP)",
+        "Supabase",
+        "Firebase"
+      ],
+      "intended_durability": "short-term",
+      "durability_reasoning": "This decision was quickly reversed within the analysis window, indicating that the initial assumptions or requirements were not met, leading to a complete architectural pivot.",
+      "decay_risk_reasoning": "The entire Azure stack was replaced by Supabase, directly indicating that the initial assumptions about its suitability (cost, ease of use, feature set) were incorrect or changed.",
+      "blast_radius_reasoning": "Failure of this foundational assumption led to a complete re-architecture of the backend, impacting all data, authentication, and storage mechanisms.",
+      "commit_refs": [
+        "ec3d37cd0aa5016bf768a7aa7fdb677d393e2e47"
+      ],
+      "causal_dependencies": [],
+      "causal_in": [],
+      "causal_out": [
+        "DPR-005"
+      ],
+      "decay_alert": {
+        "already_decaying": true,
+        "decay_evidence": "The 'New idea' commit (715aa68c7834a2bcc85838a1ded5320eef973a24) completely replaced the Azure-based stack with Supabase, indicating that the initial assumptions about Azure's suitability were incorrect or changed.",
+        "earliest_signal_date": "2026-01-05",
+        "recommended_monitor_query": "N/A (decision already decayed and reversed)"
+      }
+    },
+    {
+      "id": "DPR-002",
+      "title": "Initial Mobile Frontend Framework (Flutter)",
+      "component": "Frontend",
+      "blast_radius": "high",
+      "decay_risk": "high",
+      "within_window": true,
+      "decision_date": "2025-12-27",
+      "decision": "The initial patient-facing application was planned for development using the Flutter framework.",
+      "implicit_assumptions": [
+        "INFERRED: Flutter would provide the necessary performance and UI capabilities for a simplified patient interface.",
+        "INFERRED: Cross-platform mobile development was a primary goal.",
+        "INFERRED: The development team had or could acquire Flutter expertise efficiently."
+      ],
+      "explicit_constraints": [
+        "Requires Dart language proficiency",
+        "Relies on Flutter's ecosystem and widget library",
+        "Build process for multiple platforms"
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        "flutter_app/lib/main.dart",
+        "flutter_app/pubspec.yaml"
+      ],
+      "involved_humans": [
+        "Anshumaan Singh"
+      ],
+      "rejected_alternatives": [
+        "React Native",
+        "Native iOS/Android development",
+        "Progressive Web App (PWA)"
+      ],
+      "intended_durability": "short-term",
+      "durability_reasoning": "This decision was reversed in favor of a web-based React frontend, indicating a shift in platform strategy or unmet requirements.",
+      "decay_risk_reasoning": "The Flutter application was completely removed and replaced by a React web application, indicating that the assumptions about its suitability for the project's goals (e.g., target audience, development speed, platform preference) were incorrect.",
+      "blast_radius_reasoning": "The change required a complete rewrite of the patient-facing application, impacting development time and potentially user experience.",
+      "commit_refs": [
+        "ec3d37cd0aa5016bf768a7aa7fdb677d393e2e47"
+      ],
+      "causal_dependencies": [
+        "REQUIRES DPR-001"
+      ],
+      "causal_in": [],
+      "causal_out": [
+        "DPR-009"
+      ],
+      "decay_alert": {
+        "already_decaying": true,
+        "decay_evidence": "The 'New idea' commit (715aa68c7834a2bcc85838a1ded5320eef973a24) removed the entire `flutter_app` directory and introduced a React-based frontend, indicating Flutter did not meet the project's requirements or strategy.",
+        "earliest_signal_date": "2026-01-05",
+        "recommended_monitor_query": "N/A (decision already decayed and reversed)"
+      }
+    },
+    {
+      "id": "DPR-003",
+      "title": "Initial Backend Framework (Node.js/Express)",
+      "component": "Backend",
+      "blast_radius": "medium",
+      "decay_risk": "low",
+      "within_window": true,
+      "decision_date": "2025-12-27",
+      "decision": "The backend API was initially implemented using Node.js with the Express framework.",
+      "implicit_assumptions": [
+        "INFERRED: Node.js/Express would provide sufficient performance and scalability for the API.",
+        "INFERRED: The development team had expertise in JavaScript/Node.js.",
+        "INFERRED: The non-blocking I/O model of Node.js was suitable for the application's workload."
+      ],
+      "explicit_constraints": [
+        "Requires JavaScript/TypeScript proficiency for backend development",
+        "Relies on Node.js ecosystem and npm packages",
+        "Performance characteristics of Node.js event loop"
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        "backend/server.js",
+        "backend/package.json"
+      ],
+      "involved_humans": [
+        "Anshumaan Singh"
+      ],
+      "rejected_alternatives": [
+        "Python (Django/FastAPI)",
+        "Java (Spring Boot)",
+        "Go (Gin/Echo)"
+      ],
+      "intended_durability": "medium-term",
+      "durability_reasoning": "While the underlying cloud services changed, the choice of Node.js/Express for the backend framework was retained, indicating its suitability for the API layer itself.",
+      "decay_risk_reasoning": "The framework choice itself was retained during the major architectural pivot, suggesting its core assumptions (developer familiarity, performance for API layer) remain valid.",
+      "blast_radius_reasoning": "If Node.js/Express proved unsuitable, it would require rewriting the entire API layer, but not necessarily the ML service or frontend.",
+      "commit_refs": [
+        "ec3d37cd0aa5016bf768a7aa7fdb677d393e2e47"
+      ],
+      "causal_dependencies": [
+        "REQUIRES DPR-001"
+      ],
+      "causal_in": [
+        "DPR-024"
+      ],
+      "causal_out": [
+        "DPR-013",
+        "DPR-018"
+      ],
+      "decay_alert": null
+    },
+    {
+      "id": "DPR-004",
+      "title": "Initial ML Service Integration (Separate Python Service)",
+      "component": "ML Service",
+      "blast_radius": "medium",
+      "decay_risk": "low",
+      "within_window": true,
+      "decision_date": "2025-12-27",
+      "decision": "A dedicated, separate Python service was established to handle machine learning functionalities.",
+      "implicit_assumptions": [
+        "INFERRED: Python is the preferred language for ML development due to ecosystem maturity.",
+        "INFERRED: Decoupling ML allows for independent scaling and technology choices.",
+        "INFERRED: The overhead of inter-service communication is acceptable."
+      ],
+      "explicit_constraints": [
+        "Requires inter-service communication (e.g., HTTP/REST)",
+        "Separate deployment and scaling for the ML service",
+        "Requires Python environment and ML library dependencies"
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        "ml-services/main.py",
+        "ml-services/requirements.txt"
+      ],
+      "involved_humans": [
+        "Anshumaan Singh"
+      ],
+      "rejected_alternatives": [
+        "Integrating ML directly into the Node.js backend",
+        "Using cloud ML APIs directly from the frontend",
+        "Using a different language for ML (e.g., Java, Go)"
+      ],
+      "intended_durability": "foundational",
+      "durability_reasoning": "This architectural pattern (separate ML service) was retained even after the major pivot, indicating its fundamental importance to the system design.",
+      "decay_risk_reasoning": "The core assumption of a separate Python ML service proved robust enough to survive a major architectural pivot, suggesting its benefits are well-understood and stable.",
+      "blast_radius_reasoning": "If this pattern failed, it would require a significant re-evaluation of how ML is integrated, potentially impacting both backend and ML service development.",
+      "commit_refs": [
+        "ec3d37cd0aa5016bf768a7aa7fdb677d393e2e47"
+      ],
+      "causal_dependencies": [
+        "REQUIRES DPR-001"
+      ],
+      "causal_in": [],
+      "causal_out": [
+        "DPR-010"
+      ],
+      "decay_alert": null
+    },
+    {
+      "id": "DPR-005",
+      "title": "Architectural Pivot to Supabase-centric Stack",
+      "component": "Overall System",
+      "blast_radius": "critical",
+      "decay_risk": "medium",
+      "within_window": true,
+      "decision_date": "2026-01-05",
+      "decision": "The entire platform was re-architected to leverage Supabase as the primary backend-as-a-service provider for database, authentication, and storage.",
+      "implicit_assumptions": [
+        "INFERRED: Supabase's free tier (or paid tiers) will meet cost and scalability requirements for the foreseeable future.",
+        "INFERRED: Supabase provides sufficient features and flexibility for authentication, storage, and database needs.",
+        "INFERRED: Supabase's performance is adequate for real-time features like face recognition data storage and SOS alerts.",
+        "INFERRED: Utilizing Supabase's managed services significantly reduces operational overhead compared to self-managing cloud components."
+      ],
+      "explicit_constraints": [
+        "Reliance on Supabase's managed services and their feature set",
+        "Potential vendor lock-in to the Supabase ecosystem",
+        "Supabase's pricing model and service limits"
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        "README.md",
+        "supabase/migrations/",
+        "backend/.env.example",
+        "ml-service/.env.example",
+        "frontend/.env.example"
+      ],
+      "involved_humans": [
+        "Anshumaan Singh"
+      ],
+      "rejected_alternatives": [
+        "Continuing with the initial Azure services (Auth, Blob, Cosmos, Face, Vision)",
+        "Migrating to another traditional cloud provider (AWS, GCP)",
+        "Building a fully custom backend for all services"
+      ],
+      "intended_durability": "foundational",
+      "durability_reasoning": "This is the core platform choice, impacting almost every other component and defining the system's infrastructure backbone.",
+      "decay_risk_reasoning": "Cost and scalability assumptions for Supabase (especially the free tier) can easily be exceeded as the user base grows. Feature limitations or specific compliance needs might also arise that Supabase cannot fully address.",
+      "blast_radius_reasoning": "Failure of Supabase to meet requirements (e.g., performance, cost, features) would necessitate another major re-architecture, impacting all data, authentication, and storage, leading to significant development effort and potential downtime.",
+      "commit_refs": [
+        "715aa68c7834a2bcc85838a1ded5320eef973a24"
+      ],
+      "causal_dependencies": [
+        "REJECTS DPR-001",
+        "ENABLES DPR-006",
+        "ENABLES DPR-007",
+        "ENABLES DPR-008",
+        "ENABLES DPR-014",
+        "ENABLES DPR-022",
+        "ENABLES DPR-023"
+      ],
+      "causal_in": [
+        "DPR-001",
+        "DPR-021"
+      ],
+      "causal_out": [
+        "DPR-013",
+        "DPR-007",
+        "DPR-006",
+        "DPR-008",
+        "DPR-021"
+      ],
+      "decay_alert": {
+        "already_decaying": false,
+        "decay_evidence": "No explicit decay evidence found in analysis window. The decision is recent.",
+        "earliest_signal_date": null,
+        "recommended_monitor_query": "Monitor Supabase usage metrics (database size, API requests, storage usage, egress bandwidth) against free tier limits and projected costs. Track performance metrics (query latency, API response times) as user load increases."
+      }
+    },
+    {
+      "id": "DPR-006",
+      "title": "Database Selection (Supabase PostgreSQL)",
+      "component": "Database",
+      "blast_radius": "critical",
+      "decay_risk": "medium",
+      "within_window": true,
+      "decision_date": "2026-01-05",
+      "decision": "Supabase's managed PostgreSQL database was chosen for all persistent data storage.",
+      "implicit_assumptions": [
+        "INFERRED: PostgreSQL's relational model is suitable for the application's data structure (users, people, memories, SOS alerts).",
+        "INFERRED: Supabase's managed PostgreSQL offers sufficient performance, reliability, and ease of management.",
+        "INFERRED: The team has expertise in SQL and relational database design."
+      ],
+      "explicit_constraints": [
+        "Adherence to relational database model and SQL",
+        "Reliance on Supabase's PostgreSQL version and extensions",
+        "Scalability and performance limited by Supabase's offerings"
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        "supabase/migrations/001_schema.sql",
+        "README.md"
+      ],
+      "involved_humans": [
+        "Anshumaan Singh"
+      ],
+      "rejected_alternatives": [
+        "Azure Cosmos DB (previously chosen)",
+        "MongoDB",
+        "MySQL",
+        "Self-hosted PostgreSQL"
+      ],
+      "intended_durability": "foundational",
+      "durability_reasoning": "The database is a core component; changing it would require significant data migration and application code changes.",
+      "decay_risk_reasoning": "Scalability limits of Supabase's PostgreSQL tiers could be reached with high user load or complex queries. Specific advanced PostgreSQL features might not be available or performant enough.",
+      "blast_radius_reasoning": "If the database choice fails, it impacts all data persistence, requiring a complete data migration and extensive changes across backend and potentially frontend components.",
+      "commit_refs": [
+        "715aa68c7834a2bcc85838a1ded5320eef973a24"
+      ],
+      "causal_dependencies": [
+        "REQUIRES DPR-005",
+        "ENABLES DPR-014",
+        "ENABLES DPR-022",
+        "ENABLES DPR-027",
+        "CONSTRAINS DPR-018"
+      ],
+      "causal_in": [
+        "DPR-012",
+        "DPR-026",
+        "DPR-016",
+        "DPR-005"
+      ],
+      "causal_out": [
+        "DPR-014",
+        "DPR-027",
+        "DPR-022",
+        "DPR-018"
+      ],
+      "decay_alert": {
+        "already_decaying": false,
+        "decay_evidence": "No explicit decay evidence found in analysis window. The decision is recent.",
+        "earliest_signal_date": null,
+        "recommended_monitor_query": "Monitor PostgreSQL query performance, database connection pool usage, and CPU/memory utilization within Supabase. Track database uptime and backup success rates. Review Supabase's incident reports for PostgreSQL-related issues."
+      }
+    },
+    {
+      "id": "DPR-007",
+      "title": "Authentication System (Supabase Auth with JWT)",
+      "component": "Auth",
+      "blast_radius": "critical",
+      "decay_risk": "medium",
+      "within_window": true,
+      "decision_date": "2026-01-05",
+      "decision": "User authentication and authorization are handled by Supabase Auth, leveraging JSON Web Tokens (JWTs).",
+      "implicit_assumptions": [
+        "INFERRED: Supabase Auth provides sufficient security features (password hashing, email verification, MFA support).",
+        "INFERRED: Supabase Auth's user management capabilities meet the project's needs (patient/caretaker roles).",
+        "INFERRED: JWTs are a suitable mechanism for secure, scalable authentication across services."
+      ],
+      "explicit_constraints": [
+        "Reliance on Supabase Auth's user management features and flows",
+        "JWTs are used for stateless authentication",
+        "Requires Supabase client libraries or direct API calls"
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        "backend/src/middleware/authMiddleware.js",
+        "backend/src/routes/auth.js",
+        "frontend/src/hooks/useAuth.jsx",
+        "README.md"
+      ],
+      "involved_humans": [
+        "Anshumaan Singh"
+      ],
+      "rejected_alternatives": [
+        "Azure Auth (previously chosen)",
+        "Custom JWT implementation",
+        "OAuth providers directly (e.g., Google, Facebook)",
+        "Firebase Authentication"
+      ],
+      "intended_durability": "foundational",
+      "durability_reasoning": "Authentication is a critical security and user management component; changing it would require extensive changes across all layers.",
+      "decay_risk_reasoning": "Supabase Auth might lack advanced features required for enterprise-grade security or specific compliance (e.g., custom identity providers, fine-grained access policies beyond RLS). Scalability of user management could also become a concern.",
+      "blast_radius_reasoning": "Failure of the authentication system would compromise security, prevent users from accessing the application, and necessitate a complete overhaul of user management and access control.",
+      "commit_refs": [
+        "715aa68c7834a2bcc85838a1ded5320eef973a24"
+      ],
+      "causal_dependencies": [
+        "REQUIRES DPR-005",
+        "ENABLES DPR-015",
+        "CONSTRAINS DPR-018",
+        "CONSTRAINS DPR-014"
+      ],
+      "causal_in": [
+        "DPR-005"
+      ],
+      "causal_out": [
+        "DPR-014",
+        "DPR-015",
+        "DPR-018"
+      ],
+      "decay_alert": {
+        "already_decaying": false,
+        "decay_evidence": "No explicit decay evidence found in analysis window. The decision is recent.",
+        "earliest_signal_date": null,
+        "recommended_monitor_query": "Regularly review Supabase Auth's feature roadmap and security updates. Conduct security audits or penetration tests focusing on authentication flows. Monitor for user reports of account compromise or unexpected access issues."
+      }
+    },
+    {
+      "id": "DPR-008",
+      "title": "File Storage Solution (Supabase Storage)",
+      "component": "Storage",
+      "blast_radius": "high",
+      "decay_risk": "medium",
+      "within_window": true,
+      "decision_date": "2026-01-05",
+      "decision": "Supabase Storage is used for managing user-uploaded files, specifically face images and voice memories.",
+      "implicit_assumptions": [
+        "INFERRED: Supabase Storage provides sufficient capacity, performance, and reliability for media files.",
+        "INFERRED: Supabase Storage's security features (e.g., signed URLs, RLS) are adequate for sensitive patient data.",
+        "INFERRED: The cost of Supabase Storage is acceptable for the expected volume of uploads."
+      ],
+      "explicit_constraints": [
+        "Reliance on Supabase Storage's API and features",
+        "Storage limits and pricing of Supabase",
+        "Requires careful management of storage policies (e.g., RLS for buckets)"
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        "supabase/migrations/002_storage_policies.sql",
+        "backend/src/routes/upload.js",
+        "README.md"
+      ],
+      "involved_humans": [
+        "Anshumaan Singh"
+      ],
+      "rejected_alternatives": [
+        "Azure Blob Storage (previously chosen)",
+        "AWS S3",
+        "Google Cloud Storage",
+        "Storing files directly in the database"
+      ],
+      "intended_durability": "foundational",
+      "durability_reasoning": "File storage is integral to core features like face recognition and voice memories; changing it would require significant data migration and code changes.",
+      "decay_risk_reasoning": "High volumes of media uploads could quickly exceed Supabase Storage's free tier or become costly. Performance for very large numbers of files or concurrent access might become a bottleneck.",
+      "blast_radius_reasoning": "Failure of the storage solution would directly impact the ability to store and retrieve face images and voice memories, rendering core features unusable and potentially leading to data loss.",
+      "commit_refs": [
+        "715aa68c7834a2bcc85838a1ded5320eef973a24"
+      ],
+      "causal_dependencies": [
+        "REQUIRES DPR-005",
+        "ENABLES DPR-020",
+        "ENABLES DPR-023",
+        "CONSTRAINS DPR-011"
+      ],
+      "causal_in": [
+        "DPR-011",
+        "DPR-005"
+      ],
+      "causal_out": [
+        "DPR-020",
+        "DPR-023"
+      ],
+      "decay_alert": {
+        "already_decaying": false,
+        "decay_evidence": "No explicit decay evidence found in analysis window. The decision is recent.",
+        "earliest_signal_date": null,
+        "recommended_monitor_query": "Monitor Supabase Storage usage (total size, number of objects) against tier limits. Track upload/download speeds and latency for media files. Monitor for storage-related errors in backend logs."
+      }
+    },
+    {
+      "id": "DPR-009",
+      "title": "Frontend Framework (React 18 + Vite)",
+      "component": "Frontend",
+      "blast_radius": "high",
+      "decay_risk": "low",
+      "within_window": true,
+      "decision_date": "2026-01-05",
+      "decision": "The web-based frontend is developed using React 18 with Vite for fast development and optimized bundling.",
+      "implicit_assumptions": [
+        "INFERRED: React provides the necessary flexibility and performance for a responsive web UI, including real-time camera feeds.",
+        "INFERRED: Vite offers a superior developer experience and build performance compared to alternatives like Webpack.",
+        "INFERRED: The team has expertise in React development."
+      ],
+      "explicit_constraints": [
+        "Requires JavaScript/TypeScript and React proficiency",
+        "Relies on React's component-based architecture and ecosystem",
+        "Vite's build process and development server"
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        "frontend/src/App.jsx",
+        "frontend/package.json",
+        "frontend/vite.config.js",
+        "README.md"
+      ],
+      "involved_humans": [
+        "Anshumaan Singh"
+      ],
+      "rejected_alternatives": [
+        "Flutter (previously chosen)",
+        "Angular",
+        "Vue.js",
+        "Next.js/Gatsby (for SSR/SSG)"
+      ],
+      "intended_durability": "foundational",
+      "durability_reasoning": "The frontend framework is a fundamental choice impacting development speed, maintainability, and user experience.",
+      "decay_risk_reasoning": "React and Vite are mature and widely adopted technologies. While new frameworks emerge, React's ecosystem is stable, and Vite addresses common development pain points, making this a robust choice for the medium term.",
+      "blast_radius_reasoning": "If React/Vite proved unsuitable, it would necessitate a complete rewrite of the user interface, significantly impacting development resources and time-to-market.",
+      "commit_refs": [
+        "715aa68c7834a2bcc85838a1ded5320eef973a24"
+      ],
+      "causal_dependencies": [
+        "REJECTS DPR-002",
+        "ENABLES DPR-017",
+        "ENABLES DPR-029",
+        "ENABLES DPR-030"
+      ],
+      "causal_in": [
+        "DPR-016",
+        "DPR-002",
+        "DPR-021",
+        "DPR-024"
+      ],
+      "causal_out": [
+        "DPR-013",
+        "DPR-030",
+        "DPR-017",
+        "DPR-029"
+      ],
+      "decay_alert": null
+    },
+    {
+      "id": "DPR-010",
+      "title": "ML Service Framework (Python FastAPI)",
+      "component": "ML Service",
+      "blast_radius": "medium",
+      "decay_risk": "low",
+      "within_window": true,
+      "decision_date": "2026-01-05",
+      "decision": "The machine learning service is implemented using Python FastAPI for high performance and easy API development.",
+      "implicit_assumptions": [
+        "INFERRED: FastAPI's performance and asynchronous nature are well-suited for real-time ML inference requests.",
+        "INFERRED: FastAPI's automatic documentation (Swagger UI) simplifies API consumption for the backend.",
+        "INFERRED: The development team has expertise in Python and FastAPI."
+      ],
+      "explicit_constraints": [
+        "Requires Python proficiency",
+        "Relies on FastAPI's asynchronous capabilities and Pydantic for data validation",
+        "Requires separate deployment from the Node.js backend"
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        "ml-service/app/main.py",
+        "ml-service/requirements.txt",
+        "README.md"
+      ],
+      "involved_humans": [
+        "Anshumaan Singh"
+      ],
+      "rejected_alternatives": [
+        "Flask",
+        "Django REST Framework",
+        "Custom Python HTTP server"
+      ],
+      "intended_durability": "foundational",
+      "durability_reasoning": "This framework choice is fundamental to the ML service's architecture, impacting its performance, maintainability, and API design.",
+      "decay_risk_reasoning": "FastAPI is a modern, performant, and well-regarded framework for building Python APIs, especially for ML. Its asynchronous nature and Pydantic integration make it robust for the intended use case.",
+      "blast_radius_reasoning": "If FastAPI proved unsuitable, it would require rewriting the ML service's API layer, but the core ML logic (DeepFace, YOLO) could potentially be ported.",
+      "commit_refs": [
+        "715aa68c7834a2bcc85838a1ded5320eef973a24"
+      ],
+      "causal_dependencies": [
+        "REQUIRES DPR-004",
+        "ENABLES DPR-011",
+        "ENABLES DPR-012",
+        "CONSTRAINS DPR-018"
+      ],
+      "causal_in": [
+        "DPR-021",
+        "DPR-025",
+        "DPR-004"
+      ],
+      "causal_out": [
+        "DPR-012",
+        "DPR-011",
+        "DPR-013",
+        "DPR-018"
+      ],
+      "decay_alert": null
+    },
+    {
+      "id": "DPR-011",
+      "title": "Face Recognition Library (DeepFace)",
+      "component": "ML Service",
+      "blast_radius": "high",
+      "decay_risk": "medium",
+      "within_window": true,
+      "decision_date": "2026-01-05",
+      "decision": "The DeepFace library is utilized within the ML service for all face recognition capabilities.",
+      "implicit_assumptions": [
+        "INFERRED: DeepFace provides sufficient accuracy for reliable Alzheimer's patient recognition in diverse real-world conditions.",
+        "INFERRED: DeepFace's inference performance is acceptable for real-time camera feeds and concurrent recognition requests.",
+        "INFERRED: DeepFace's resource requirements (CPU/GPU, memory) are manageable for the deployment environment.",
+        "INFERRED: DeepFace's development and community support are robust enough for long-term maintenance."
+      ],
+      "explicit_constraints": [
+        "Reliance on DeepFace's accuracy, performance, and supported models/backends.",
+        "Requires a Python environment with specific ML dependencies.",
+        "DeepFace's licensing terms."
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        "ml-service/app/main.py",
+        "ml-service/requirements.txt"
+      ],
+      "involved_humans": [
+        "Anshumaan Singh"
+      ],
+      "rejected_alternatives": [
+        "Azure Face API (previously implied)",
+        "OpenCV custom implementation",
+        "Other open-source libraries (e.g., FaceNet, ArcFace, dlib)",
+        "Commercial face recognition APIs"
+      ],
+      "intended_durability": "medium-term",
+      "durability_reasoning": "ML libraries evolve rapidly, and specific performance or accuracy needs might necessitate a change or fine-tuning over time.",
+      "decay_risk_reasoning": "Accuracy might not be sufficient in diverse real-world conditions (e.g., varying lighting, aging faces, different expressions). Performance could become a bottleneck with many concurrent users or higher resolution inputs. Maintenance of the library might decline.",
+      "blast_radius_reasoning": "Face recognition is a core patient feature. If DeepFace fails to meet accuracy or performance requirements, the primary value proposition of the application is severely compromised, requiring significant ML re-engineering and potentially impacting patient safety.",
+      "commit_refs": [
+        "715aa68c7834a2bcc85838a1ded5320eef973a24"
+      ],
+      "causal_dependencies": [
+        "REQUIRES DPR-010",
+        "ENABLES DPR-016"
+      ],
+      "causal_in": [
+        "DPR-010",
+        "DPR-022",
+        "DPR-025"
+      ],
+      "causal_out": [
+        "DPR-008",
+        "DPR-016"
+      ],
+      "decay_alert": {
+        "already_decaying": false,
+        "decay_evidence": "No explicit decay evidence found in analysis window. The decision is recent.",
+        "earliest_signal_date": null,
+        "recommended_monitor_query": "Implement continuous evaluation of DeepFace's accuracy using a diverse dataset of patient images (with consent). Monitor recognition success rates in production. Collect user feedback on recognition failures or misidentifications. Track DeepFace library updates for performance/accuracy improvements."
+      }
+    },
+    {
+      "id": "DPR-012",
+      "title": "Object Detection Model (YOLOv8n)",
+      "component": "ML Service",
+      "blast_radius": "medium",
+      "decay_risk": "medium",
+      "within_window": true,
+      "decision_date": "2026-01-05",
+      "decision": "The YOLOv8n model is integrated into the ML service for object detection features.",
+      "implicit_assumptions": [
+        "INFERRED: YOLOv8n provides sufficient accuracy and speed for real-time object detection in the application's context.",
+        "INFERRED: The 'n' (nano) variant is chosen for its balance of speed and accuracy, suitable for edge or resource-constrained deployments.",
+        "INFERRED: The objects to be detected are well-represented in YOLOv8's training data or can be fine-tuned."
+      ],
+      "explicit_constraints": [
+        "Reliance on YOLOv8n's detection accuracy and speed.",
+        "Requires specific hardware (GPU recommended for optimal performance).",
+        "Model size and resource footprint."
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        "ml-service/yolov8n.pt",
+        "ml-service/app/main.py",
+        "supabase/migrations/003_object_detection.sql"
+      ],
+      "involved_humans": [
+        "Anshumaan Singh"
+      ],
+      "rejected_alternatives": [
+        "Other YOLO versions (v3, v4, v5)",
+        "SSD (Single Shot Detector)",
+        "Faster R-CNN",
+        "Custom object detection models"
+      ],
+      "intended_durability": "medium-term",
+      "durability_reasoning": "Object detection models are an active area of research; newer, more efficient, or more accurate models may emerge, or specific domain needs might require fine-tuning or replacement.",
+      "decay_risk_reasoning": "Accuracy might degrade in specific environments or for novel objects. Performance could be an issue on lower-end devices or with high frame rates. Newer, more efficient models are constantly being released.",
+      "blast_radius_reasoning": "If YOLOv8n fails, the object recognition feature becomes unreliable, reducing the utility for patients but not entirely breaking the core face recognition functionality.",
+      "commit_refs": [
+        "715aa68c7834a2bcc85838a1ded5320eef973a24"
+      ],
+      "causal_dependencies": [
+        "REQUIRES DPR-010",
+        "ENABLES DPR-016"
+      ],
+      "causal_in": [
+        "DPR-010",
+        "DPR-025"
+      ],
+      "causal_out": [
+        "DPR-006"
+      ],
+      "decay_alert": {
+        "already_decaying": false,
+        "decay_evidence": "No explicit decay evidence found in analysis window. The decision is recent.",
+        "earliest_signal_date": null,
+        "recommended_monitor_query": "Monitor object detection success rates and inference latency in the ML service. Collect user feedback on missed detections or false positives. Evaluate YOLOv8n's performance on new, diverse datasets relevant to the application's environment."
+      }
+    },
+    {
+      "id": "DPR-013",
+      "title": "Monorepo Structure with Service Separation",
+      "component": "Overall System",
+      "blast_radius": "medium",
+      "decay_risk": "low",
+      "within_window": true,
+      "decision_date": "2026-01-05",
+      "decision": "The project is organized into a monorepo with distinct `frontend`, `backend`, `ml-service`, and `supabase` directories, representing separate logical services.",
+      "implicit_assumptions": [
+        "INFERRED: A monorepo simplifies cross-service development, refactoring, and dependency management.",
+        "INFERRED: The benefits of co-locating code outweigh the complexities of managing a large single repository.",
+        "INFERRED: The team size and project complexity are suitable for a monorepo approach."
+      ],
+      "explicit_constraints": [
+        "Requires careful management of dependencies and build processes across services.",
+        "Changes in one service might necessitate changes in others within the same commit.",
+        "Tools and workflows must support monorepo development."
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        "frontend/",
+        "backend/",
+        "ml-service/",
+        "supabase/",
+        ".gitignore",
+        "README.md"
+      ],
+      "involved_humans": [
+        "Anshumaan Singh"
+      ],
+      "rejected_alternatives": [
+        "Polyrepo (separate repositories for each service)",
+        "Single monolithic application (e.g., all in Node.js)"
+      ],
+      "intended_durability": "foundational",
+      "durability_reasoning": "This is a fundamental organizational decision impacting development workflow, deployment, and team collaboration.",
+      "decay_risk_reasoning": "Monorepos are a well-established pattern for projects with multiple interdependent services. The current project size is manageable within this structure, and the benefits of co-location are likely to persist.",
+      "blast_radius_reasoning": "If the monorepo structure becomes unmanageable (e.g., due to very large team, complex build times), it would require a significant effort to split into a polyrepo, impacting all development workflows.",
+      "commit_refs": [
+        "715aa68c7834a2bcc85838a1ded5320eef973a24"
+      ],
+      "causal_dependencies": [
+        "REQUIRES DPR-005",
+        "REQUIRES DPR-009",
+        "REQUIRES DPR-010",
+        "REQUIRES DPR-003"
+      ],
+      "causal_in": [
+        "DPR-009",
+        "DPR-010",
+        "DPR-003",
+        "DPR-005"
+      ],
+      "causal_out": [
+        "DPR-025",
+        "DPR-024"
+      ],
+      "decay_alert": null
+    },
+    {
+      "id": "DPR-014",
+      "title": "Row Level Security (RLS) Implementation",
+      "component": "Database",
+      "blast_radius": "critical",
+      "decay_risk": "medium",
+      "within_window": true,
+      "decision_date": "2026-01-05",
+      "decision": "PostgreSQL Row Level Security (RLS) policies are enforced on all tables to control data access at the database level.",
+      "implicit_assumptions": [
+        "INFERRED: RLS provides sufficient granularity and security for all data access patterns (patient vs. caretaker).",
+        "INFERRED: Developers understand RLS intricacies to avoid security loopholes and performance issues.",
+        "INFERRED: Supabase's RLS implementation is robust and performant enough for production use.",
+        "INFERRED: RLS simplifies application-level authorization logic by offloading it to the database."
+      ],
+      "explicit_constraints": [
+        "Requires careful definition and maintenance of RLS policies for each table and role.",
+        "Potential performance overhead for complex RLS policies.",
+        "Requires database-level understanding of security."
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        "supabase/migrations/001_schema.sql",
+        "supabase/migrations/002_storage_policies.sql",
+        "supabase/migrations/005_fix_assignment_rls.sql",
+        "README.md"
+      ],
+      "involved_humans": [
+        "Anshumaan Singh"
+      ],
+      "rejected_alternatives": [
+        "Application-level authorization only",
+        "View-based security",
+        "Stored procedures for all data access"
+      ],
+      "intended_durability": "foundational",
+      "durability_reasoning": "RLS is a core security mechanism deeply integrated into the database schema; changing it would require extensive database and application code modifications.",
+      "decay_risk_reasoning": "Complex RLS policies are prone to errors, especially with evolving schema or new access patterns, potentially leading to data leaks, unauthorized access, or unexpected data visibility issues. Debugging RLS can be challenging.",
+      "blast_radius_reasoning": "Failure of RLS leads to severe security vulnerabilities, unauthorized data access, privacy breaches, and potential legal repercussions, requiring immediate and extensive remediation.",
+      "commit_refs": [
+        "715aa68c7834a2bcc85838a1ded5320eef973a24"
+      ],
+      "causal_dependencies": [
+        "REQUIRES DPR-006",
+        "ENABLES DPR-015",
+        "CONSTRAINS DPR-018",
+        "ASSUMPTION_OF DPR-007"
+      ],
+      "causal_in": [
+        "DPR-027",
+        "DPR-023",
+        "DPR-007",
+        "DPR-006"
+      ],
+      "causal_out": [
+        "DPR-015"
+      ],
+      "decay_alert": {
+        "already_decaying": false,
+        "decay_evidence": "No explicit decay evidence found in analysis window. The decision is recent.",
+        "earliest_signal_date": null,
+        "recommended_monitor_query": "Conduct regular security audits and penetration tests specifically targeting RLS policies. Implement automated tests for all data access patterns to ensure RLS is correctly applied. Monitor for unexpected data visibility or access errors in application logs."
+      }
+    },
+    {
+      "id": "DPR-015",
+      "title": "Role-Based Access Control (RBAC)",
+      "component": "Backend, Database",
+      "blast_radius": "high",
+      "decay_risk": "medium",
+      "within_window": true,
+      "decision_date": "2026-01-05",
+      "decision": "A role-based access control system is implemented to differentiate permissions between 'patient' and 'caretaker' user roles.",
+      "implicit_assumptions": [
+        "INFERRED: The two primary roles (patient, caretaker) are sufficient for the application's current and foreseeable access control needs.",
+        "INFERRED: The distinction between patient and caretaker roles is clear and unambiguous.",
+        "INFERRED: RLS (DPR-014) effectively complements RBAC for data-level security."
+      ],
+      "explicit_constraints": [
+        "Requires defining clear permissions for each role.",
+        "Application logic must check user roles before granting access to features/data.",
+        "Database schema must support role assignment (e.g., `profiles.role` column)."
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        "supabase/migrations/001_schema.sql",
+        "backend/src/middleware/authMiddleware.js",
+        "frontend/src/pages/CaretakerDashboard.jsx",
+        "frontend/src/pages/PatientHome.jsx",
+        "README.md"
+      ],
+      "involved_humans": [
+        "Anshumaan Singh"
+      ],
+      "rejected_alternatives": [
+        "Simple user/admin roles",
+        "Fine-grained permission system (ACLs)",
+        "No explicit role differentiation"
+      ],
+      "intended_durability": "foundational",
+      "durability_reasoning": "RBAC is fundamental to the application's user experience and security model; changing it would impact user flows and data access across the entire system.",
+      "decay_risk_reasoning": "As the application grows, more complex roles or permissions might be needed (e.g., 'admin', 'family member', 'medical professional'), which would require extending or replacing the current simple RBAC model.",
+      "blast_radius_reasoning": "If the RBAC model becomes inadequate, it could lead to incorrect access, security vulnerabilities, or inability to implement new features, requiring significant refactoring of authorization logic across backend and frontend.",
+      "commit_refs": [
+        "715aa68c7834a2bcc85838a1ded5320eef973a24"
+      ],
+      "causal_dependencies": [
+        "REQUIRES DPR-007",
+        "REQUIRES DPR-014",
+        "ENABLES DPR-016",
+        "ENABLES DPR-017"
+      ],
+      "causal_in": [
+        "DPR-014",
+        "DPR-027",
+        "DPR-007"
+      ],
+      "causal_out": [
+        "DPR-017",
+        "DPR-016"
+      ],
+      "decay_alert": {
+        "already_decaying": false,
+        "decay_evidence": "No explicit decay evidence found in analysis window. The decision is recent.",
+        "earliest_signal_date": null,
+        "recommended_monitor_query": "Monitor feature requests or user feedback that imply a need for additional roles (e.g., 'family member', 'admin'). Review new feature designs to assess if they can be accommodated by the existing two-role model without complex workarounds."
+      }
+    },
+    {
+      "id": "DPR-016",
+      "title": "SOS Emergency Feature with Live Location",
+      "component": "Frontend, Backend, Database",
+      "blast_radius": "critical",
+      "decay_risk": "medium",
+      "within_window": true,
+      "decision_date": "2026-01-05",
+      "decision": "An SOS emergency feature is implemented, allowing patients to send distress signals with live location sharing and integrating with geofencing.",
+      "implicit_assumptions": [
+        "INFERRED: Patient devices will have consistent internet connectivity for location updates and alerts.",
+        "INFERRED: The accuracy of GPS data is sufficient for emergency response.",
+        "INFERRED: Caretakers will be able to respond effectively to SOS alerts.",
+        "INFERRED: The legal and ethical implications of live location tracking are understood and addressed."
+      ],
+      "explicit_constraints": [
+        "Requires reliable GPS access on patient devices.",
+        "Backend must handle real-time location updates and notifications.",
+        "Privacy considerations for location data.",
+        "Integration with mapping services (e.g., Google Maps)."
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        "frontend/src/pages/PatientHome.jsx",
+        "frontend/src/components/GoogleMap.jsx",
+        "backend/src/routes/sos.js",
+        "backend/src/routes/geofence.js",
+        "supabase/migrations/004_geofencing.sql",
+        "README.md"
+      ],
+      "involved_humans": [
+        "Anshumaan Singh"
+      ],
+      "rejected_alternatives": [
+        "Simple static emergency contact list",
+        "No location sharing",
+        "Manual check-ins"
+      ],
+      "intended_durability": "foundational",
+      "durability_reasoning": "This is a core, life-saving feature of the application, central to its value proposition for patient safety.",
+      "decay_risk_reasoning": "Patient device battery life, network connectivity in remote areas, or GPS signal quality can impact reliability. Privacy regulations around location data are evolving and could require changes. The cost of real-time location services might increase.",
+      "blast_radius_reasoning": "Failure of the SOS feature could have severe consequences for patient safety, leading to delayed emergency response or inability to locate a patient in distress, undermining the core purpose of ARKA.",
+      "commit_refs": [
+        "715aa68c7834a2bcc85838a1ded5320eef973a24"
+      ],
+      "causal_dependencies": [
+        "REQUIRES DPR-006",
+        "REQUIRES DPR-009",
+        "REQUIRES DPR-015",
+        "ENABLES DPR-026"
+      ],
+      "causal_in": [
+        "DPR-026",
+        "DPR-011",
+        "DPR-015"
+      ],
+      "causal_out": [
+        "DPR-009",
+        "DPR-026",
+        "DPR-006"
+      ],
+      "decay_alert": {
+        "already_decaying": false,
+        "decay_evidence": "No explicit decay evidence found in analysis window. The decision is recent.",
+        "earliest_signal_date": null,
+        "recommended_monitor_query": "Monitor the success rate of location updates and SOS alert deliveries. Collect data on network connectivity issues reported by patient devices or caretakers. Implement client-side caching or retry mechanisms for location data to mitigate intermittent connectivity."
+      }
+    },
+    {
+      "id": "DPR-017",
+      "title": "Simplified UI Design for Patients",
+      "component": "Frontend",
+      "blast_radius": "high",
+      "decay_risk": "low",
+      "within_window": true,
+      "decision_date": "2026-01-05",
+      "decision": "The patient-facing user interface is designed with a focus on simplicity, featuring large buttons, calm colors, and a distraction-free layout.",
+      "implicit_assumptions": [
+        "INFERRED: Alzheimer's patients benefit significantly from a highly simplified and intuitive interface.",
+        "INFERRED: The chosen design effectively reduces cognitive load and prevents confusion.",
+        "INFERRED: The design system (colors, typography) is calming and non-distracting."
+      ],
+      "explicit_constraints": [
+        "Requires strict adherence to UI/UX guidelines for accessibility and ease of use.",
+        "Limits the complexity of features exposed directly to patients.",
+        "Design system must support large elements and calm aesthetics."
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        "frontend/src/pages/PatientHome.jsx",
+        "frontend/src/styles/index.css",
+        "README.md"
+      ],
+      "involved_humans": [
+        "Anshumaan Singh"
+      ],
+      "rejected_alternatives": [
+        "Standard complex web UI patterns",
+        "Feature-rich interface with many options",
+        "Visually busy or high-contrast designs"
+      ],
+      "intended_durability": "foundational",
+      "durability_reasoning": "This is a core UX principle directly addressing the target user's needs; changing it would fundamentally alter the patient experience.",
+      "decay_risk_reasoning": "The core assumption that Alzheimer's patients benefit from simplified UI is well-established in UX research. While specific design elements might evolve, the principle is durable.",
+      "blast_radius_reasoning": "If the simplified UI proves ineffective or confusing, it would render the application unusable for its primary target audience, requiring a complete redesign of the patient experience.",
+      "commit_refs": [
+        "715aa68c7834a2bcc85838a1ded5320eef973a24"
+      ],
+      "causal_dependencies": [
+        "REQUIRES DPR-009",
+        "REQUIRES DPR-015"
+      ],
+      "causal_in": [
+        "DPR-009",
+        "DPR-015",
+        "DPR-029"
+      ],
+      "causal_out": [],
+      "decay_alert": null
+    },
+    {
+      "id": "DPR-018",
+      "title": "Backend API Design (RESTful with Express)",
+      "component": "Backend",
+      "blast_radius": "high",
+      "decay_risk": "low",
+      "within_window": true,
+      "decision_date": "2026-01-05",
+      "decision": "The backend API is designed as a RESTful service using Express.js routes.",
+      "implicit_assumptions": [
+        "INFERRED: RESTful architecture is sufficient for the application's data fetching and manipulation needs.",
+        "INFERRED: The overhead of multiple HTTP requests (compared to GraphQL) is acceptable.",
+        "INFERRED: The development team is familiar with REST API design and consumption."
+      ],
+      "explicit_constraints": [
+        "Adherence to REST principles (statelessness, resource-based URLs, standard HTTP methods).",
+        "Requires careful design of API endpoints and data serialization.",
+        "Client-side must adapt to fixed API responses."
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        "backend/src/server.js",
+        "backend/src/routes/",
+        "README.md"
+      ],
+      "involved_humans": [
+        "Anshumaan Singh"
+      ],
+      "rejected_alternatives": [
+        "GraphQL",
+        "gRPC",
+        "SOAP",
+        "Custom RPC over HTTP"
+      ],
+      "intended_durability": "foundational",
+      "durability_reasoning": "The API design is fundamental to how frontend and ML services interact with the backend; changing it would require significant refactoring across all services.",
+      "decay_risk_reasoning": "REST is a widely adopted and robust architectural style. While GraphQL or gRPC offer advantages for specific use cases, REST remains a solid choice for general-purpose APIs and is unlikely to become a critical bottleneck for this project's current scope.",
+      "blast_radius_reasoning": "If REST proves inadequate (e.g., due to excessive over-fetching/under-fetching, complex data relationships), migrating to another API style would require extensive changes to both backend and frontend, impacting all data communication.",
+      "commit_refs": [
+        "715aa68c7834a2bcc85838a1ded5320eef973a24"
+      ],
+      "causal_dependencies": [
+        "REQUIRES DPR-003",
+        "CONSTRAINS DPR-009",
+        "CONSTRAINS DPR-010",
+        "ASSUMPTION_OF DPR-007",
+        "ASSUMPTION_OF DPR-014"
+      ],
+      "causal_in": [
+        "DPR-007",
+        "DPR-010",
+        "DPR-030",
+        "DPR-003",
+        "DPR-006"
+      ],
+      "causal_out": [
+        "DPR-019",
+        "DPR-028"
+      ],
+      "decay_alert": null
+    },
+    {
+      "id": "DPR-019",
+      "title": "IP Logging for Abuse Protection",
+      "component": "Backend",
+      "blast_radius": "medium",
+      "decay_risk": "medium",
+      "within_window": true,
+      "decision_date": "2026-01-05",
+      "decision": "An IP logging middleware is implemented in the backend to track incoming requests for abuse protection and basic security monitoring.",
+      "implicit_assumptions": [
+        "INFERRED: Basic IP logging provides sufficient information for identifying and mitigating abuse.",
+        "INFERRED: The volume of requests and potential abuse is low enough for manual log review.",
+        "INFERRED: The current logging mechanism (to `error.txt`) is adequate for storing IP data."
+      ],
+      "explicit_constraints": [
+        "Requires storage for IP logs (currently `error.txt`).",
+        "Privacy considerations for storing user IP addresses.",
+        "Manual review of logs for abuse detection."
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        "backend/src/middleware/ipLogger.js",
+        "backend/src/server.js"
+      ],
+      "involved_humans": [
+        "Anshumaan Singh"
+      ],
+      "rejected_alternatives": [
+        "Relying solely on rate limiting",
+        "No IP tracking",
+        "Using a dedicated WAF (Web Application Firewall) or CDN with IP logging"
+      ],
+      "intended_durability": "medium-term",
+      "durability_reasoning": "While a good initial step, this basic logging might need to be replaced by more sophisticated systems as the application scales or security threats increase.",
+      "decay_risk_reasoning": "As user traffic grows, manual review of IP logs becomes impractical. The current logging to `error.txt` (DPR-028) is not scalable or robust for production-grade abuse protection, making this assumption highly dependent on that underlying logging choice.",
+      "blast_radius_reasoning": "If abuse protection fails, the application could be vulnerable to DDoS attacks, spam, or unauthorized access attempts, impacting service availability and data integrity.",
+      "commit_refs": [
+        "715aa68c7834a2bcc85838a1ded5320eef973a24"
+      ],
+      "causal_dependencies": [
+        "REQUIRES DPR-003",
+        "CONSTRAINS DPR-018"
+      ],
+      "causal_in": [
+        "DPR-028",
+        "DPR-018"
+      ],
+      "causal_out": [
+        "DPR-028"
+      ],
+      "decay_alert": {
+        "already_decaying": false,
+        "decay_evidence": "No explicit decay evidence found in analysis window. The decision is recent.",
+        "earliest_signal_date": null,
+        "recommended_monitor_query": "Monitor the volume and patterns of requests in IP logs. Look for spikes from single IPs, unusual request sequences, or failed authentication attempts. Evaluate the effectiveness of current abuse mitigation strategies based on these logs."
+      }
+    },
+    {
+      "id": "DPR-020",
+      "title": "Signed URLs for Secure File Access",
+      "component": "Storage, Backend",
+      "blast_radius": "high",
+      "decay_risk": "low",
+      "within_window": true,
+      "decision_date": "2026-01-05",
+      "decision": "Signed URLs are used to provide secure, temporary access to files stored in Supabase Storage.",
+      "implicit_assumptions": [
+        "INFERRED: Supabase Storage's signed URL mechanism is secure and robust.",
+        "INFERRED: The overhead of generating signed URLs on the backend is acceptable.",
+        "INFERRED: Temporary access is sufficient for all file access patterns."
+      ],
+      "explicit_constraints": [
+        "Requires backend to generate and sign URLs.",
+        "Clients must request signed URLs before accessing files.",
+        "Expiration times for signed URLs must be managed."
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        "backend/src/routes/upload.js",
+        "README.md"
+      ],
+      "involved_humans": [
+        "Anshumaan Singh"
+      ],
+      "rejected_alternatives": [
+        "Publicly accessible files",
+        "Custom token-based access control for files",
+        "Proxying all file access through the backend"
+      ],
+      "intended_durability": "foundational",
+      "durability_reasoning": "This is a core security mechanism for file access, crucial for protecting sensitive media (faces, voices).",
+      "decay_risk_reasoning": "Signed URLs are a standard and proven security mechanism for cloud storage. Supabase's implementation is built on established cloud patterns, making this a durable choice.",
+      "blast_radius_reasoning": "If signed URLs fail or are compromised, it could lead to unauthorized access to sensitive patient media (face images, voice memories), resulting in severe privacy breaches.",
+      "commit_refs": [
+        "715aa68c7834a2bcc85838a1ded5320eef973a24"
+      ],
+      "causal_dependencies": [
+        "REQUIRES DPR-008",
+        "CONSTRAINS DPR-018"
+      ],
+      "causal_in": [
+        "DPR-008"
+      ],
+      "causal_out": [],
+      "decay_alert": null
+    },
+    {
+      "id": "DPR-021",
+      "title": "Environment Variables for Secrets Management",
+      "component": "Overall System",
+      "blast_radius": "critical",
+      "decay_risk": "low",
+      "within_window": true,
+      "decision_date": "2026-01-05",
+      "decision": "All sensitive configuration (API keys, secrets) are managed using environment variables, typically loaded from `.env` files in development.",
+      "implicit_assumptions": [
+        "INFERRED: Environment variables provide sufficient security for secrets in the deployment environment.",
+        "INFERRED: The deployment platform supports easy injection of environment variables.",
+        "INFERRED: The team follows best practices for managing `.env` files (e.g., not committing them)."
+      ],
+      "explicit_constraints": [
+        "Requires proper configuration of environment variables in deployment environments.",
+        "Secrets are exposed to the process environment.",
+        "Requires `.env` files to be excluded from version control."
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        ".env.example",
+        "backend/.env.example",
+        "frontend/.env.example",
+        "ml-service/.env.example",
+        ".gitignore",
+        "README.md"
+      ],
+      "involved_humans": [
+        "Anshumaan Singh"
+      ],
+      "rejected_alternatives": [
+        "Hardcoding secrets in source code",
+        "Dedicated secret management services (e.g., Azure Key Vault, AWS Secrets Manager, HashiCorp Vault)",
+        "Configuration files checked into version control"
+      ],
+      "intended_durability": "foundational",
+      "durability_reasoning": "This is a fundamental security practice for managing sensitive information across different environments.",
+      "decay_risk_reasoning": "Using environment variables for secrets is a standard and robust practice. While dedicated secret managers offer more advanced features, for a project of this scale, environment variables are generally sufficient and durable.",
+      "blast_radius_reasoning": "Failure to properly manage secrets (e.g., accidental exposure) would lead to severe security breaches, compromising database access, authentication, and storage, requiring immediate remediation and potentially data compromise.",
+      "commit_refs": [
+        "715aa68c7834a2bcc85838a1ded5320eef973a24"
+      ],
+      "causal_dependencies": [
+        "CONSTRAINS DPR-005",
+        "CONSTRAINS DPR-009",
+        "CONSTRAINS DPR-010",
+        "CONSTRAINS DPR-003"
+      ],
+      "causal_in": [
+        "DPR-005"
+      ],
+      "causal_out": [
+        "DPR-009",
+        "DPR-010",
+        "DPR-005"
+      ],
+      "decay_alert": null
+    },
+    {
+      "id": "DPR-022",
+      "title": "Vector Extension for Database",
+      "component": "Database",
+      "blast_radius": "medium",
+      "decay_risk": "medium",
+      "within_window": true,
+      "decision_date": "2026-01-05",
+      "decision": "The `vector` extension is enabled in the PostgreSQL database for potential future similarity search capabilities, likely for face embeddings.",
+      "implicit_assumptions": [
+        "INFERRED: Storing and querying vector embeddings directly in PostgreSQL will be performant enough for the application's needs.",
+        "INFERRED: The `vector` extension provides sufficient functionality for similarity search (e.g., for identifying known faces).",
+        "INFERRED: The team has expertise in working with vector databases or extensions."
+      ],
+      "explicit_constraints": [
+        "Requires PostgreSQL database with extension support (provided by Supabase).",
+        "Adds complexity to database schema and queries for vector operations.",
+        "Performance characteristics of `pg_vector` for large datasets."
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        "README.md"
+      ],
+      "involved_humans": [
+        "Anshumaan Singh"
+      ],
+      "rejected_alternatives": [
+        "Storing embeddings as raw arrays/JSONB without specialized indexing",
+        "Using a separate dedicated vector database (e.g., Pinecone, Weaviate)",
+        "Performing similarity search purely in the ML service"
+      ],
+      "intended_durability": "foundational",
+      "durability_reasoning": "Enabling a database extension is a foundational decision that impacts data modeling and potential future features like advanced search or recommendation systems.",
+      "decay_risk_reasoning": "While `pg_vector` is powerful, its performance for very large datasets or extremely high-dimensional vectors might not scale as well as dedicated vector databases. The complexity of managing vector indexes could also become an issue.",
+      "blast_radius_reasoning": "If `pg_vector` proves insufficient, it would require migrating vector data to a specialized vector database, impacting the ML service and database schema, and potentially requiring changes to the face recognition workflow.",
+      "commit_refs": [
+        "715aa68c7834a2bcc85838a1ded5320eef973a24"
+      ],
+      "causal_dependencies": [
+        "REQUIRES DPR-006",
+        "ENABLES DPR-011"
+      ],
+      "causal_in": [
+        "DPR-006"
+      ],
+      "causal_out": [
+        "DPR-011"
+      ],
+      "decay_alert": {
+        "already_decaying": false,
+        "decay_evidence": "No explicit decay evidence found in analysis window. The decision is recent.",
+        "earliest_signal_date": null,
+        "recommended_monitor_query": "Monitor query latency for vector similarity searches as the number of stored embeddings grows. Benchmark `pg_vector` performance with expected data volumes. Track CPU/memory usage of the PostgreSQL instance during vector operations."
+      }
+    },
+    {
+      "id": "DPR-023",
+      "title": "Dedicated `faces` and `voices` Storage Buckets",
+      "component": "Storage",
+      "blast_radius": "medium",
+      "decay_risk": "low",
+      "within_window": true,
+      "decision_date": "2026-01-05",
+      "decision": "Separate Supabase Storage buckets are created for `faces` and `voices` to organize files and apply distinct security policies.",
+      "implicit_assumptions": [
+        "INFERRED: Separating buckets improves organization and allows for more granular security policies.",
+        "INFERRED: The distinction between face images and voice recordings warrants separate storage contexts.",
+        "INFERRED: Supabase's bucket management is straightforward."
+      ],
+      "explicit_constraints": [
+        "Requires managing multiple storage buckets.",
+        "Each bucket can have its own RLS policies.",
+        "Application logic must correctly reference the appropriate bucket."
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        "supabase/migrations/002_storage_policies.sql",
+        "README.md"
+      ],
+      "involved_humans": [
+        "Anshumaan Singh"
+      ],
+      "rejected_alternatives": [
+        "Single generic storage bucket for all files",
+        "Storing files directly in the database (BLOBs)",
+        "Using a hierarchical folder structure within a single bucket"
+      ],
+      "intended_durability": "foundational",
+      "durability_reasoning": "This decision impacts data organization, security, and access patterns for media files, making it a fundamental storage architecture choice.",
+      "decay_risk_reasoning": "This is a logical and common practice for organizing cloud storage, especially for different types of sensitive data. It's unlikely to become problematic unless the number of distinct media types explodes.",
+      "blast_radius_reasoning": "If this organization fails (e.g., due to too many buckets, or incorrect policy application), it could lead to disorganization, security vulnerabilities, or difficulty managing files, requiring a reorganization of storage.",
+      "commit_refs": [
+        "715aa68c7834a2bcc85838a1ded5320eef973a24"
+      ],
+      "causal_dependencies": [
+        "REQUIRES DPR-008",
+        "ENABLES DPR-020",
+        "CONSTRAINS DPR-014"
+      ],
+      "causal_in": [
+        "DPR-008"
+      ],
+      "causal_out": [
+        "DPR-014"
+      ],
+      "decay_alert": null
+    },
+    {
+      "id": "DPR-024",
+      "title": "Node.js Dependency Management (npm with package-lock.json)",
+      "component": "Frontend, Backend",
+      "blast_radius": "high",
+      "decay_risk": "low",
+      "within_window": true,
+      "decision_date": "2026-01-05",
+      "decision": "Node.js dependencies for both frontend and backend are managed using npm with `package-lock.json` for deterministic installations.",
+      "implicit_assumptions": [
+        "INFERRED: npm provides sufficient performance and reliability for dependency management.",
+        "INFERRED: `package-lock.json` ensures consistent dependency versions across development and deployment environments.",
+        "INFERRED: The team is familiar with npm workflows."
+      ],
+      "explicit_constraints": [
+        "Requires Node.js and npm to be installed.",
+        "Relies on npm registry for package availability.",
+        "Requires `package-lock.json` to be committed to version control."
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        "backend/package.json",
+        "backend/package-lock.json",
+        "frontend/package.json",
+        "frontend/package-lock.json",
+        "README.md"
+      ],
+      "involved_humans": [
+        "Anshumaan Singh"
+      ],
+      "rejected_alternatives": [
+        "Yarn",
+        "pnpm",
+        "Manual dependency management"
+      ],
+      "intended_durability": "foundational",
+      "durability_reasoning": "Dependency management is fundamental to project setup, build processes, and ensuring consistent environments.",
+      "decay_risk_reasoning": "npm is the standard package manager for Node.js, and `package-lock.json` is a robust mechanism for dependency locking. This is a very stable and widely adopted practice.",
+      "blast_radius_reasoning": "Failure in dependency management (e.g., inconsistent builds, security vulnerabilities from outdated packages) could lead to broken deployments, runtime errors, or security compromises across frontend and backend.",
+      "commit_refs": [
+        "715aa68c7834a2bcc85838a1ded5320eef973a24"
+      ],
+      "causal_dependencies": [
+        "REQUIRES DPR-003",
+        "REQUIRES DPR-009"
+      ],
+      "causal_in": [
+        "DPR-013"
+      ],
+      "causal_out": [
+        "DPR-009",
+        "DPR-003"
+      ],
+      "decay_alert": null
+    },
+    {
+      "id": "DPR-025",
+      "title": "Python Dependency Management (pip with requirements.txt)",
+      "component": "ML Service",
+      "blast_radius": "high",
+      "decay_risk": "low",
+      "within_window": true,
+      "decision_date": "2026-01-05",
+      "decision": "Python dependencies for the ML service are managed using pip with `requirements.txt` for deterministic installations.",
+      "implicit_assumptions": [
+        "INFERRED: pip provides sufficient performance and reliability for Python dependency management.",
+        "INFERRED: `requirements.txt` ensures consistent dependency versions across development and deployment environments.",
+        "INFERRED: The team is familiar with pip workflows."
+      ],
+      "explicit_constraints": [
+        "Requires Python and pip to be installed.",
+        "Relies on PyPI for package availability.",
+        "Requires `requirements.txt` to be committed to version control."
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        "ml-service/requirements.txt",
+        "README.md"
+      ],
+      "involved_humans": [
+        "Anshumaan Singh"
+      ],
+      "rejected_alternatives": [
+        "Poetry",
+        "Conda",
+        "Pipenv",
+        "Manual dependency management"
+      ],
+      "intended_durability": "foundational",
+      "durability_reasoning": "Dependency management is fundamental to project setup, build processes, and ensuring consistent environments for the ML service.",
+      "decay_risk_reasoning": "pip and `requirements.txt` are the standard and most widely used tools for Python dependency management. This is a very stable and well-understood practice.",
+      "blast_radius_reasoning": "Failure in dependency management (e.g., inconsistent builds, incompatible library versions) could lead to the ML service failing to start or producing incorrect results, directly impacting core features like face recognition.",
+      "commit_refs": [
+        "715aa68c7834a2bcc85838a1ded5320eef973a24"
+      ],
+      "causal_dependencies": [
+        "REQUIRES DPR-010",
+        "REQUIRES DPR-011",
+        "REQUIRES DPR-012"
+      ],
+      "causal_in": [
+        "DPR-013"
+      ],
+      "causal_out": [
+        "DPR-012",
+        "DPR-011",
+        "DPR-010"
+      ],
+      "decay_alert": null
+    },
+    {
+      "id": "DPR-026",
+      "title": "Geofencing Feature Implementation",
+      "component": "Backend, Database",
+      "blast_radius": "high",
+      "decay_risk": "medium",
+      "within_window": true,
+      "decision_date": "2026-01-05",
+      "decision": "Geofencing capabilities are implemented to define safe zones for patients and trigger alerts when they enter or exit these zones.",
+      "implicit_assumptions": [
+        "INFERRED: The geofencing logic implemented is accurate and reliable for triggering alerts.",
+        "INFERRED: The performance of geofence checks scales with the number of patients and geofences.",
+        "INFERRED: Caretakers will configure appropriate geofences for their patients."
+      ],
+      "explicit_constraints": [
+        "Requires storing geofence definitions in the database.",
+        "Backend logic to process patient location updates against defined geofences.",
+        "Requires accurate location data from patient devices."
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        "supabase/migrations/004_geofencing.sql",
+        "backend/src/routes/geofence.js",
+        "frontend/src/components/GoogleMap.jsx",
+        "README.md"
+      ],
+      "involved_humans": [
+        "Anshumaan Singh"
+      ],
+      "rejected_alternatives": [
+        "Manual location tracking without automated zone alerts",
+        "Using a third-party geofencing service",
+        "Client-side only geofencing"
+      ],
+      "intended_durability": "foundational",
+      "durability_reasoning": "Geofencing is a critical safety feature, integral to the SOS system and patient monitoring.",
+      "decay_risk_reasoning": "Accuracy of geofence triggers can be affected by GPS drift or network latency. Performance might degrade with a large number of active geofences or frequent location updates. The complexity of managing geofences for many patients could become an issue.",
+      "blast_radius_reasoning": "If geofencing fails, patients might not receive timely alerts when leaving safe zones, or caretakers might receive false alarms, compromising patient safety and trust in the system.",
+      "commit_refs": [
+        "715aa68c7834a2bcc85838a1ded5320eef973a24"
+      ],
+      "causal_dependencies": [
+        "REQUIRES DPR-006",
+        "REQUIRES DPR-016",
+        "CONSTRAINS DPR-018"
+      ],
+      "causal_in": [
+        "DPR-016"
+      ],
+      "causal_out": [
+        "DPR-016",
+        "DPR-006"
+      ],
+      "decay_alert": {
+        "already_decaying": false,
+        "decay_evidence": "No explicit decay evidence found in analysis window. The decision is recent.",
+        "earliest_signal_date": null,
+        "recommended_monitor_query": "Monitor the accuracy of geofence entry/exit alerts. Collect data on false positives (alerts when inside) and false negatives (no alert when outside). Track the latency between a patient crossing a boundary and an alert being sent. Conduct real-world testing in diverse environments."
+      }
+    },
+    {
+      "id": "DPR-027",
+      "title": "Patient-Caretaker Assignment Model",
+      "component": "Database, Backend",
+      "blast_radius": "high",
+      "decay_risk": "low",
+      "within_window": true,
+      "decision_date": "2026-01-05",
+      "decision": "A many-to-many assignment model is implemented to link patients with multiple caretakers and vice-versa.",
+      "implicit_assumptions": [
+        "INFERRED: The many-to-many relationship accurately reflects real-world caregiving scenarios.",
+        "INFERRED: The assignment model is flexible enough to handle evolving care structures.",
+        "INFERRED: The performance of queries involving assignments is acceptable."
+      ],
+      "explicit_constraints": [
+        "Requires an `assignments` join table in the database.",
+        "Backend logic to manage assignments (create, read, update, delete).",
+        "RLS policies must correctly enforce access based on assignments."
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        "supabase/migrations/001_schema.sql",
+        "supabase/migrations/005_fix_assignment_rls.sql",
+        "frontend/src/components/AssignPatient.jsx",
+        "README.md"
+      ],
+      "involved_humans": [
+        "Anshumaan Singh"
+      ],
+      "rejected_alternatives": [
+        "One-to-one assignment (one patient, one caretaker)",
+        "No explicit assignment, relying on shared credentials",
+        "Hierarchical assignment (e.g., caretaker manages a group of patients)"
+      ],
+      "intended_durability": "foundational",
+      "durability_reasoning": "This data model is fundamental to how users interact and how data access is controlled; changing it would require significant database and application logic refactoring.",
+      "decay_risk_reasoning": "A many-to-many relationship is a robust and flexible model for user assignments. It's unlikely to become a bottleneck unless the complexity of relationships (e.g., roles within an assignment) significantly increases.",
+      "blast_radius_reasoning": "If the assignment model proves inadequate, it would lead to incorrect data access, inability to manage patient care, and severe security/privacy issues, requiring extensive database and application changes.",
+      "commit_refs": [
+        "715aa68c7834a2bcc85838a1ded5320eef973a24"
+      ],
+      "causal_dependencies": [
+        "REQUIRES DPR-006",
+        "REQUIRES DPR-015",
+        "CONSTRAINS DPR-014"
+      ],
+      "causal_in": [
+        "DPR-006"
+      ],
+      "causal_out": [
+        "DPR-014",
+        "DPR-015"
+      ],
+      "decay_alert": null
+    },
+    {
+      "id": "DPR-028",
+      "title": "Backend Error Logging to `error.txt`",
+      "component": "Backend",
+      "blast_radius": "medium",
+      "decay_risk": "high",
+      "within_window": true,
+      "decision_date": "2026-01-05",
+      "decision": "Backend errors are logged to a local `error.txt` file.",
+      "implicit_assumptions": [
+        "INFERRED: The application will primarily run on a single instance where local file access is sufficient.",
+        "INFERRED: The expected volume of errors will be low enough for manual review.",
+        "INFERRED: No real-time error monitoring or alerting is required for the current stage of the project."
+      ],
+      "explicit_constraints": [
+        "Requires manual inspection of log files.",
+        "Limited scalability for high-volume errors.",
+        "No real-time alerting or advanced analytics on errors.",
+        "Log file size management (rotation) is not explicitly handled."
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        "backend/error.txt",
+        "backend/src/server.js"
+      ],
+      "involved_humans": [
+        "Anshumaan Singh"
+      ],
+      "rejected_alternatives": [
+        "Cloud-based logging services (e.g., Supabase logs, Azure Monitor, AWS CloudWatch)",
+        "Structured logging (e.g., Winston, Pino) to console/stdout",
+        "Dedicated error tracking services (e.g., Sentry, Bugsnag)"
+      ],
+      "intended_durability": "short-term",
+      "durability_reasoning": "This is a basic logging solution, typically replaced by more robust, scalable, and observable systems in production environments.",
+      "decay_risk_reasoning": "As soon as the application scales beyond a single instance, requires proactive monitoring, or experiences a higher volume of errors, this logging approach becomes completely inadequate and unmanageable.",
+      "blast_radius_reasoning": "While not directly breaking the application, failure to detect, diagnose, and respond to errors quickly can lead to prolonged outages, data corruption, security vulnerabilities going unnoticed, and a poor user experience.",
+      "commit_refs": [
+        "715aa68c7834a2bcc85838a1ded5320eef973a24"
+      ],
+      "causal_dependencies": [
+        "CONSTRAINS DPR-019"
+      ],
+      "causal_in": [
+        "DPR-019",
+        "DPR-018"
+      ],
+      "causal_out": [
+        "DPR-019"
+      ],
+      "decay_alert": {
+        "already_decaying": false,
+        "decay_evidence": "No explicit decay evidence found in analysis window. The decision is recent.",
+        "earliest_signal_date": null,
+        "recommended_monitor_query": "Monitor backend instance count. If scaling beyond a single instance is planned or occurs, immediately flag this assumption. Monitor for `error.txt` file size and rotation issues. Track the frequency of manual log reviews."
+      }
+    },
+    {
+      "id": "DPR-029",
+      "title": "Frontend State Management (React Context/Hooks)",
+      "component": "Frontend",
+      "blast_radius": "medium",
+      "decay_risk": "medium",
+      "within_window": true,
+      "decision_date": "2026-01-05",
+      "decision": "Frontend application state is managed primarily using React's built-in Context API and Hooks.",
+      "implicit_assumptions": [
+        "INFERRED: The application's state complexity does not warrant a more robust, centralized state management library.",
+        "INFERRED: React Context and Hooks provide sufficient performance and maintainability for the current scale.",
+        "INFERRED: The development team is proficient in React's native state management patterns."
+      ],
+      "explicit_constraints": [
+        "Requires careful structuring of Context providers to avoid prop drilling or excessive re-renders.",
+        "State logic is distributed across components and hooks.",
+        "Debugging complex state flows can be challenging without dedicated dev tools."
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        "frontend/src/hooks/useAuth.jsx",
+        "frontend/src/App.jsx"
+      ],
+      "involved_humans": [
+        "Anshumaan Singh"
+      ],
+      "rejected_alternatives": [
+        "Redux",
+        "Zustand",
+        "MobX",
+        "Apollo Client (for GraphQL state)"
+      ],
+      "intended_durability": "medium-term",
+      "durability_reasoning": "For smaller to medium-sized applications, Context/Hooks are sufficient. However, as complexity grows, a dedicated library might become necessary.",
+      "decay_risk_reasoning": "As the application grows in features and complexity, managing global state with Context can become cumbersome, leading to performance issues (excessive re-renders) or difficulty tracing state changes. This often signals a need for a more structured state management library.",
+      "blast_radius_reasoning": "If state management becomes unmanageable, it would lead to bugs, performance degradation, and slow development, requiring a significant refactoring of the entire frontend application's state layer.",
+      "commit_refs": [
+        "715aa68c7834a2bcc85838a1ded5320eef973a24"
+      ],
+      "causal_dependencies": [
+        "REQUIRES DPR-009"
+      ],
+      "causal_in": [
+        "DPR-009"
+      ],
+      "causal_out": [
+        "DPR-017"
+      ],
+      "decay_alert": {
+        "already_decaying": false,
+        "decay_evidence": "No explicit decay evidence found in analysis window. The decision is recent.",
+        "earliest_signal_date": null,
+        "recommended_monitor_query": "Monitor for increasing complexity in component props (prop drilling), frequent or unexpected component re-renders, and developer complaints about state management difficulty. Track the number of global contexts and their dependencies."
+      }
+    },
+    {
+      "id": "DPR-030",
+      "title": "API Client for Frontend (Custom `api.js`)",
+      "component": "Frontend",
+      "blast_radius": "medium",
+      "decay_risk": "medium",
+      "within_window": true,
+      "decision_date": "2026-01-05",
+      "decision": "A custom API service (`frontend/src/services/api.js`) is used for all backend communication from the frontend, likely built on `fetch` or `axios`.",
+      "implicit_assumptions": [
+        "INFERRED: A centralized API client simplifies backend interaction and ensures consistent request handling.",
+        "INFERRED: The API surface is stable enough that manual client maintenance is not overly burdensome.",
+        "INFERRED: The team prefers a lightweight, custom client over a heavier, opinionated library."
+      ],
+      "explicit_constraints": [
+        "Requires manual maintenance of API endpoint definitions and request/response handling.",
+        "Error handling and authentication logic must be implemented consistently within the service.",
+        "Changes to backend API require updates to this client."
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        "frontend/src/services/api.js"
+      ],
+      "involved_humans": [
+        "Anshumaan Singh"
+      ],
+      "rejected_alternatives": [
+        "Direct `fetch` calls in components",
+        "Auto-generated API clients",
+        "GraphQL client (e.g., Apollo Client)"
+      ],
+      "intended_durability": "medium-term",
+      "durability_reasoning": "For a RESTful API, a custom client is often sufficient. However, as API complexity grows, a more robust solution might be preferred.",
+      "decay_risk_reasoning": "As the number of API endpoints and data models grows, maintaining a custom API client can become error-prone and time-consuming. Inconsistent error handling or authentication logic might creep in.",
+      "blast_radius_reasoning": "If the API client becomes unmanageable, it could lead to inconsistent data fetching, bugs, and slow development on the frontend, requiring a refactoring of all backend communication.",
+      "commit_refs": [
+        "715aa68c7834a2bcc85838a1ded5320eef973a24"
+      ],
+      "causal_dependencies": [
+        "REQUIRES DPR-009",
+        "REQUIRES DPR-018"
+      ],
+      "causal_in": [
+        "DPR-009"
+      ],
+      "causal_out": [
+        "DPR-018"
+      ],
+      "decay_alert": {
+        "already_decaying": false,
+        "decay_evidence": "No explicit decay evidence found in analysis window. The decision is recent.",
+        "earliest_signal_date": null,
+        "recommended_monitor_query": "Monitor the frequency of changes to backend API endpoints and data models. Track the effort required to update `frontend/src/services/api.js` for new features or API changes. Look for inconsistencies in API request/response handling across the frontend."
+      }
+    },
+    {
+      "id": "DPR-031",
+      "title": "Removal of Aadhaar Notebooks",
+      "component": "Development Process / Data Analysis",
+      "blast_radius": "low",
+      "decay_risk": "low",
+      "within_window": true,
+      "decision_date": "2026-01-23",
+      "decision": "All Aadhaar-related data cleaning and visualization notebooks were removed from the repository.",
+      "implicit_assumptions": [
+        "INFERRED: Aadhaar data is no longer relevant to the project's current scope or future direction.",
+        "INFERRED: The notebooks contained sensitive information that should not be publicly accessible.",
+        "INFERRED: The repository should only contain active project code, not historical research artifacts."
+      ],
+      "explicit_constraints": [
+        "Loss of immediate access to the historical data analysis process.",
+        "Requires re-creation if Aadhaar-related analysis is needed again."
+      ],
+      "active_workarounds": [],
+      "files_involved": [
+        "EnrollmentVisualizationFinal.ipynb",
+        "EnrollmentCleaning.ipynb",
+        "DeographicVisualizationFinal.ipynb",
+        "DemoGraphicCleaning.ipynb",
+        "BiometricVisualizationFinal.ipynb",
+        "Aadhaar Notebooks"
+      ],
+      "involved_humans": [
+        "Anshumaan1254"
+      ],
+      "rejected_alternatives": [
+        "Keeping them for historical reference in the main repository",
+        "Moving them to a separate `docs` or `research` folder",
+        "Archiving them in a separate repository"
+      ],
+      "intended_durability": "foundational",
+      "durability_reasoning": "This decision signifies a permanent shift away from a specific data source or analytical approach, impacting the project's data strategy.",
+      "decay_risk_reasoning": "The decision to remove these notebooks implies a clear shift away from Aadhaar data. Unless the project's scope dramatically changes to re-incorporate Aadhaar, this assumption is stable.",
+      "blast_radius_reasoning": "If Aadhaar data becomes relevant again, it would require re-doing the analysis, but it wouldn't break the existing application functionality.",
+      "commit_refs": [
+        "37ef09d78d9ee53f6d4d22e7d41cf166a77659ba",
+        "ea01441541334155b55252d8975fe7cf1e45f021",
+        "977f477522a2dad1fd4e6cf2dcf852ab25808424",
+        "aa72a3c2eaecef518eb37add2464d56bfb97c6d5",
+        "208cd3a658ed98d2d22a1c2b5bf250d263b84350",
+        "7354bcf3634ff830e1712b08cb9f593aa2e971e9"
+      ],
+      "causal_dependencies": [],
+      "causal_in": [],
+      "causal_out": [],
+      "decay_alert": null
+    }
+  ],
+  "ctg_edges": [
+    {
+      "from": "DPR-001",
+      "to": "DPR-005",
+      "type": "REJECTED_BY",
+      "explanation": "The initial decision to use Azure (DPR-001) was explicitly rejected and replaced by the architectural pivot to Supabase (DPR-005)."
+    },
+    {
+      "from": "DPR-002",
+      "to": "DPR-009",
+      "type": "REJECTED_BY",
+      "explanation": "The initial choice of Flutter for the frontend (DPR-002) was rejected in favor of React 18 + Vite (DPR-009)."
+    },
+    {
+      "from": "DPR-003",
+      "to": "DPR-018",
+      "type": "ENABLES",
+      "explanation": "The choice of Node.js/Express as the backend framework (DPR-003) directly enables the RESTful API design (DPR-018)."
+    },
+    {
+      "from": "DPR-004",
+      "to": "DPR-010",
+      "type": "ENABLES",
+      "explanation": "The foundational decision for a separate Python ML service (DPR-004) enables the specific choice of FastAPI for that service (DPR-010)."
+    },
+    {
+      "from": "DPR-005",
+      "to": "DPR-006",
+      "type": "ENABLES",
+      "explanation": "The pivot to Supabase (DPR-005) directly enables the selection of Supabase PostgreSQL as the database (DPR-006)."
+    },
+    {
+      "from": "DPR-005",
+      "to": "DPR-007",
+      "type": "ENABLES",
+      "explanation": "The pivot to Supabase (DPR-005) directly enables the selection of Supabase Auth for authentication (DPR-007)."
+    },
+    {
+      "from": "DPR-005",
+      "to": "DPR-008",
+      "type": "ENABLES",
+      "explanation": "The pivot to Supabase (DPR-005) directly enables the selection of Supabase Storage for file storage (DPR-008)."
+    },
+    {
+      "from": "DPR-005",
+      "to": "DPR-013",
+      "type": "REQUIRED_BY",
+      "explanation": "The monorepo structure (DPR-013) is a consequence of managing the distinct Supabase-centric services introduced by the pivot (DPR-005)."
+    },
+    {
+      "from": "DPR-006",
+      "to": "DPR-014",
+      "type": "ENABLES",
+      "explanation": "The choice of Supabase PostgreSQL (DPR-006) enables the implementation of Row Level Security (DPR-014)."
+    },
+    {
+      "from": "DPR-006",
+      "to": "DPR-022",
+      "type": "ENABLES",
+      "explanation": "The choice of Supabase PostgreSQL (DPR-006) enables the use of the `vector` extension (DPR-022)."
+    },
+    {
+      "from": "DPR-006",
+      "to": "DPR-027",
+      "type": "ENABLES",
+      "explanation": "The Supabase PostgreSQL database (DPR-006) provides the foundation for the Patient-Caretaker Assignment Model (DPR-027)."
+    },
+    {
+      "from": "DPR-007",
+      "to": "DPR-015",
+      "type": "ENABLES",
+      "explanation": "Supabase Auth (DPR-007) provides the user identity upon which Role-Based Access Control (DPR-015) is built."
+    },
+    {
+      "from": "DPR-007",
+      "to": "DPR-014",
+      "type": "ASSUMPTION_OF",
+      "explanation": "RLS (DPR-014) assumes that Supabase Auth (DPR-007) correctly identifies the user and their role for policy enforcement."
+    },
+    {
+      "from": "DPR-008",
+      "to": "DPR-020",
+      "type": "ENABLES",
+      "explanation": "Supabase Storage (DPR-008) provides the underlying service for generating Signed URLs for secure file access (DPR-020)."
+    },
+    {
+      "from": "DPR-008",
+      "to": "DPR-023",
+      "type": "ENABLES",
+      "explanation": "Supabase Storage (DPR-008) enables the creation of dedicated storage buckets for `faces` and `voices` (DPR-023)."
+    },
+    {
+      "from": "DPR-009",
+      "to": "DPR-017",
+      "type": "ENABLES",
+      "explanation": "The React 18 + Vite frontend (DPR-009) provides the framework for implementing the Simplified UI Design (DPR-017)."
+    },
+    {
+      "from": "DPR-009",
+      "to": "DPR-029",
+      "type": "ENABLES",
+      "explanation": "The React 18 frontend (DPR-009) enables the use of React Context/Hooks for state management (DPR-029)."
+    },
+    {
+      "from": "DPR-009",
+      "to": "DPR-030",
+      "type": "ENABLES",
+      "explanation": "The React 18 frontend (DPR-009) utilizes the custom API client (DPR-030) for backend communication."
+    },
+    {
+      "from": "DPR-010",
+      "to": "DPR-011",
+      "type": "ENABLES",
+      "explanation": "The FastAPI ML service framework (DPR-010) provides the platform for integrating the DeepFace library (DPR-011)."
+    },
+    {
+      "from": "DPR-010",
+      "to": "DPR-012",
+      "type": "ENABLES",
+      "explanation": "The FastAPI ML service framework (DPR-010) provides the platform for integrating the YOLOv8n model (DPR-012)."
+    },
+    {
+      "from": "DPR-011",
+      "to": "DPR-016",
+      "type": "ENABLES",
+      "explanation": "DeepFace-based face recognition (DPR-011) is a core component of the patient's recognition features, which are part of the overall patient experience enabled by the SOS feature (DPR-016)."
+    },
+    {
+      "from": "DPR-013",
+      "to": "DPR-024",
+      "type": "CONSTRAINS",
+      "explanation": "The monorepo structure (DPR-013) influences the need for consistent Node.js dependency management (DPR-024) across frontend and backend."
+    },
+    {
+      "from": "DPR-013",
+      "to": "DPR-025",
+      "type": "CONSTRAINS",
+      "explanation": "The monorepo structure (DPR-013) influences the need for consistent Python dependency management (DPR-025) for the ML service."
+    },
+    {
+      "from": "DPR-014",
+      "to": "DPR-015",
+      "type": "REQUIRED_BY",
+      "explanation": "Row Level Security (DPR-014) is a critical component for enforcing the data access rules defined by Role-Based Access Control (DPR-015)."
+    },
+    {
+      "from": "DPR-015",
+      "to": "DPR-016",
+      "type": "CONSTRAINS",
+      "explanation": "Role-Based Access Control (DPR-015) dictates which roles (e.g., caretakers) can receive and manage SOS alerts (DPR-016)."
+    },
+    {
+      "from": "DPR-015",
+      "to": "DPR-017",
+      "type": "CONSTRAINS",
+      "explanation": "Role-Based Access Control (DPR-015) ensures that the Simplified UI (DPR-017) is presented only to patients, while caretakers see a different dashboard."
+    },
+    {
+      "from": "DPR-016",
+      "to": "DPR-026",
+      "type": "ENABLES",
+      "explanation": "The SOS Emergency Feature (DPR-016) is enhanced and made more robust by the Geofencing implementation (DPR-026)."
+    },
+    {
+      "from": "DPR-018",
+      "to": "DPR-019",
+      "type": "CONSTRAINS",
+      "explanation": "The RESTful API design (DPR-018) is subject to IP logging (DPR-019) for abuse protection."
+    },
+    {
+      "from": "DPR-018",
+      "to": "DPR-028",
+      "type": "CONSTRAINS",
+      "explanation": "The RESTful API (DPR-018) is the primary source of errors that are logged to `error.txt` (DPR-028)."
+    },
+    {
+      "from": "DPR-019",
+      "to": "DPR-028",
+      "type": "ASSUMPTION_OF",
+      "explanation": "IP logging (DPR-019) implicitly assumes that the chosen logging mechanism (DPR-028) is adequate for storing and reviewing IP data."
+    },
+    {
+      "from": "DPR-021",
+      "to": "DPR-005",
+      "type": "CONSTRAINS",
+      "explanation": "The use of environment variables for secrets (DPR-021) is a general security constraint applied to the entire Supabase-centric stack (DPR-005)."
+    },
+    {
+      "from": "DPR-021",
+      "to": "DPR-009",
+      "type": "CONSTRAINS",
+      "explanation": "Frontend configuration (DPR-009) relies on environment variables (DPR-021) for sensitive keys."
+    },
+    {
+      "from": "DPR-021",
+      "to": "DPR-010",
+      "type": "CONSTRAINS",
+      "explanation": "ML service configuration (DPR-010) relies on environment variables (DPR-021) for sensitive keys."
+    },
+    {
+      "from": "DPR-022",
+      "to": "DPR-011",
+      "type": "ENABLES",
+      "explanation": "The `vector` extension (DPR-022) enables the storage and efficient querying of face embeddings generated by DeepFace (DPR-011)."
+    },
+    {
+      "from": "DPR-023",
+      "to": "DPR-014",
+      "type": "CONSTRAINS",
+      "explanation": "Dedicated storage buckets (DPR-023) require specific RLS policies (DPR-014) to be applied to them for security."
+    },
+    {
+      "from": "DPR-024",
+      "to": "DPR-003",
+      "type": "REQUIRED_BY",
+      "explanation": "Node.js dependency management (DPR-024) is required for the Node.js/Express backend (DPR-003)."
+    },
+    {
+      "from": "DPR-024",
+      "to": "DPR-009",
+      "type": "REQUIRED_BY",
+      "explanation": "Node.js dependency management (DPR-024) is required for the React/Vite frontend (DPR-009)."
+    },
+    {
+      "from": "DPR-025",
+      "to": "DPR-010",
+      "type": "REQUIRED_BY",
+      "explanation": "Python dependency management (DPR-025) is required for the FastAPI ML service (DPR-010)."
+    },
+    {
+      "from": "DPR-025",
+      "to": "DPR-011",
+      "type": "REQUIRED_BY",
+      "explanation": "Python dependency management (DPR-025) is required for the DeepFace library (DPR-011)."
+    },
+    {
+      "from": "DPR-025",
+      "to": "DPR-012",
+      "type": "REQUIRED_BY",
+      "explanation": "Python dependency management (DPR-025) is required for the YOLOv8n model (DPR-012)."
+    },
+    {
+      "from": "DPR-026",
+      "to": "DPR-016",
+      "type": "REQUIRED_BY",
+      "explanation": "Geofencing (DPR-026) is a core component that enhances the SOS Emergency Feature (DPR-016)."
+    },
+    {
+      "from": "DPR-027",
+      "to": "DPR-014",
+      "type": "CONSTRAINS",
+      "explanation": "The Patient-Caretaker Assignment Model (DPR-027) directly informs and constrains the RLS policies (DPR-014) for data access."
+    },
+    {
+      "from": "DPR-027",
+      "to": "DPR-015",
+      "type": "ASSUMPTION_OF",
+      "explanation": "The RBAC system (DPR-015) assumes the existence and correctness of the Patient-Caretaker Assignment Model (DPR-027) to define user relationships."
+    },
+    {
+      "from": "DPR-028",
+      "to": "DPR-019",
+      "type": "REQUIRED_BY",
+      "explanation": "The `error.txt` logging (DPR-028) is the current mechanism used by the IP logging middleware (DPR-019)."
+    },
+    {
+      "from": "DPR-029",
+      "to": "DPR-017",
+      "type": "CONSTRAINS",
+      "explanation": "The choice of React Context/Hooks for state management (DPR-029) influences how the Simplified UI (DPR-017) components access and update data."
+    },
+    {
+      "from": "DPR-030",
+      "to": "DPR-018",
+      "type": "REQUIRED_BY",
+      "explanation": "The custom API client (DPR-030) is the primary way the frontend interacts with the Backend RESTful API (DPR-018)."
+    },
+    {
+      "from": "DPR-003",
+      "to": "DPR-013",
+      "type": "REQUIRED_BY",
+      "explanation": "The Node.js/Express backend (DPR-003) is one of the distinct services managed within the monorepo structure (DPR-013)."
+    },
+    {
+      "from": "DPR-009",
+      "to": "DPR-013",
+      "type": "REQUIRED_BY",
+      "explanation": "The React 18 + Vite frontend (DPR-009) is one of the distinct services managed within the monorepo structure (DPR-013)."
+    },
+    {
+      "from": "DPR-010",
+      "to": "DPR-013",
+      "type": "REQUIRED_BY",
+      "explanation": "The Python FastAPI ML service (DPR-010) is one of the distinct services managed within the monorepo structure (DPR-013)."
+    },
+    {
+      "from": "DPR-005",
+      "to": "DPR-021",
+      "type": "REQUIRED_BY",
+      "explanation": "The Supabase-centric stack (DPR-005) requires environment variables (DPR-021) for its API keys and secrets."
+    },
+    {
+      "from": "DPR-006",
+      "to": "DPR-018",
+      "type": "CONSTRAINS",
+      "explanation": "The Supabase PostgreSQL database (DPR-006) constrains the data models and query patterns used by the Backend API (DPR-018)."
+    },
+    {
+      "from": "DPR-007",
+      "to": "DPR-018",
+      "type": "CONSTRAINS",
+      "explanation": "Supabase Auth (DPR-007) constrains the authentication and authorization logic within the Backend API (DPR-018)."
+    },
+    {
+      "from": "DPR-010",
+      "to": "DPR-018",
+      "type": "CONSTRAINS",
+      "explanation": "The FastAPI ML service (DPR-010) defines the API endpoints and data contracts that the Backend API (DPR-018) must integrate with."
+    },
+    {
+      "from": "DPR-011",
+      "to": "DPR-008",
+      "type": "REQUIRED_BY",
+      "explanation": "DeepFace (DPR-011) requires a storage solution (DPR-008) for face images to perform recognition."
+    },
+    {
+      "from": "DPR-012",
+      "to": "DPR-006",
+      "type": "CONSTRAINS",
+      "explanation": "The YOLOv8n model (DPR-012) implies the need for object detection related tables in the database (DPR-006, via `003_object_detection.sql`)."
+    },
+    {
+      "from": "DPR-016",
+      "to": "DPR-006",
+      "type": "REQUIRED_BY",
+      "explanation": "The SOS Emergency Feature (DPR-016) requires the database (DPR-006) to store alert information and patient locations."
+    },
+    {
+      "from": "DPR-016",
+      "to": "DPR-009",
+      "type": "REQUIRED_BY",
+      "explanation": "The SOS Emergency Feature (DPR-016) requires the frontend (DPR-009) for the patient's SOS button and caretaker's map view."
+    },
+    {
+      "from": "DPR-026",
+      "to": "DPR-006",
+      "type": "REQUIRED_BY",
+      "explanation": "Geofencing (DPR-026) requires the database (DPR-006) to store geofence definitions."
+    }
+  ],
+  "graph_data": {
+    "nodes": [
+      {
+        "id": "DPR-001",
+        "label": "Initial Cloud Provider Selection (Azure)",
+        "component": "Overall System",
+        "blast_radius": "critical",
+        "decay_risk": "high",
+        "within_window": true
+      },
+      {
+        "id": "DPR-002",
+        "label": "Initial Mobile Frontend Framework (Flutter)",
+        "component": "Frontend",
+        "blast_radius": "high",
+        "decay_risk": "high",
+        "within_window": true
+      },
+      {
+        "id": "DPR-003",
+        "label": "Initial Backend Framework (Node.js/Express)",
+        "component": "Backend",
+        "blast_radius": "medium",
+        "decay_risk": "low",
+        "within_window": true
+      },
+      {
+        "id": "DPR-004",
+        "label": "Initial ML Service Integration (Separate Python Service)",
+        "component": "ML Service",
+        "blast_radius": "medium",
+        "decay_risk": "low",
+        "within_window": true
+      },
+      {
+        "id": "DPR-005",
+        "label": "Architectural Pivot to Supabase-centric Stack",
+        "component": "Overall System",
+        "blast_radius": "critical",
+        "decay_risk": "medium",
+        "within_window": true
+      },
+      {
+        "id": "DPR-006",
+        "label": "Database Selection (Supabase PostgreSQL)",
+        "component": "Database",
+        "blast_radius": "critical",
+        "decay_risk": "medium",
+        "within_window": true
+      },
+      {
+        "id": "DPR-007",
+        "label": "Authentication System (Supabase Auth with JWT)",
+        "component": "Auth",
+        "blast_radius": "critical",
+        "decay_risk": "medium",
+        "within_window": true
+      },
+      {
+        "id": "DPR-008",
+        "label": "File Storage Solution (Supabase Storage)",
+        "component": "Storage",
+        "blast_radius": "high",
+        "decay_risk": "medium",
+        "within_window": true
+      },
+      {
+        "id": "DPR-009",
+        "label": "Frontend Framework (React 18 + Vite)",
+        "component": "Frontend",
+        "blast_radius": "high",
+        "decay_risk": "low",
+        "within_window": true
+      },
+      {
+        "id": "DPR-010",
+        "label": "ML Service Framework (Python FastAPI)",
+        "component": "ML Service",
+        "blast_radius": "medium",
+        "decay_risk": "low",
+        "within_window": true
+      },
+      {
+        "id": "DPR-011",
+        "label": "Face Recognition Library (DeepFace)",
+        "component": "ML Service",
+        "blast_radius": "high",
+        "decay_risk": "medium",
+        "within_window": true
+      },
+      {
+        "id": "DPR-012",
+        "label": "Object Detection Model (YOLOv8n)",
+        "component": "ML Service",
+        "blast_radius": "medium",
+        "decay_risk": "medium",
+        "within_window": true
+      },
+      {
+        "id": "DPR-013",
+        "label": "Monorepo Structure with Service Separation",
+        "component": "Overall System",
+        "blast_radius": "medium",
+        "decay_risk": "low",
+        "within_window": true
+      },
+      {
+        "id": "DPR-014",
+        "label": "Row Level Security (RLS) Implementation",
+        "component": "Database",
+        "blast_radius": "critical",
+        "decay_risk": "medium",
+        "within_window": true
+      },
+      {
+        "id": "DPR-015",
+        "label": "Role-Based Access Control (RBAC)",
+        "component": "Backend, Database",
+        "blast_radius": "high",
+        "decay_risk": "medium",
+        "within_window": true
+      },
+      {
+        "id": "DPR-016",
+        "label": "SOS Emergency Feature with Live Location",
+        "component": "Frontend, Backend, Database",
+        "blast_radius": "critical",
+        "decay_risk": "medium",
+        "within_window": true
+      },
+      {
+        "id": "DPR-017",
+        "label": "Simplified UI Design for Patients",
+        "component": "Frontend",
+        "blast_radius": "high",
+        "decay_risk": "low",
+        "within_window": true
+      },
+      {
+        "id": "DPR-018",
+        "label": "Backend API Design (RESTful with Express)",
+        "component": "Backend",
+        "blast_radius": "high",
+        "decay_risk": "low",
+        "within_window": true
+      },
+      {
+        "id": "DPR-019",
+        "label": "IP Logging for Abuse Protection",
+        "component": "Backend",
+        "blast_radius": "medium",
+        "decay_risk": "medium",
+        "within_window": true
+      },
+      {
+        "id": "DPR-020",
+        "label": "Signed URLs for Secure File Access",
+        "component": "Storage, Backend",
+        "blast_radius": "high",
+        "decay_risk": "low",
+        "within_window": true
+      },
+      {
+        "id": "DPR-021",
+        "label": "Environment Variables for Secrets Management",
+        "component": "Overall System",
+        "blast_radius": "critical",
+        "decay_risk": "low",
+        "within_window": true
+      },
+      {
+        "id": "DPR-022",
+        "label": "Vector Extension for Database",
+        "component": "Database",
+        "blast_radius": "medium",
+        "decay_risk": "medium",
+        "within_window": true
+      },
+      {
+        "id": "DPR-023",
+        "label": "Dedicated `faces` and `voices` Storage Buckets",
+        "component": "Storage",
+        "blast_radius": "medium",
+        "decay_risk": "low",
+        "within_window": true
+      },
+      {
+        "id": "DPR-024",
+        "label": "Node.js Dependency Management (npm with package-lock.json)",
+        "component": "Frontend, Backend",
+        "blast_radius": "high",
+        "decay_risk": "low",
+        "within_window": true
+      },
+      {
+        "id": "DPR-025",
+        "label": "Python Dependency Management (pip with requirements.txt)",
+        "component": "ML Service",
+        "blast_radius": "high",
+        "decay_risk": "low",
+        "within_window": true
+      },
+      {
+        "id": "DPR-026",
+        "label": "Geofencing Feature Implementation",
+        "component": "Backend, Database",
+        "blast_radius": "high",
+        "decay_risk": "medium",
+        "within_window": true
+      },
+      {
+        "id": "DPR-027",
+        "label": "Patient-Caretaker Assignment Model",
+        "component": "Database, Backend",
+        "blast_radius": "high",
+        "decay_risk": "low",
+        "within_window": true
+      },
+      {
+        "id": "DPR-028",
+        "label": "Backend Error Logging to `error.txt`",
+        "component": "Backend",
+        "blast_radius": "medium",
+        "decay_risk": "high",
+        "within_window": true
+      },
+      {
+        "id": "DPR-029",
+        "label": "Frontend State Management (React Context/Hooks)",
+        "component": "Frontend",
+        "blast_radius": "medium",
+        "decay_risk": "medium",
+        "within_window": true
+      },
+      {
+        "id": "DPR-030",
+        "label": "API Client for Frontend (Custom `api.js`)",
+        "component": "Frontend",
+        "blast_radius": "medium",
+        "decay_risk": "medium",
+        "within_window": true
+      },
+      {
+        "id": "DPR-031",
+        "label": "Removal of Aadhaar Notebooks",
+        "component": "Development Process / Data Analysis",
+        "blast_radius": "low",
+        "decay_risk": "low",
+        "within_window": true
+      }
+    ],
+    "edges": [
+      {
+        "from": "DPR-001",
+        "to": "DPR-005",
+        "type": "REJECTED_BY",
+        "explanation": "The initial decision to use Azure (DPR-001) was explicitly rejected and replaced by the architectural pivot to Supabase (DPR-005)."
+      },
+      {
+        "from": "DPR-002",
+        "to": "DPR-009",
+        "type": "REJECTED_BY",
+        "explanation": "The initial choice of Flutter for the frontend (DPR-002) was rejected in favor of React 18 + Vite (DPR-009)."
+      },
+      {
+        "from": "DPR-003",
+        "to": "DPR-018",
+        "type": "ENABLES",
+        "explanation": "The choice of Node.js/Express as the backend framework (DPR-003) directly enables the RESTful API design (DPR-018)."
+      },
+      {
+        "from": "DPR-004",
+        "to": "DPR-010",
+        "type": "ENABLES",
+        "explanation": "The foundational decision for a separate Python ML service (DPR-004) enables the specific choice of FastAPI for that service (DPR-010)."
+      },
+      {
+        "from": "DPR-005",
+        "to": "DPR-006",
+        "type": "ENABLES",
+        "explanation": "The pivot to Supabase (DPR-005) directly enables the selection of Supabase PostgreSQL as the database (DPR-006)."
+      },
+      {
+        "from": "DPR-005",
+        "to": "DPR-007",
+        "type": "ENABLES",
+        "explanation": "The pivot to Supabase (DPR-005) directly enables the selection of Supabase Auth for authentication (DPR-007)."
+      },
+      {
+        "from": "DPR-005",
+        "to": "DPR-008",
+        "type": "ENABLES",
+        "explanation": "The pivot to Supabase (DPR-005) directly enables the selection of Supabase Storage for file storage (DPR-008)."
+      },
+      {
+        "from": "DPR-005",
+        "to": "DPR-013",
+        "type": "REQUIRED_BY",
+        "explanation": "The monorepo structure (DPR-013) is a consequence of managing the distinct Supabase-centric services introduced by the pivot (DPR-005)."
+      },
+      {
+        "from": "DPR-006",
+        "to": "DPR-014",
+        "type": "ENABLES",
+        "explanation": "The choice of Supabase PostgreSQL (DPR-006) enables the implementation of Row Level Security (DPR-014)."
+      },
+      {
+        "from": "DPR-006",
+        "to": "DPR-022",
+        "type": "ENABLES",
+        "explanation": "The choice of Supabase PostgreSQL (DPR-006) enables the use of the `vector` extension (DPR-022)."
+      },
+      {
+        "from": "DPR-006",
+        "to": "DPR-027",
+        "type": "ENABLES",
+        "explanation": "The Supabase PostgreSQL database (DPR-006) provides the foundation for the Patient-Caretaker Assignment Model (DPR-027)."
+      },
+      {
+        "from": "DPR-007",
+        "to": "DPR-015",
+        "type": "ENABLES",
+        "explanation": "Supabase Auth (DPR-007) provides the user identity upon which Role-Based Access Control (DPR-015) is built."
+      },
+      {
+        "from": "DPR-007",
+        "to": "DPR-014",
+        "type": "ASSUMPTION_OF",
+        "explanation": "RLS (DPR-014) assumes that Supabase Auth (DPR-007) correctly identifies the user and their role for policy enforcement."
+      },
+      {
+        "from": "DPR-008",
+        "to": "DPR-020",
+        "type": "ENABLES",
+        "explanation": "Supabase Storage (DPR-008) provides the underlying service for generating Signed URLs for secure file access (DPR-020)."
+      },
+      {
+        "from": "DPR-008",
+        "to": "DPR-023",
+        "type": "ENABLES",
+        "explanation": "Supabase Storage (DPR-008) enables the creation of dedicated storage buckets for `faces` and `voices` (DPR-023)."
+      },
+      {
+        "from": "DPR-009",
+        "to": "DPR-017",
+        "type": "ENABLES",
+        "explanation": "The React 18 + Vite frontend (DPR-009) provides the framework for implementing the Simplified UI Design (DPR-017)."
+      },
+      {
+        "from": "DPR-009",
+        "to": "DPR-029",
+        "type": "ENABLES",
+        "explanation": "The React 18 frontend (DPR-009) enables the use of React Context/Hooks for state management (DPR-029)."
+      },
+      {
+        "from": "DPR-009",
+        "to": "DPR-030",
+        "type": "ENABLES",
+        "explanation": "The React 18 frontend (DPR-009) utilizes the custom API client (DPR-030) for backend communication."
+      },
+      {
+        "from": "DPR-010",
+        "to": "DPR-011",
+        "type": "ENABLES",
+        "explanation": "The FastAPI ML service framework (DPR-010) provides the platform for integrating the DeepFace library (DPR-011)."
+      },
+      {
+        "from": "DPR-010",
+        "to": "DPR-012",
+        "type": "ENABLES",
+        "explanation": "The FastAPI ML service framework (DPR-010) provides the platform for integrating the YOLOv8n model (DPR-012)."
+      },
+      {
+        "from": "DPR-011",
+        "to": "DPR-016",
+        "type": "ENABLES",
+        "explanation": "DeepFace-based face recognition (DPR-011) is a core component of the patient's recognition features, which are part of the overall patient experience enabled by the SOS feature (DPR-016)."
+      },
+      {
+        "from": "DPR-013",
+        "to": "DPR-024",
+        "type": "CONSTRAINS",
+        "explanation": "The monorepo structure (DPR-013) influences the need for consistent Node.js dependency management (DPR-024) across frontend and backend."
+      },
+      {
+        "from": "DPR-013",
+        "to": "DPR-025",
+        "type": "CONSTRAINS",
+        "explanation": "The monorepo structure (DPR-013) influences the need for consistent Python dependency management (DPR-025) for the ML service."
+      },
+      {
+        "from": "DPR-014",
+        "to": "DPR-015",
+        "type": "REQUIRED_BY",
+        "explanation": "Row Level Security (DPR-014) is a critical component for enforcing the data access rules defined by Role-Based Access Control (DPR-015)."
+      },
+      {
+        "from": "DPR-015",
+        "to": "DPR-016",
+        "type": "CONSTRAINS",
+        "explanation": "Role-Based Access Control (DPR-015) dictates which roles (e.g., caretakers) can receive and manage SOS alerts (DPR-016)."
+      },
+      {
+        "from": "DPR-015",
+        "to": "DPR-017",
+        "type": "CONSTRAINS",
+        "explanation": "Role-Based Access Control (DPR-015) ensures that the Simplified UI (DPR-017) is presented only to patients, while caretakers see a different dashboard."
+      },
+      {
+        "from": "DPR-016",
+        "to": "DPR-026",
+        "type": "ENABLES",
+        "explanation": "The SOS Emergency Feature (DPR-016) is enhanced and made more robust by the Geofencing implementation (DPR-026)."
+      },
+      {
+        "from": "DPR-018",
+        "to": "DPR-019",
+        "type": "CONSTRAINS",
+        "explanation": "The RESTful API design (DPR-018) is subject to IP logging (DPR-019) for abuse protection."
+      },
+      {
+        "from": "DPR-018",
+        "to": "DPR-028",
+        "type": "CONSTRAINS",
+        "explanation": "The RESTful API (DPR-018) is the primary source of errors that are logged to `error.txt` (DPR-028)."
+      },
+      {
+        "from": "DPR-019",
+        "to": "DPR-028",
+        "type": "ASSUMPTION_OF",
+        "explanation": "IP logging (DPR-019) implicitly assumes that the chosen logging mechanism (DPR-028) is adequate for storing and reviewing IP data."
+      },
+      {
+        "from": "DPR-021",
+        "to": "DPR-005",
+        "type": "CONSTRAINS",
+        "explanation": "The use of environment variables for secrets (DPR-021) is a general security constraint applied to the entire Supabase-centric stack (DPR-005)."
+      },
+      {
+        "from": "DPR-021",
+        "to": "DPR-009",
+        "type": "CONSTRAINS",
+        "explanation": "Frontend configuration (DPR-009) relies on environment variables (DPR-021) for sensitive keys."
+      },
+      {
+        "from": "DPR-021",
+        "to": "DPR-010",
+        "type": "CONSTRAINS",
+        "explanation": "ML service configuration (DPR-010) relies on environment variables (DPR-021) for sensitive keys."
+      },
+      {
+        "from": "DPR-022",
+        "to": "DPR-011",
+        "type": "ENABLES",
+        "explanation": "The `vector` extension (DPR-022) enables the storage and efficient querying of face embeddings generated by DeepFace (DPR-011)."
+      },
+      {
+        "from": "DPR-023",
+        "to": "DPR-014",
+        "type": "CONSTRAINS",
+        "explanation": "Dedicated storage buckets (DPR-023) require specific RLS policies (DPR-014) to be applied to them for security."
+      },
+      {
+        "from": "DPR-024",
+        "to": "DPR-003",
+        "type": "REQUIRED_BY",
+        "explanation": "Node.js dependency management (DPR-024) is required for the Node.js/Express backend (DPR-003)."
+      },
+      {
+        "from": "DPR-024",
+        "to": "DPR-009",
+        "type": "REQUIRED_BY",
+        "explanation": "Node.js dependency management (DPR-024) is required for the React/Vite frontend (DPR-009)."
+      },
+      {
+        "from": "DPR-025",
+        "to": "DPR-010",
+        "type": "REQUIRED_BY",
+        "explanation": "Python dependency management (DPR-025) is required for the FastAPI ML service (DPR-010)."
+      },
+      {
+        "from": "DPR-025",
+        "to": "DPR-011",
+        "type": "REQUIRED_BY",
+        "explanation": "Python dependency management (DPR-025) is required for the DeepFace library (DPR-011)."
+      },
+      {
+        "from": "DPR-025",
+        "to": "DPR-012",
+        "type": "REQUIRED_BY",
+        "explanation": "Python dependency management (DPR-025) is required for the YOLOv8n model (DPR-012)."
+      },
+      {
+        "from": "DPR-026",
+        "to": "DPR-016",
+        "type": "REQUIRED_BY",
+        "explanation": "Geofencing (DPR-026) is a core component that enhances the SOS Emergency Feature (DPR-016)."
+      },
+      {
+        "from": "DPR-027",
+        "to": "DPR-014",
+        "type": "CONSTRAINS",
+        "explanation": "The Patient-Caretaker Assignment Model (DPR-027) directly informs and constrains the RLS policies (DPR-014) for data access."
+      },
+      {
+        "from": "DPR-027",
+        "to": "DPR-015",
+        "type": "ASSUMPTION_OF",
+        "explanation": "The RBAC system (DPR-015) assumes the existence and correctness of the Patient-Caretaker Assignment Model (DPR-027) to define user relationships."
+      },
+      {
+        "from": "DPR-028",
+        "to": "DPR-019",
+        "type": "REQUIRED_BY",
+        "explanation": "The `error.txt` logging (DPR-028) is the current mechanism used by the IP logging middleware (DPR-019)."
+      },
+      {
+        "from": "DPR-029",
+        "to": "DPR-017",
+        "type": "CONSTRAINS",
+        "explanation": "The choice of React Context/Hooks for state management (DPR-029) influences how the Simplified UI (DPR-017) components access and update data."
+      },
+      {
+        "from": "DPR-030",
+        "to": "DPR-018",
+        "type": "REQUIRED_BY",
+        "explanation": "The custom API client (DPR-030) is the primary way the frontend interacts with the Backend RESTful API (DPR-018)."
+      },
+      {
+        "from": "DPR-003",
+        "to": "DPR-013",
+        "type": "REQUIRED_BY",
+        "explanation": "The Node.js/Express backend (DPR-003) is one of the distinct services managed within the monorepo structure (DPR-013)."
+      },
+      {
+        "from": "DPR-009",
+        "to": "DPR-013",
+        "type": "REQUIRED_BY",
+        "explanation": "The React 18 + Vite frontend (DPR-009) is one of the distinct services managed within the monorepo structure (DPR-013)."
+      },
+      {
+        "from": "DPR-010",
+        "to": "DPR-013",
+        "type": "REQUIRED_BY",
+        "explanation": "The Python FastAPI ML service (DPR-010) is one of the distinct services managed within the monorepo structure (DPR-013)."
+      },
+      {
+        "from": "DPR-005",
+        "to": "DPR-021",
+        "type": "REQUIRED_BY",
+        "explanation": "The Supabase-centric stack (DPR-005) requires environment variables (DPR-021) for its API keys and secrets."
+      },
+      {
+        "from": "DPR-006",
+        "to": "DPR-018",
+        "type": "CONSTRAINS",
+        "explanation": "The Supabase PostgreSQL database (DPR-006) constrains the data models and query patterns used by the Backend API (DPR-018)."
+      },
+      {
+        "from": "DPR-007",
+        "to": "DPR-018",
+        "type": "CONSTRAINS",
+        "explanation": "Supabase Auth (DPR-007) constrains the authentication and authorization logic within the Backend API (DPR-018)."
+      },
+      {
+        "from": "DPR-010",
+        "to": "DPR-018",
+        "type": "CONSTRAINS",
+        "explanation": "The FastAPI ML service (DPR-010) defines the API endpoints and data contracts that the Backend API (DPR-018) must integrate with."
+      },
+      {
+        "from": "DPR-011",
+        "to": "DPR-008",
+        "type": "REQUIRED_BY",
+        "explanation": "DeepFace (DPR-011) requires a storage solution (DPR-008) for face images to perform recognition."
+      },
+      {
+        "from": "DPR-012",
+        "to": "DPR-006",
+        "type": "CONSTRAINS",
+        "explanation": "The YOLOv8n model (DPR-012) implies the need for object detection related tables in the database (DPR-006, via `003_object_detection.sql`)."
+      },
+      {
+        "from": "DPR-016",
+        "to": "DPR-006",
+        "type": "REQUIRED_BY",
+        "explanation": "The SOS Emergency Feature (DPR-016) requires the database (DPR-006) to store alert information and patient locations."
+      },
+      {
+        "from": "DPR-016",
+        "to": "DPR-009",
+        "type": "REQUIRED_BY",
+        "explanation": "The SOS Emergency Feature (DPR-016) requires the frontend (DPR-009) for the patient's SOS button and caretaker's map view."
+      },
+      {
+        "from": "DPR-026",
+        "to": "DPR-006",
+        "type": "REQUIRED_BY",
+        "explanation": "Geofencing (DPR-026) requires the database (DPR-006) to store geofence definitions."
+      }
+    ]
+  },
+  "decay_alerts": [
+    {
+      "dpr_id": "DPR-001",
+      "title": "Initial Cloud Provider Selection (Azure)",
+      "component": "Overall System",
+      "blast_radius": "critical",
+      "already_decaying": true,
+      "decay_evidence": "The 'New idea' commit (715aa68c7834a2bcc85838a1ded5320eef973a24) completely replaced the Azure-based stack with Supabase, indicating that the initial assumptions about Azure's suitability were incorrect or changed.",
+      "earliest_signal_date": "2026-01-05",
+      "recommended_monitor_query": "N/A (decision already decayed and reversed)"
+    },
+    {
+      "dpr_id": "DPR-002",
+      "title": "Initial Mobile Frontend Framework (Flutter)",
+      "component": "Frontend",
+      "blast_radius": "high",
+      "already_decaying": true,
+      "decay_evidence": "The 'New idea' commit (715aa68c7834a2bcc85838a1ded5320eef973a24) removed the entire `flutter_app` directory and introduced a React-based frontend, indicating Flutter did not meet the project's requirements or strategy.",
+      "earliest_signal_date": "2026-01-05",
+      "recommended_monitor_query": "N/A (decision already decayed and reversed)"
+    },
+    {
+      "dpr_id": "DPR-005",
+      "title": "Architectural Pivot to Supabase-centric Stack",
+      "component": "Overall System",
+      "blast_radius": "critical",
+      "already_decaying": false,
+      "decay_evidence": "No explicit decay evidence found in analysis window. The decision is recent.",
+      "earliest_signal_date": null,
+      "recommended_monitor_query": "Monitor Supabase usage metrics (database size, API requests, storage usage, egress bandwidth) against free tier limits and projected costs. Track performance metrics (query latency, API response times) as user load increases."
+    },
+    {
+      "dpr_id": "DPR-006",
+      "title": "Database Selection (Supabase PostgreSQL)",
+      "component": "Database",
+      "blast_radius": "critical",
+      "already_decaying": false,
+      "decay_evidence": "No explicit decay evidence found in analysis window. The decision is recent.",
+      "earliest_signal_date": null,
+      "recommended_monitor_query": "Monitor PostgreSQL query performance, database connection pool usage, and CPU/memory utilization within Supabase. Track database uptime and backup success rates. Review Supabase's incident reports for PostgreSQL-related issues."
+    },
+    {
+      "dpr_id": "DPR-007",
+      "title": "Authentication System (Supabase Auth with JWT)",
+      "component": "Auth",
+      "blast_radius": "critical",
+      "already_decaying": false,
+      "decay_evidence": "No explicit decay evidence found in analysis window. The decision is recent.",
+      "earliest_signal_date": null,
+      "recommended_monitor_query": "Regularly review Supabase Auth's feature roadmap and security updates. Conduct security audits or penetration tests focusing on authentication flows. Monitor for user reports of account compromise or unexpected access issues."
+    },
+    {
+      "dpr_id": "DPR-008",
+      "title": "File Storage Solution (Supabase Storage)",
+      "component": "Storage",
+      "blast_radius": "high",
+      "already_decaying": false,
+      "decay_evidence": "No explicit decay evidence found in analysis window. The decision is recent.",
+      "earliest_signal_date": null,
+      "recommended_monitor_query": "Monitor Supabase Storage usage (total size, number of objects) against tier limits. Track upload/download speeds and latency for media files. Monitor for storage-related errors in backend logs."
+    },
+    {
+      "dpr_id": "DPR-011",
+      "title": "Face Recognition Library (DeepFace)",
+      "component": "ML Service",
+      "blast_radius": "high",
+      "already_decaying": false,
+      "decay_evidence": "No explicit decay evidence found in analysis window. The decision is recent.",
+      "earliest_signal_date": null,
+      "recommended_monitor_query": "Implement continuous evaluation of DeepFace's accuracy using a diverse dataset of patient images (with consent). Monitor recognition success rates in production. Collect user feedback on recognition failures or misidentifications. Track DeepFace library updates for performance/accuracy improvements."
+    },
+    {
+      "dpr_id": "DPR-012",
+      "title": "Object Detection Model (YOLOv8n)",
+      "component": "ML Service",
+      "blast_radius": "medium",
+      "already_decaying": false,
+      "decay_evidence": "No explicit decay evidence found in analysis window. The decision is recent.",
+      "earliest_signal_date": null,
+      "recommended_monitor_query": "Monitor object detection success rates and inference latency in the ML service. Collect user feedback on missed detections or false positives. Evaluate YOLOv8n's performance on new, diverse datasets relevant to the application's environment."
+    },
+    {
+      "dpr_id": "DPR-014",
+      "title": "Row Level Security (RLS) Implementation",
+      "component": "Database",
+      "blast_radius": "critical",
+      "already_decaying": false,
+      "decay_evidence": "No explicit decay evidence found in analysis window. The decision is recent.",
+      "earliest_signal_date": null,
+      "recommended_monitor_query": "Conduct regular security audits and penetration tests specifically targeting RLS policies. Implement automated tests for all data access patterns to ensure RLS is correctly applied. Monitor for unexpected data visibility or access errors in application logs."
+    },
+    {
+      "dpr_id": "DPR-015",
+      "title": "Role-Based Access Control (RBAC)",
+      "component": "Backend, Database",
+      "blast_radius": "high",
+      "already_decaying": false,
+      "decay_evidence": "No explicit decay evidence found in analysis window. The decision is recent.",
+      "earliest_signal_date": null,
+      "recommended_monitor_query": "Monitor feature requests or user feedback that imply a need for additional roles (e.g., 'family member', 'admin'). Review new feature designs to assess if they can be accommodated by the existing two-role model without complex workarounds."
+    },
+    {
+      "dpr_id": "DPR-016",
+      "title": "SOS Emergency Feature with Live Location",
+      "component": "Frontend, Backend, Database",
+      "blast_radius": "critical",
+      "already_decaying": false,
+      "decay_evidence": "No explicit decay evidence found in analysis window. The decision is recent.",
+      "earliest_signal_date": null,
+      "recommended_monitor_query": "Monitor the success rate of location updates and SOS alert deliveries. Collect data on network connectivity issues reported by patient devices or caretakers. Implement client-side caching or retry mechanisms for location data to mitigate intermittent connectivity."
+    },
+    {
+      "dpr_id": "DPR-019",
+      "title": "IP Logging for Abuse Protection",
+      "component": "Backend",
+      "blast_radius": "medium",
+      "already_decaying": false,
+      "decay_evidence": "No explicit decay evidence found in analysis window. The decision is recent.",
+      "earliest_signal_date": null,
+      "recommended_monitor_query": "Monitor the volume and patterns of requests in IP logs. Look for spikes from single IPs, unusual request sequences, or failed authentication attempts. Evaluate the effectiveness of current abuse mitigation strategies based on these logs."
+    },
+    {
+      "dpr_id": "DPR-022",
+      "title": "Vector Extension for Database",
+      "component": "Database",
+      "blast_radius": "medium",
+      "already_decaying": false,
+      "decay_evidence": "No explicit decay evidence found in analysis window. The decision is recent.",
+      "earliest_signal_date": null,
+      "recommended_monitor_query": "Monitor query latency for vector similarity searches as the number of stored embeddings grows. Benchmark `pg_vector` performance with expected data volumes. Track CPU/memory usage of the PostgreSQL instance during vector operations."
+    },
+    {
+      "dpr_id": "DPR-026",
+      "title": "Geofencing Feature Implementation",
+      "component": "Backend, Database",
+      "blast_radius": "high",
+      "already_decaying": false,
+      "decay_evidence": "No explicit decay evidence found in analysis window. The decision is recent.",
+      "earliest_signal_date": null,
+      "recommended_monitor_query": "Monitor the accuracy of geofence entry/exit alerts. Collect data on false positives (alerts when inside) and false negatives (no alert when outside). Track the latency between a patient crossing a boundary and an alert being sent. Conduct real-world testing in diverse environments."
+    },
+    {
+      "dpr_id": "DPR-028",
+      "title": "Backend Error Logging to `error.txt`",
+      "component": "Backend",
+      "blast_radius": "medium",
+      "already_decaying": false,
+      "decay_evidence": "No explicit decay evidence found in analysis window. The decision is recent.",
+      "earliest_signal_date": null,
+      "recommended_monitor_query": "Monitor backend instance count. If scaling beyond a single instance is planned or occurs, immediately flag this assumption. Monitor for `error.txt` file size and rotation issues. Track the frequency of manual log reviews."
+    },
+    {
+      "dpr_id": "DPR-029",
+      "title": "Frontend State Management (React Context/Hooks)",
+      "component": "Frontend",
+      "blast_radius": "medium",
+      "already_decaying": false,
+      "decay_evidence": "No explicit decay evidence found in analysis window. The decision is recent.",
+      "earliest_signal_date": null,
+      "recommended_monitor_query": "Monitor for increasing complexity in component props (prop drilling), frequent or unexpected component re-renders, and developer complaints about state management difficulty. Track the number of global contexts and their dependencies."
+    },
+    {
+      "dpr_id": "DPR-030",
+      "title": "API Client for Frontend (Custom `api.js`)",
+      "component": "Frontend",
+      "blast_radius": "medium",
+      "already_decaying": false,
+      "decay_evidence": "No explicit decay evidence found in analysis window. The decision is recent.",
+      "earliest_signal_date": null,
+      "recommended_monitor_query": "Monitor the frequency of changes to backend API endpoints and data models. Track the effort required to update `frontend/src/services/api.js` for new features or API changes. Look for inconsistencies in API request/response handling across the frontend."
+    }
+  ],
+  "knowledge_concentration": {
+    "generated_at": "2026-05-17T10:21:28.732199+00:00",
+    "human_profiles": [
+      {
+        "name": "Anshumaan Singh",
+        "dpr_count": 30,
+        "dprs": [
+          "DPR-001",
+          "DPR-002",
+          "DPR-003",
+          "DPR-004",
+          "DPR-005",
+          "DPR-006",
+          "DPR-007",
+          "DPR-008",
+          "DPR-009",
+          "DPR-010",
+          "DPR-011",
+          "DPR-012",
+          "DPR-013",
+          "DPR-014",
+          "DPR-015",
+          "DPR-016",
+          "DPR-017",
+          "DPR-018",
+          "DPR-019",
+          "DPR-020",
+          "DPR-021",
+          "DPR-022",
+          "DPR-023",
+          "DPR-024",
+          "DPR-025",
+          "DPR-026",
+          "DPR-027",
+          "DPR-028",
+          "DPR-029",
+          "DPR-030"
+        ],
+        "components": [
+          "Auth",
+          "Backend",
+          "Backend, Database",
+          "Database",
+          "Database, Backend",
+          "Frontend",
+          "Frontend, Backend",
+          "Frontend, Backend, Database",
+          "ML Service",
+          "Overall System",
+          "Storage",
+          "Storage, Backend"
+        ],
+        "component_count": 12,
+        "avg_blast_score": 2.87,
+        "bus_factor_risk_score": 1032.0
+      },
+      {
+        "name": "Anshumaan1254",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-031"
+        ],
+        "components": [
+          "Development Process / Data Analysis"
+        ],
+        "component_count": 1,
+        "avg_blast_score": 1.0,
+        "bus_factor_risk_score": 1.0
+      }
+    ],
+    "component_profiles": [
+      {
+        "component": "Auth",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-007"
+        ],
+        "unique_humans": 1,
+        "humans": [
+          "Anshumaan Singh"
+        ],
+        "avg_decay_risk": 2.0,
+        "avg_blast_radius": 4.0,
+        "spof_score": 8.0
+      },
+      {
+        "component": "Frontend, Backend, Database",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-016"
+        ],
+        "unique_humans": 1,
+        "humans": [
+          "Anshumaan Singh"
+        ],
+        "avg_decay_risk": 2.0,
+        "avg_blast_radius": 4.0,
+        "spof_score": 8.0
+      },
+      {
+        "component": "Database",
+        "dpr_count": 3,
+        "dprs": [
+          "DPR-006",
+          "DPR-014",
+          "DPR-022"
+        ],
+        "unique_humans": 1,
+        "humans": [
+          "Anshumaan Singh"
+        ],
+        "avg_decay_risk": 2.0,
+        "avg_blast_radius": 3.33,
+        "spof_score": 6.67
+      },
+      {
+        "component": "Overall System",
+        "dpr_count": 4,
+        "dprs": [
+          "DPR-001",
+          "DPR-005",
+          "DPR-013",
+          "DPR-021"
+        ],
+        "unique_humans": 1,
+        "humans": [
+          "Anshumaan Singh"
+        ],
+        "avg_decay_risk": 1.75,
+        "avg_blast_radius": 3.5,
+        "spof_score": 6.12
+      },
+      {
+        "component": "Backend, Database",
+        "dpr_count": 2,
+        "dprs": [
+          "DPR-015",
+          "DPR-026"
+        ],
+        "unique_humans": 1,
+        "humans": [
+          "Anshumaan Singh"
+        ],
+        "avg_decay_risk": 2.0,
+        "avg_blast_radius": 3.0,
+        "spof_score": 6.0
+      },
+      {
+        "component": "Frontend",
+        "dpr_count": 5,
+        "dprs": [
+          "DPR-002",
+          "DPR-009",
+          "DPR-017",
+          "DPR-029",
+          "DPR-030"
+        ],
+        "unique_humans": 1,
+        "humans": [
+          "Anshumaan Singh"
+        ],
+        "avg_decay_risk": 1.8,
+        "avg_blast_radius": 2.6,
+        "spof_score": 4.68
+      },
+      {
+        "component": "Backend",
+        "dpr_count": 4,
+        "dprs": [
+          "DPR-003",
+          "DPR-018",
+          "DPR-019",
+          "DPR-028"
+        ],
+        "unique_humans": 1,
+        "humans": [
+          "Anshumaan Singh"
+        ],
+        "avg_decay_risk": 1.75,
+        "avg_blast_radius": 2.25,
+        "spof_score": 3.94
+      },
+      {
+        "component": "Storage",
+        "dpr_count": 2,
+        "dprs": [
+          "DPR-008",
+          "DPR-023"
+        ],
+        "unique_humans": 1,
+        "humans": [
+          "Anshumaan Singh"
+        ],
+        "avg_decay_risk": 1.5,
+        "avg_blast_radius": 2.5,
+        "spof_score": 3.75
+      },
+      {
+        "component": "ML Service",
+        "dpr_count": 5,
+        "dprs": [
+          "DPR-004",
+          "DPR-010",
+          "DPR-011",
+          "DPR-012",
+          "DPR-025"
+        ],
+        "unique_humans": 1,
+        "humans": [
+          "Anshumaan Singh"
+        ],
+        "avg_decay_risk": 1.4,
+        "avg_blast_radius": 2.4,
+        "spof_score": 3.36
+      },
+      {
+        "component": "Storage, Backend",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-020"
+        ],
+        "unique_humans": 1,
+        "humans": [
+          "Anshumaan Singh"
+        ],
+        "avg_decay_risk": 1.0,
+        "avg_blast_radius": 3.0,
+        "spof_score": 3.0
+      },
+      {
+        "component": "Frontend, Backend",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-024"
+        ],
+        "unique_humans": 1,
+        "humans": [
+          "Anshumaan Singh"
+        ],
+        "avg_decay_risk": 1.0,
+        "avg_blast_radius": 3.0,
+        "spof_score": 3.0
+      },
+      {
+        "component": "Database, Backend",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-027"
+        ],
+        "unique_humans": 1,
+        "humans": [
+          "Anshumaan Singh"
+        ],
+        "avg_decay_risk": 1.0,
+        "avg_blast_radius": 3.0,
+        "spof_score": 3.0
+      },
+      {
+        "component": "Development Process / Data Analysis",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-031"
+        ],
+        "unique_humans": 1,
+        "humans": [
+          "Anshumaan1254"
+        ],
+        "avg_decay_risk": 1.0,
+        "avg_blast_radius": 1.0,
+        "spof_score": 1.0
+      }
+    ],
+    "file_profiles": [
+      {
+        "file": "README.md",
+        "dpr_count": 20,
+        "dprs": [
+          "DPR-005",
+          "DPR-006",
+          "DPR-007",
+          "DPR-008",
+          "DPR-009",
+          "DPR-010",
+          "DPR-013",
+          "DPR-014",
+          "DPR-015",
+          "DPR-016",
+          "DPR-017",
+          "DPR-018",
+          "DPR-020",
+          "DPR-021",
+          "DPR-022",
+          "DPR-023",
+          "DPR-024",
+          "DPR-025",
+          "DPR-026",
+          "DPR-027"
+        ],
+        "avg_blast_score": 3.1,
+        "criticality_score": 62.0
+      },
+      {
+        "file": "supabase/migrations/001_schema.sql",
+        "dpr_count": 4,
+        "dprs": [
+          "DPR-006",
+          "DPR-014",
+          "DPR-015",
+          "DPR-027"
+        ],
+        "avg_blast_score": 3.5,
+        "criticality_score": 14.0
+      },
+      {
+        "file": "frontend/src/pages/PatientHome.jsx",
+        "dpr_count": 3,
+        "dprs": [
+          "DPR-015",
+          "DPR-016",
+          "DPR-017"
+        ],
+        "avg_blast_score": 3.33,
+        "criticality_score": 10.0
+      },
+      {
+        "file": "supabase/migrations/002_storage_policies.sql",
+        "dpr_count": 3,
+        "dprs": [
+          "DPR-008",
+          "DPR-014",
+          "DPR-023"
+        ],
+        "avg_blast_score": 3.0,
+        "criticality_score": 9.0
+      },
+      {
+        "file": "backend/.env.example",
+        "dpr_count": 2,
+        "dprs": [
+          "DPR-005",
+          "DPR-021"
+        ],
+        "avg_blast_score": 4.0,
+        "criticality_score": 8.0
+      },
+      {
+        "file": "ml-service/.env.example",
+        "dpr_count": 2,
+        "dprs": [
+          "DPR-005",
+          "DPR-021"
+        ],
+        "avg_blast_score": 4.0,
+        "criticality_score": 8.0
+      },
+      {
+        "file": "frontend/.env.example",
+        "dpr_count": 2,
+        "dprs": [
+          "DPR-005",
+          "DPR-021"
+        ],
+        "avg_blast_score": 4.0,
+        "criticality_score": 8.0
+      },
+      {
+        "file": "ml-service/requirements.txt",
+        "dpr_count": 3,
+        "dprs": [
+          "DPR-010",
+          "DPR-011",
+          "DPR-025"
+        ],
+        "avg_blast_score": 2.67,
+        "criticality_score": 8.0
+      },
+      {
+        "file": "backend/src/middleware/authMiddleware.js",
+        "dpr_count": 2,
+        "dprs": [
+          "DPR-007",
+          "DPR-015"
+        ],
+        "avg_blast_score": 3.5,
+        "criticality_score": 7.0
+      },
+      {
+        "file": "ml-service/app/main.py",
+        "dpr_count": 3,
+        "dprs": [
+          "DPR-010",
+          "DPR-011",
+          "DPR-012"
+        ],
+        "avg_blast_score": 2.33,
+        "criticality_score": 7.0
+      },
+      {
+        "file": "supabase/migrations/005_fix_assignment_rls.sql",
+        "dpr_count": 2,
+        "dprs": [
+          "DPR-014",
+          "DPR-027"
+        ],
+        "avg_blast_score": 3.5,
+        "criticality_score": 7.0
+      },
+      {
+        "file": "frontend/src/components/GoogleMap.jsx",
+        "dpr_count": 2,
+        "dprs": [
+          "DPR-016",
+          "DPR-026"
+        ],
+        "avg_blast_score": 3.5,
+        "criticality_score": 7.0
+      },
+      {
+        "file": "backend/src/routes/geofence.js",
+        "dpr_count": 2,
+        "dprs": [
+          "DPR-016",
+          "DPR-026"
+        ],
+        "avg_blast_score": 3.5,
+        "criticality_score": 7.0
+      },
+      {
+        "file": "supabase/migrations/004_geofencing.sql",
+        "dpr_count": 2,
+        "dprs": [
+          "DPR-016",
+          "DPR-026"
+        ],
+        "avg_blast_score": 3.5,
+        "criticality_score": 7.0
+      },
+      {
+        "file": "backend/src/server.js",
+        "dpr_count": 3,
+        "dprs": [
+          "DPR-018",
+          "DPR-019",
+          "DPR-028"
+        ],
+        "avg_blast_score": 2.33,
+        "criticality_score": 7.0
+      },
+      {
+        "file": "frontend/src/hooks/useAuth.jsx",
+        "dpr_count": 2,
+        "dprs": [
+          "DPR-007",
+          "DPR-029"
+        ],
+        "avg_blast_score": 3.0,
+        "criticality_score": 6.0
+      },
+      {
+        "file": "backend/src/routes/upload.js",
+        "dpr_count": 2,
+        "dprs": [
+          "DPR-008",
+          "DPR-020"
+        ],
+        "avg_blast_score": 3.0,
+        "criticality_score": 6.0
+      },
+      {
+        "file": "frontend/package.json",
+        "dpr_count": 2,
+        "dprs": [
+          "DPR-009",
+          "DPR-024"
+        ],
+        "avg_blast_score": 3.0,
+        "criticality_score": 6.0
+      },
+      {
+        "file": ".gitignore",
+        "dpr_count": 2,
+        "dprs": [
+          "DPR-013",
+          "DPR-021"
+        ],
+        "avg_blast_score": 3.0,
+        "criticality_score": 6.0
+      },
+      {
+        "file": "backend/package.json",
+        "dpr_count": 2,
+        "dprs": [
+          "DPR-003",
+          "DPR-024"
+        ],
+        "avg_blast_score": 2.5,
+        "criticality_score": 5.0
+      },
+      {
+        "file": "frontend/src/App.jsx",
+        "dpr_count": 2,
+        "dprs": [
+          "DPR-009",
+          "DPR-029"
+        ],
+        "avg_blast_score": 2.5,
+        "criticality_score": 5.0
+      },
+      {
+        "file": "backend/config/azure-auth.config.js",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-001"
+        ],
+        "avg_blast_score": 4.0,
+        "criticality_score": 4.0
+      },
+      {
+        "file": "backend/config/azure-blob.config.js",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-001"
+        ],
+        "avg_blast_score": 4.0,
+        "criticality_score": 4.0
+      },
+      {
+        "file": "backend/config/azure-cosmos.config.js",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-001"
+        ],
+        "avg_blast_score": 4.0,
+        "criticality_score": 4.0
+      },
+      {
+        "file": "backend/config/azure-face.config.js",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-001"
+        ],
+        "avg_blast_score": 4.0,
+        "criticality_score": 4.0
+      },
+      {
+        "file": "backend/config/azure-vision.config.js",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-001"
+        ],
+        "avg_blast_score": 4.0,
+        "criticality_score": 4.0
+      },
+      {
+        "file": "supabase/migrations/",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-005"
+        ],
+        "avg_blast_score": 4.0,
+        "criticality_score": 4.0
+      },
+      {
+        "file": "backend/src/routes/auth.js",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-007"
+        ],
+        "avg_blast_score": 4.0,
+        "criticality_score": 4.0
+      },
+      {
+        "file": "backend/src/routes/sos.js",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-016"
+        ],
+        "avg_blast_score": 4.0,
+        "criticality_score": 4.0
+      },
+      {
+        "file": ".env.example",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-021"
+        ],
+        "avg_blast_score": 4.0,
+        "criticality_score": 4.0
+      },
+      {
+        "file": "flutter_app/lib/main.dart",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-002"
+        ],
+        "avg_blast_score": 3.0,
+        "criticality_score": 3.0
+      },
+      {
+        "file": "flutter_app/pubspec.yaml",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-002"
+        ],
+        "avg_blast_score": 3.0,
+        "criticality_score": 3.0
+      },
+      {
+        "file": "frontend/vite.config.js",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-009"
+        ],
+        "avg_blast_score": 3.0,
+        "criticality_score": 3.0
+      },
+      {
+        "file": "frontend/src/pages/CaretakerDashboard.jsx",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-015"
+        ],
+        "avg_blast_score": 3.0,
+        "criticality_score": 3.0
+      },
+      {
+        "file": "frontend/src/styles/index.css",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-017"
+        ],
+        "avg_blast_score": 3.0,
+        "criticality_score": 3.0
+      },
+      {
+        "file": "backend/src/routes/",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-018"
+        ],
+        "avg_blast_score": 3.0,
+        "criticality_score": 3.0
+      },
+      {
+        "file": "backend/package-lock.json",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-024"
+        ],
+        "avg_blast_score": 3.0,
+        "criticality_score": 3.0
+      },
+      {
+        "file": "frontend/package-lock.json",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-024"
+        ],
+        "avg_blast_score": 3.0,
+        "criticality_score": 3.0
+      },
+      {
+        "file": "frontend/src/components/AssignPatient.jsx",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-027"
+        ],
+        "avg_blast_score": 3.0,
+        "criticality_score": 3.0
+      },
+      {
+        "file": "backend/server.js",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-003"
+        ],
+        "avg_blast_score": 2.0,
+        "criticality_score": 2.0
+      },
+      {
+        "file": "ml-services/main.py",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-004"
+        ],
+        "avg_blast_score": 2.0,
+        "criticality_score": 2.0
+      },
+      {
+        "file": "ml-services/requirements.txt",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-004"
+        ],
+        "avg_blast_score": 2.0,
+        "criticality_score": 2.0
+      },
+      {
+        "file": "ml-service/yolov8n.pt",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-012"
+        ],
+        "avg_blast_score": 2.0,
+        "criticality_score": 2.0
+      },
+      {
+        "file": "supabase/migrations/003_object_detection.sql",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-012"
+        ],
+        "avg_blast_score": 2.0,
+        "criticality_score": 2.0
+      },
+      {
+        "file": "frontend/",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-013"
+        ],
+        "avg_blast_score": 2.0,
+        "criticality_score": 2.0
+      },
+      {
+        "file": "backend/",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-013"
+        ],
+        "avg_blast_score": 2.0,
+        "criticality_score": 2.0
+      },
+      {
+        "file": "ml-service/",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-013"
+        ],
+        "avg_blast_score": 2.0,
+        "criticality_score": 2.0
+      },
+      {
+        "file": "supabase/",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-013"
+        ],
+        "avg_blast_score": 2.0,
+        "criticality_score": 2.0
+      },
+      {
+        "file": "backend/src/middleware/ipLogger.js",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-019"
+        ],
+        "avg_blast_score": 2.0,
+        "criticality_score": 2.0
+      },
+      {
+        "file": "backend/error.txt",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-028"
+        ],
+        "avg_blast_score": 2.0,
+        "criticality_score": 2.0
+      },
+      {
+        "file": "frontend/src/services/api.js",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-030"
+        ],
+        "avg_blast_score": 2.0,
+        "criticality_score": 2.0
+      },
+      {
+        "file": "EnrollmentVisualizationFinal.ipynb",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-031"
+        ],
+        "avg_blast_score": 1.0,
+        "criticality_score": 1.0
+      },
+      {
+        "file": "EnrollmentCleaning.ipynb",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-031"
+        ],
+        "avg_blast_score": 1.0,
+        "criticality_score": 1.0
+      },
+      {
+        "file": "DeographicVisualizationFinal.ipynb",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-031"
+        ],
+        "avg_blast_score": 1.0,
+        "criticality_score": 1.0
+      },
+      {
+        "file": "DemoGraphicCleaning.ipynb",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-031"
+        ],
+        "avg_blast_score": 1.0,
+        "criticality_score": 1.0
+      },
+      {
+        "file": "BiometricVisualizationFinal.ipynb",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-031"
+        ],
+        "avg_blast_score": 1.0,
+        "criticality_score": 1.0
+      },
+      {
+        "file": "Aadhaar Notebooks",
+        "dpr_count": 1,
+        "dprs": [
+          "DPR-031"
+        ],
+        "avg_blast_score": 1.0,
+        "criticality_score": 1.0
+      }
+    ],
+    "top_spof_humans": [
+      "Anshumaan Singh",
+      "Anshumaan1254"
+    ],
+    "top_spof_components": [
+      "Auth",
+      "Frontend, Backend, Database",
+      "Database",
+      "Overall System",
+      "Backend, Database"
+    ]
+  },
+  "counterfactual_traces": [
+    {
+      "id": "CF-001",
+      "question": "What if Architectural Pivot to Supabase-centric Stack had been implemented differently — using Continuing with the initial Azure services (Auth, Blob, Cosmos, Face, Vision)?",
+      "target_dpr": "DPR-005",
+      "alternative": "Continuing with the initial Azure services (Auth, Blob, Cosmos, Face, Vision)",
+      "downstream_count": 5,
+      "upstream_count": 2,
+      "result": {
+        "verdict": "worse",
+        "confidence": 0.6,
+        "timeline_narrative": "If architectural pivot to supabase-centric stack used continuing with the initial azure services (auth, blob, cosmos, face, vision), the downstream effects on DPR-013, DPR-007, DPR-006 would cascade.",
+        "modern_relevance": "Given modern infrastructure, this alternative remains problematic.",
+        "broken_assumptions": [
+          "INFERRED: Supabase's free tier (or paid tiers) will meet cost and scalability requirements for the foreseeable future.",
+          "INFERRED: Supabase provides sufficient features and flexibility for authentication, storage, and database needs."
+        ],
+        "unnecessary_workarounds": [],
+        "new_problems": [
+          "Would affect 5 downstream decisions"
+        ],
+        "affected_dprs": [
+          "DPR-013",
+          "DPR-007",
+          "DPR-006",
+          "DPR-008",
+          "DPR-021"
+        ]
+      }
+    },
+    {
+      "id": "CF-002",
+      "question": "What if Database Selection (Supabase PostgreSQL) had been implemented differently — using Azure Cosmos DB (previously chosen)?",
+      "target_dpr": "DPR-006",
+      "alternative": "Azure Cosmos DB (previously chosen)",
+      "downstream_count": 4,
+      "upstream_count": 4,
+      "result": {
+        "verdict": "worse",
+        "confidence": 0.65,
+        "timeline_narrative": "If database selection (supabase postgresql) used azure cosmos db (previously chosen), the downstream effects on DPR-014, DPR-027, DPR-022 would cascade.",
+        "modern_relevance": "Given modern infrastructure, this alternative remains problematic.",
+        "broken_assumptions": [
+          "INFERRED: PostgreSQL's relational model is suitable for the application's data structure (users, people, memories, SOS alerts).",
+          "INFERRED: Supabase's managed PostgreSQL offers sufficient performance, reliability, and ease of management."
+        ],
+        "unnecessary_workarounds": [],
+        "new_problems": [
+          "Would affect 4 downstream decisions"
+        ],
+        "affected_dprs": [
+          "DPR-014",
+          "DPR-027",
+          "DPR-022",
+          "DPR-018"
+        ]
+      }
+    },
+    {
+      "id": "CF-003",
+      "question": "What if Authentication System (Supabase Auth with JWT) had been implemented differently — using Azure Auth (previously chosen)?",
+      "target_dpr": "DPR-007",
+      "alternative": "Azure Auth (previously chosen)",
+      "downstream_count": 3,
+      "upstream_count": 1,
+      "result": {
+        "verdict": "worse",
+        "confidence": 0.7,
+        "timeline_narrative": "If authentication system (supabase auth with jwt) used azure auth (previously chosen), the downstream effects on DPR-014, DPR-015, DPR-018 would cascade.",
+        "modern_relevance": "Given modern infrastructure, this alternative remains problematic.",
+        "broken_assumptions": [
+          "INFERRED: Supabase Auth provides sufficient security features (password hashing, email verification, MFA support).",
+          "INFERRED: Supabase Auth's user management capabilities meet the project's needs (patient/caretaker roles)."
+        ],
+        "unnecessary_workarounds": [],
+        "new_problems": [
+          "Would affect 3 downstream decisions"
+        ],
+        "affected_dprs": [
+          "DPR-014",
+          "DPR-015",
+          "DPR-018"
+        ]
+      }
+    },
+    {
+      "id": "CF-004",
+      "question": "What if SOS Emergency Feature with Live Location had been implemented differently — using Simple static emergency contact list?",
+      "target_dpr": "DPR-016",
+      "alternative": "Simple static emergency contact list",
+      "downstream_count": 3,
+      "upstream_count": 3,
+      "result": {
+        "verdict": "worse",
+        "confidence": 0.75,
+        "timeline_narrative": "If sos emergency feature with live location used simple static emergency contact list, the downstream effects on DPR-009, DPR-026, DPR-006 would cascade.",
+        "modern_relevance": "Given modern infrastructure, this alternative remains problematic.",
+        "broken_assumptions": [
+          "INFERRED: Patient devices will have consistent internet connectivity for location updates and alerts.",
+          "INFERRED: The accuracy of GPS data is sufficient for emergency response."
+        ],
+        "unnecessary_workarounds": [],
+        "new_problems": [
+          "Would affect 3 downstream decisions"
+        ],
+        "affected_dprs": [
+          "DPR-009",
+          "DPR-026",
+          "DPR-006"
+        ]
+      }
+    },
+    {
+      "id": "CF-005",
+      "question": "What if Environment Variables for Secrets Management had been implemented differently — using Hardcoding secrets in source code?",
+      "target_dpr": "DPR-021",
+      "alternative": "Hardcoding secrets in source code",
+      "downstream_count": 3,
+      "upstream_count": 1,
+      "result": {
+        "verdict": "worse",
+        "confidence": 0.8,
+        "timeline_narrative": "If environment variables for secrets management used hardcoding secrets in source code, the downstream effects on DPR-009, DPR-010, DPR-005 would cascade.",
+        "modern_relevance": "Given modern infrastructure, this alternative remains problematic.",
+        "broken_assumptions": [
+          "INFERRED: Environment variables provide sufficient security for secrets in the deployment environment.",
+          "INFERRED: The deployment platform supports easy injection of environment variables."
+        ],
+        "unnecessary_workarounds": [],
+        "new_problems": [
+          "Would affect 3 downstream decisions"
+        ],
+        "affected_dprs": [
+          "DPR-009",
+          "DPR-010",
+          "DPR-005"
+        ]
+      }
+    }
+  ],
+  "risk_forecast": {},
+  "org_risk_score": 14.4,
+  "monitoring_runs": []
+}
