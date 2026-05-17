@@ -1,0 +1,146 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nexus-decision-provenance"
+version = "1.0.0"
+description = "AI-powered Decision Provenance Engine for GitHub repositories"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [
+    {name = "IBM Bob Hackathon Team", email = "nexus@example.com"}
+]
+keywords = ["decision-provenance", "architecture", "causal-graph", "llm", "github"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "fastapi>=0.100.0",
+    "uvicorn[standard]>=0.23.0",
+    "pydantic>=2.0.0",
+    "python-multipart>=0.0.6",
+    "PyGithub>=2.0.0",
+    "gitpython>=3.1.0",
+    "openai>=1.0.0",
+    "anthropic>=0.18.0",
+    "ibm-watsonx-ai>=0.1.0",
+    "networkx>=3.0",
+    "matplotlib>=3.7.0",
+    "python-dotenv>=1.0.0",
+    "aiofiles>=23.0.0",
+    "httpx>=0.24.0",
+    "tenacity>=8.2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
+    "ruff>=0.1.0",
+    "mypy>=1.5.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/pranshujain8532/bob-hackathon"
+Documentation = "https://github.com/pranshujain8532/bob-hackathon/blob/main/docs/ARCHITECTURE.md"
+Repository = "https://github.com/pranshujain8532/bob-hackathon"
+
+[tool.setuptools]
+packages = ["nexus"]
+
+[tool.pytest.ini_options]
+testpaths = ["nexus/tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--verbose",
+    "--cov=nexus",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-fail-under=70",
+]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+]
+ignore = [
+    "E501",  # line too long (handled by black)
+    "B008",  # do not perform function calls in argument defaults
+]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]  # unused imports in __init__.py
+"nexus/tests/*" = ["B011"]  # assert False
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+line_length = 100
+multi_line_output = 3
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = [
+    "anthropic.*",
+    "ibm_watsonx_ai.*",
+    "github.*",
+    "git.*",
+    "networkx.*",
+    "matplotlib.*",
+]
+ignore_missing_imports = true
+
+[tool.coverage.run]
+source = ["nexus"]
+omit = [
+    "nexus/tests/*",
+    "*/test_*.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "@abstractmethod",
+]
