@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6"/>
+      <stop offset="100%" style="stop-color:#8b5cf6"/>
+    </linearGradient>
+  </defs>
+  <!-- Background circle -->
+  <circle cx="64" cy="64" r="60" fill="url(#grad)"/>
+  <!-- Page/Book shape -->
+  <path d="M40 30 L40 90 Q64 80 88 90 L88 30 Q64 40 40 30 Z" fill="white" opacity="0.95"/>
+  <!-- Page fold -->
+  <path d="M64 35 L64 85" stroke="#3b82f6" stroke-width="2" opacity="0.3"/>
+  <!-- AI Sparkle -->
+  <circle cx="72" cy="45" r="8" fill="#fbbf24"/>
+  <path d="M72 35 L72 55 M62 45 L82 45" stroke="#fbbf24" stroke-width="3" stroke-linecap="round"/>
+  <!-- Small sparkles -->
+  <circle cx="52" cy="55" r="3" fill="#fbbf24" opacity="0.7"/>
+  <circle cx="78" cy="65" r="2" fill="#fbbf24" opacity="0.5"/>
+</svg>
