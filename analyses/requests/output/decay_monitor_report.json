@@ -1,0 +1,531 @@
+{
+  "monitor_run_timestamp": "2026-05-17T04:10:15.245794+00:00",
+  "repository": "https://github.com/psf/requests",
+  "total_dprs_monitored": 15,
+  "dpr_reports": [
+    {
+      "dpr_id": "DPR-001",
+      "title": "Core HTTP Client Delegation to urllib3",
+      "component": "Core HTTP Client",
+      "overall_status": "warning",
+      "blast_radius": {
+        "downstream_count": 6,
+        "downstream_dprs": [
+          "DPR-002",
+          "DPR-003",
+          "DPR-004",
+          "DPR-005",
+          "DPR-006",
+          "DPR-007"
+        ],
+        "total_graph_nodes": 15,
+        "impact_percentage": 42.9
+      },
+      "assumption_checks": [
+        {
+          "assumption": "`urllib3` is a robust, well-tested, and actively maintained library suitable for `Requests`'s needs.",
+          "holds": true,
+          "confidence": 0.6,
+          "reason": "No explicit evidence of decay yet, but the risk stems from `urllib3` being an external dependency. Potential evidence would include: new critical security vulnerabilities discovered in `urllib3`, a significant decrease in `urllib3`'s maintenance activity (e.g., slow bug fixes, infrequent releases), or reports of `urllib3` failing stability tests under high load.",
+          "severity": "warning"
+        },
+        {
+          "assumption": "The performance and feature set provided by `urllib3` are sufficient for the diverse use cases of `Requests`.",
+          "holds": true,
+          "confidence": 0.6,
+          "reason": "No explicit evidence of decay yet. Potential evidence would include: `Requests` users reporting performance regressions traced back to `urllib3` updates, or a significant portion of the user base requesting advanced HTTP features (e.g., HTTP/3, QUIC support, more granular connection controls) that `urllib3` does not provide or has no roadmap for.",
+          "severity": "warning"
+        }
+      ],
+      "active_workarounds": [],
+      "recommendation": "MONITOR: Core HTTP Client Delegation to urllib3 shows early warning signs. Track metrics and prepare contingency plan."
+    },
+    {
+      "dpr_id": "DPR-002",
+      "title": "Introduction of a Session Object for State Persistence",
+      "component": "Session Management",
+      "overall_status": "stable",
+      "blast_radius": {
+        "downstream_count": 6,
+        "downstream_dprs": [
+          "DPR-001",
+          "DPR-003",
+          "DPR-004",
+          "DPR-005",
+          "DPR-006",
+          "DPR-007"
+        ],
+        "total_graph_nodes": 15,
+        "impact_percentage": 42.9
+      },
+      "assumption_checks": [
+        {
+          "assumption": "A significant portion of `Requests` users require stateful HTTP interactions, such as maintaining authentication or persistent configurations.",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "The overhead of managing `Session` objects (e.g., memory, initialization) is acceptable given the convenience and functionality it provides.",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        }
+      ],
+      "active_workarounds": [],
+      "recommendation": "STABLE: Introduction of a Session Object for State Persistence assumptions appear to hold. Continue routine monitoring."
+    },
+    {
+      "dpr_id": "DPR-003",
+      "title": "Standardized CA Certificate Verification via certifi",
+      "component": "Security (TLS/SSL)",
+      "overall_status": "warning",
+      "blast_radius": {
+        "downstream_count": 6,
+        "downstream_dprs": [
+          "DPR-001",
+          "DPR-002",
+          "DPR-004",
+          "DPR-005",
+          "DPR-006",
+          "DPR-007"
+        ],
+        "total_graph_nodes": 15,
+        "impact_percentage": 42.9
+      },
+      "assumption_checks": [
+        {
+          "assumption": "`certifi` provides a reliable, widely trusted, and regularly updated certificate bundle that meets the security needs of most users.",
+          "holds": true,
+          "confidence": 0.6,
+          "reason": "No explicit evidence of decay yet. Potential evidence would include: `certifi` releases falling significantly behind major CA bundle updates, reports of `certifi` bundles containing outdated, missing, or revoked certificates, leading to widespread SSL/TLS connectivity errors for `Requests` users.",
+          "severity": "warning"
+        },
+        {
+          "assumption": "The benefits of a standardized, current CA bundle outweigh the slight increase in dependency footprint.",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        }
+      ],
+      "active_workarounds": [],
+      "recommendation": "MONITOR: Standardized CA Certificate Verification via certifi shows early warning signs. Track metrics and prepare contingency plan."
+    },
+    {
+      "dpr_id": "DPR-004",
+      "title": "Explicit Python 3.10+ Requirement",
+      "component": "Platform Compatibility",
+      "overall_status": "stable",
+      "blast_radius": {
+        "downstream_count": 6,
+        "downstream_dprs": [
+          "DPR-001",
+          "DPR-002",
+          "DPR-003",
+          "DPR-005",
+          "DPR-006",
+          "DPR-007"
+        ],
+        "total_graph_nodes": 15,
+        "impact_percentage": 42.9
+      },
+      "assumption_checks": [
+        {
+          "assumption": "The majority of the user base is on, or can reasonably migrate to, Python 3.10 or newer.",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "The benefits of leveraging modern Python language features (e.g., structural pattern matching, `TypeAlias`, improved `typing` features) and standard library enhancements outweigh the cost of dropping older version support.",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        }
+      ],
+      "active_workarounds": [],
+      "recommendation": "STABLE: Explicit Python 3.10+ Requirement assumptions appear to hold. Continue routine monitoring."
+    },
+    {
+      "dpr_id": "DPR-005",
+      "title": "Character Encoding Detection Preference (charset_normalizer)",
+      "component": "Content Decoding",
+      "overall_status": "warning",
+      "blast_radius": {
+        "downstream_count": 6,
+        "downstream_dprs": [
+          "DPR-001",
+          "DPR-002",
+          "DPR-003",
+          "DPR-004",
+          "DPR-006",
+          "DPR-007"
+        ],
+        "total_graph_nodes": 15,
+        "impact_percentage": 42.9
+      },
+      "assumption_checks": [
+        {
+          "assumption": "`charset_normalizer` provides superior or equivalent performance and accuracy to `chardet` for diverse web content.",
+          "holds": true,
+          "confidence": 0.6,
+          "reason": "No explicit evidence of decay yet. Potential evidence would include: a noticeable increase in user reports of garbled text (`r.text`) or `JSONDecodeError` when `charset_normalizer` is used, or the emergence of a new, widely adopted encoding detection library that demonstrably outperforms `charset_normalizer` in accuracy or speed across common web content.",
+          "severity": "warning"
+        },
+        {
+          "assumption": "Providing robust automatic character encoding detection is crucial for a user-friendly HTTP library that handles various web servers.",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        }
+      ],
+      "active_workarounds": [],
+      "recommendation": "MONITOR: Character Encoding Detection Preference (charset_normalizer) shows early warning signs. Track metrics and prepare contingency plan."
+    },
+    {
+      "dpr_id": "DPR-006",
+      "title": "Centralized Exception Hierarchy",
+      "component": "Error Handling",
+      "overall_status": "stable",
+      "blast_radius": {
+        "downstream_count": 6,
+        "downstream_dprs": [
+          "DPR-001",
+          "DPR-002",
+          "DPR-003",
+          "DPR-004",
+          "DPR-005",
+          "DPR-007"
+        ],
+        "total_graph_nodes": 15,
+        "impact_percentage": 42.9
+      },
+      "assumption_checks": [
+        {
+          "assumption": "Users benefit significantly from a dedicated and structured error handling mechanism specific to HTTP interactions, improving application robustness.",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "The defined exception types cover the most common HTTP failure scenarios in a clear and intuitive manner.",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        }
+      ],
+      "active_workarounds": [],
+      "recommendation": "STABLE: Centralized Exception Hierarchy assumptions appear to hold. Continue routine monitoring."
+    },
+    {
+      "dpr_id": "DPR-007",
+      "title": "pyproject.toml for Build System Standardization",
+      "component": "Project Build & Packaging",
+      "overall_status": "stable",
+      "blast_radius": {
+        "downstream_count": 6,
+        "downstream_dprs": [
+          "DPR-001",
+          "DPR-002",
+          "DPR-003",
+          "DPR-004",
+          "DPR-005",
+          "DPR-006"
+        ],
+        "total_graph_nodes": 15,
+        "impact_percentage": 42.9
+      },
+      "assumption_checks": [
+        {
+          "assumption": "The Python packaging ecosystem will continue to standardize around `pyproject.toml` and PEP 621 as the preferred method for project metadata and build configuration.",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "This approach offers the best balance of flexibility, standardization, and broad tool compatibility for `Requests`.",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        }
+      ],
+      "active_workarounds": [],
+      "recommendation": "STABLE: pyproject.toml for Build System Standardization assumptions appear to hold. Continue routine monitoring."
+    },
+    {
+      "dpr_id": "DPR-008",
+      "title": "Pre-commit Hooks for Code Quality Enforcement",
+      "component": "Developer Workflow / Code Quality",
+      "overall_status": "stable",
+      "blast_radius": {
+        "downstream_count": 0,
+        "downstream_dprs": [],
+        "total_graph_nodes": 15,
+        "impact_percentage": 0.0
+      },
+      "assumption_checks": [
+        {
+          "assumption": "Automated checks significantly improve code consistency and quality, reducing technical debt and reviewer burden.",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "The overhead of running hooks locally is acceptable for developers, given the benefits of catching issues early.",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        }
+      ],
+      "active_workarounds": [],
+      "recommendation": "STABLE: Pre-commit Hooks for Code Quality Enforcement assumptions appear to hold. Continue routine monitoring."
+    },
+    {
+      "dpr_id": "DPR-009",
+      "title": "Documentation Generation with Sphinx and Read the Docs",
+      "component": "Documentation System",
+      "overall_status": "stable",
+      "blast_radius": {
+        "downstream_count": 0,
+        "downstream_dprs": [],
+        "total_graph_nodes": 15,
+        "impact_percentage": 0.0
+      },
+      "assumption_checks": [
+        {
+          "assumption": "Sphinx and Read the Docs will continue to be well-supported, feature-rich, and stable platforms for technical documentation.",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "The effort involved in writing and maintaining documentation in RST/Sphinx is justified by the high quality, extensibility, and automated features of the output.",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        }
+      ],
+      "active_workarounds": [],
+      "recommendation": "STABLE: Documentation Generation with Sphinx and Read the Docs assumptions appear to hold. Continue routine monitoring."
+    },
+    {
+      "dpr_id": "DPR-010",
+      "title": "Makefile for Common Developer Tasks",
+      "component": "Developer Workflow / Build Automation",
+      "overall_status": "stable",
+      "blast_radius": {
+        "downstream_count": 0,
+        "downstream_dprs": [],
+        "total_graph_nodes": 15,
+        "impact_percentage": 0.0
+      },
+      "assumption_checks": [
+        {
+          "assumption": "`Makefile` is a common and understood tool among the target developer audience (Python developers).",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "The defined targets effectively cover the most frequent and critical development, testing, and release operations.",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        }
+      ],
+      "active_workarounds": [],
+      "recommendation": "STABLE: Makefile for Common Developer Tasks assumptions appear to hold. Continue routine monitoring."
+    },
+    {
+      "dpr_id": "DPR-011",
+      "title": "Type Hinting for Improved Code Quality and Maintainability",
+      "component": "Code Quality / Developer Experience",
+      "overall_status": "stable",
+      "blast_radius": {
+        "downstream_count": 0,
+        "downstream_dprs": [],
+        "total_graph_nodes": 15,
+        "impact_percentage": 0.0
+      },
+      "assumption_checks": [
+        {
+          "assumption": "The benefits of type hinting (reduced bugs, improved tooling support, clearer code, easier refactoring) significantly outweigh the overhead of adding and maintaining them.",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "The Python community's support for type hinting will continue to grow, leading to better tooling and adoption.",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        }
+      ],
+      "active_workarounds": [],
+      "recommendation": "STABLE: Type Hinting for Improved Code Quality and Maintainability assumptions appear to hold. Continue routine monitoring."
+    },
+    {
+      "dpr_id": "DPR-012",
+      "title": "`CaseInsensitiveDict` for HTTP Headers",
+      "component": "HTTP Header Handling",
+      "overall_status": "stable",
+      "blast_radius": {
+        "downstream_count": 0,
+        "downstream_dprs": [],
+        "total_graph_nodes": 15,
+        "impact_percentage": 0.0
+      },
+      "assumption_checks": [
+        {
+          "assumption": "The custom dictionary accurately models the HTTP specification for header field names being case-insensitive.",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "Providing a transparently case-insensitive header object simplifies API usage and reduces common programming errors for users.",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        }
+      ],
+      "active_workarounds": [],
+      "recommendation": "STABLE: `CaseInsensitiveDict` for HTTP Headers assumptions appear to hold. Continue routine monitoring."
+    },
+    {
+      "dpr_id": "DPR-013",
+      "title": "Extensible Authentication System",
+      "component": "Authentication",
+      "overall_status": "stable",
+      "blast_radius": {
+        "downstream_count": 0,
+        "downstream_dprs": [],
+        "total_graph_nodes": 15,
+        "impact_percentage": 0.0
+      },
+      "assumption_checks": [
+        {
+          "assumption": "Users require a flexible mechanism to handle various authentication schemes, including custom and complex ones, without modifying the core library.",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "Abstracting authentication logic into separate callable objects improves modularity and reusability.",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        }
+      ],
+      "active_workarounds": [],
+      "recommendation": "STABLE: Extensible Authentication System assumptions appear to hold. Continue routine monitoring."
+    },
+    {
+      "dpr_id": "DPR-014",
+      "title": "Plugin/Hook System for Request/Response Modification",
+      "component": "Extension Mechanism",
+      "overall_status": "stable",
+      "blast_radius": {
+        "downstream_count": 0,
+        "downstream_dprs": [],
+        "total_graph_nodes": 15,
+        "impact_percentage": 0.0
+      },
+      "assumption_checks": [
+        {
+          "assumption": "The current set of defined hooks (e.g., 'response') is sufficient for most user extension needs without over-complicating the system.",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "The overhead of dispatching hooks is negligible for typical usage patterns.",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        }
+      ],
+      "active_workarounds": [],
+      "recommendation": "STABLE: Plugin/Hook System for Request/Response Modification assumptions appear to hold. Continue routine monitoring."
+    },
+    {
+      "dpr_id": "DPR-015",
+      "title": "Browser-Style Cookie Management via `http.cookiejar`",
+      "component": "Cookie Management",
+      "overall_status": "stable",
+      "blast_radius": {
+        "downstream_count": 0,
+        "downstream_dprs": [],
+        "total_graph_nodes": 15,
+        "impact_percentage": 0.0
+      },
+      "assumption_checks": [
+        {
+          "assumption": "`http.cookiejar` provides a sufficiently powerful, correct, and secure implementation for all common cookie scenarios encountered on the web.",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "Leveraging the standard library for this complex task reduces `Requests`'s maintenance burden and increases confidence in compliance.",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        }
+      ],
+      "active_workarounds": [],
+      "recommendation": "STABLE: Browser-Style Cookie Management via `http.cookiejar` assumptions appear to hold. Continue routine monitoring."
+    }
+  ],
+  "summary": {
+    "critical": 0,
+    "warning": 3,
+    "stable": 12,
+    "most_impactful_dprs": [
+      {
+        "dpr_id": "DPR-001",
+        "title": "Core HTTP Client Delegation to urllib3",
+        "downstream_count": 6,
+        "status": "warning"
+      },
+      {
+        "dpr_id": "DPR-002",
+        "title": "Introduction of a Session Object for State Persistence",
+        "downstream_count": 6,
+        "status": "stable"
+      },
+      {
+        "dpr_id": "DPR-003",
+        "title": "Standardized CA Certificate Verification via certifi",
+        "downstream_count": 6,
+        "status": "warning"
+      }
+    ]
+  }
+}

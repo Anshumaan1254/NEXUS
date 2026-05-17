@@ -1,0 +1,339 @@
+{
+  "timestamp": "2026-05-17T04:10:33.536166+00:00",
+  "repository": "https://github.com/psf/requests",
+  "traces": [
+    {
+      "scenario_id": "CF-001",
+      "target_dpr": "DPR-001",
+      "target_title": "Core HTTP Client Delegation to urllib3",
+      "question": "What if Requests had chosen to implement its own low-level HTTP connection management instead of delegating to `urllib3`?",
+      "original_decision": "Delegate all low-level HTTP connection management, pooling, retries, and protocol details to the `urllib3` library. This includes handling connection pooling, SSL/TLS verification, proxies, and error mapping from `urllib3`'s exceptions to `Requests`'s custom exception hierarchy.",
+      "alternative": "The Requests library would have developed and maintained its own internal HTTP connection management, pooling, and retry logic, rather than relying on `urllib3`.",
+      "reasoning": "This would have significantly increased the development and maintenance burden on the Requests team. They would have needed to handle a vast array of complex HTTP-related challenges (e.g., connection pooling efficiency, proxy support, SSL/TLS handshake intricacies, various retry strategies) from scratch. This could have led to a less stable and feature-rich core, potentially slower development cycles for high-level features, and a higher likelihood of subtle bugs or security vulnerabilities related to low-level network interactions. The overall reliability and performance of Requests might have been diminished without `urllib3`'s specialized focus and battle-tested codebase.",
+      "affected_count": 6,
+      "affected_components": [
+        "Content Decoding",
+        "Error Handling",
+        "Platform Compatibility",
+        "Project Build & Packaging",
+        "Security (TLS/SSL)",
+        "Session Management"
+      ],
+      "impacts": [
+        {
+          "dpr_id": "DPR-002",
+          "title": "Introduction of a Session Object for State Persistence",
+          "component": "Session Management",
+          "relationship": "enables",
+          "distance": 1,
+          "blast_radius": "high",
+          "would_change": "Change propagates via 'enables' to Introduction of a Session Object for State Persistence."
+        },
+        {
+          "dpr_id": "DPR-003",
+          "title": "Standardized CA Certificate Verification via certifi",
+          "component": "Security (TLS/SSL)",
+          "relationship": "requires",
+          "distance": 1,
+          "blast_radius": "critical",
+          "would_change": "Change propagates via 'requires' to Standardized CA Certificate Verification via certifi."
+        },
+        {
+          "dpr_id": "DPR-004",
+          "title": "Explicit Python 3.10+ Requirement",
+          "component": "Platform Compatibility",
+          "relationship": "assumption_of",
+          "distance": 1,
+          "blast_radius": "high",
+          "would_change": "Change propagates via 'assumption_of' to Explicit Python 3.10+ Requirement."
+        },
+        {
+          "dpr_id": "DPR-005",
+          "title": "Character Encoding Detection Preference (charset_normalizer)",
+          "component": "Content Decoding",
+          "relationship": "enables",
+          "distance": 1,
+          "blast_radius": "medium",
+          "would_change": "Change propagates via 'enables' to Character Encoding Detection Preference (charset_normalizer)."
+        },
+        {
+          "dpr_id": "DPR-006",
+          "title": "Centralized Exception Hierarchy",
+          "component": "Error Handling",
+          "relationship": "enables",
+          "distance": 1,
+          "blast_radius": "high",
+          "would_change": "Change propagates via 'enables' to Centralized Exception Hierarchy."
+        },
+        {
+          "dpr_id": "DPR-007",
+          "title": "pyproject.toml for Build System Standardization",
+          "component": "Project Build & Packaging",
+          "relationship": "required_by",
+          "distance": 1,
+          "blast_radius": "medium",
+          "would_change": "Change propagates via 'required_by' to pyproject.toml for Build System Standardization."
+        }
+      ],
+      "risk": {
+        "level": "extreme",
+        "critical": 1,
+        "total": 6
+      }
+    },
+    {
+      "scenario_id": "CF-002",
+      "target_dpr": "DPR-003",
+      "target_title": "Standardized CA Certificate Verification via certifi",
+      "question": "What if Requests had decided to rely on the system's CA certificates by default for SSL/TLS verification, instead of bundling `certifi`?",
+      "original_decision": "Mandate the use of the `certifi` package to provide an up-to-date and robust bundle of trusted CA certificates for SSL/TLS verification by default. The `where()` function from `certifi` is used to locate the certificate bundle.",
+      "alternative": "Requests would have attempted to locate and use the operating system's default CA certificate store for SSL/TLS verification, or possibly made verification optional/off by default.",
+      "reasoning": "Relying on system CA certificates introduces significant cross-platform inconsistencies and potential security risks. Different operating systems (and even different versions or configurations of the same OS) have varying sets of trusted CAs, which are often outdated or can be manipulated by local administrators. This would lead to unpredictable SSL/TLS verification failures or, worse, silently compromised security for users in certain environments. Bundling `certifi` ensures a consistent, up-to-date, and secure baseline for certificate verification across all supported platforms, simplifying user experience and bolstering security.",
+      "affected_count": 6,
+      "affected_components": [
+        "Content Decoding",
+        "Core HTTP Client",
+        "Error Handling",
+        "Platform Compatibility",
+        "Project Build & Packaging",
+        "Session Management"
+      ],
+      "impacts": [
+        {
+          "dpr_id": "DPR-001",
+          "title": "Core HTTP Client Delegation to urllib3",
+          "component": "Core HTTP Client",
+          "relationship": "constrains",
+          "distance": 1,
+          "blast_radius": "critical",
+          "would_change": "Change propagates via 'constrains' to Core HTTP Client Delegation to urllib3."
+        },
+        {
+          "dpr_id": "DPR-002",
+          "title": "Introduction of a Session Object for State Persistence",
+          "component": "Session Management",
+          "relationship": "constrains",
+          "distance": 2,
+          "blast_radius": "high",
+          "would_change": "Change propagates via 'constrains' to Introduction of a Session Object for State Persistence."
+        },
+        {
+          "dpr_id": "DPR-004",
+          "title": "Explicit Python 3.10+ Requirement",
+          "component": "Platform Compatibility",
+          "relationship": "assumption_of",
+          "distance": 1,
+          "blast_radius": "high",
+          "would_change": "Change propagates via 'assumption_of' to Explicit Python 3.10+ Requirement."
+        },
+        {
+          "dpr_id": "DPR-005",
+          "title": "Character Encoding Detection Preference (charset_normalizer)",
+          "component": "Content Decoding",
+          "relationship": "constrains",
+          "distance": 2,
+          "blast_radius": "medium",
+          "would_change": "Change propagates via 'constrains' to Character Encoding Detection Preference (charset_normalizer)."
+        },
+        {
+          "dpr_id": "DPR-006",
+          "title": "Centralized Exception Hierarchy",
+          "component": "Error Handling",
+          "relationship": "enables",
+          "distance": 1,
+          "blast_radius": "high",
+          "would_change": "Change propagates via 'enables' to Centralized Exception Hierarchy."
+        },
+        {
+          "dpr_id": "DPR-007",
+          "title": "pyproject.toml for Build System Standardization",
+          "component": "Project Build & Packaging",
+          "relationship": "required_by",
+          "distance": 1,
+          "blast_radius": "medium",
+          "would_change": "Change propagates via 'required_by' to pyproject.toml for Build System Standardization."
+        }
+      ],
+      "risk": {
+        "level": "extreme",
+        "critical": 1,
+        "total": 6
+      }
+    },
+    {
+      "scenario_id": "CF-003",
+      "target_dpr": "DPR-004",
+      "target_title": "Explicit Python 3.10+ Requirement",
+      "question": "What if Requests had maintained compatibility with older Python versions (e.g., Python 3.6 or 3.7) instead of requiring Python 3.10+?",
+      "original_decision": "Officially require Python 3.10 or later as the minimum supported Python version for `Requests`. This involves adding runtime checks and updating project metadata.",
+      "alternative": "The project would have continued to support Python versions older than 3.10, implementing conditional logic or refraining from using features exclusive to newer Python releases.",
+      "reasoning": "Maintaining backward compatibility with significantly older Python versions would impose a substantial technical debt and development constraint. The codebase would be unable to leverage modern Python features, syntax (e.g., `match` statements, structural pattern matching), performance improvements, or enhancements in the standard library. This would likely result in a more complex codebase with conditional imports and logic, slower iteration on new features, and potentially higher maintenance costs. It could also hinder the adoption of modern practices like `pyproject.toml` or advanced type hinting features which are better supported in newer Python environments, impacting developer experience and code quality.",
+      "affected_count": 6,
+      "affected_components": [
+        "Content Decoding",
+        "Core HTTP Client",
+        "Error Handling",
+        "Project Build & Packaging",
+        "Security (TLS/SSL)",
+        "Session Management"
+      ],
+      "impacts": [
+        {
+          "dpr_id": "DPR-001",
+          "title": "Core HTTP Client Delegation to urllib3",
+          "component": "Core HTTP Client",
+          "relationship": "enables",
+          "distance": 1,
+          "blast_radius": "critical",
+          "would_change": "Change propagates via 'enables' to Core HTTP Client Delegation to urllib3."
+        },
+        {
+          "dpr_id": "DPR-002",
+          "title": "Introduction of a Session Object for State Persistence",
+          "component": "Session Management",
+          "relationship": "enables",
+          "distance": 1,
+          "blast_radius": "high",
+          "would_change": "Change propagates via 'enables' to Introduction of a Session Object for State Persistence."
+        },
+        {
+          "dpr_id": "DPR-003",
+          "title": "Standardized CA Certificate Verification via certifi",
+          "component": "Security (TLS/SSL)",
+          "relationship": "enables",
+          "distance": 1,
+          "blast_radius": "critical",
+          "would_change": "Change propagates via 'enables' to Standardized CA Certificate Verification via certifi."
+        },
+        {
+          "dpr_id": "DPR-005",
+          "title": "Character Encoding Detection Preference (charset_normalizer)",
+          "component": "Content Decoding",
+          "relationship": "enables",
+          "distance": 1,
+          "blast_radius": "medium",
+          "would_change": "Change propagates via 'enables' to Character Encoding Detection Preference (charset_normalizer)."
+        },
+        {
+          "dpr_id": "DPR-006",
+          "title": "Centralized Exception Hierarchy",
+          "component": "Error Handling",
+          "relationship": "enables",
+          "distance": 1,
+          "blast_radius": "high",
+          "would_change": "Change propagates via 'enables' to Centralized Exception Hierarchy."
+        },
+        {
+          "dpr_id": "DPR-007",
+          "title": "pyproject.toml for Build System Standardization",
+          "component": "Project Build & Packaging",
+          "relationship": "enables",
+          "distance": 1,
+          "blast_radius": "medium",
+          "would_change": "Change propagates via 'enables' to pyproject.toml for Build System Standardization."
+        }
+      ],
+      "risk": {
+        "level": "extreme",
+        "critical": 2,
+        "total": 6
+      }
+    },
+    {
+      "scenario_id": "CF-004",
+      "target_dpr": "DPR-006",
+      "target_title": "Centralized Exception Hierarchy",
+      "question": "What if Requests had chosen to use only standard Python exceptions (e.g., `OSError`, `ConnectionError`) instead of establishing its own custom exception hierarchy?",
+      "original_decision": "Establish a custom exception hierarchy, rooted in `requests.exceptions.RequestException`, to provide a consistent and predictable way for users to catch and handle errors originating from the `Requests` library. This involves wrapping `urllib3` and other internal exceptions.",
+      "alternative": "Errors originating from Requests would be raised as standard Python exceptions, without being wrapped or specialized under a common `RequestException` base.",
+      "reasoning": "Without a centralized and custom exception hierarchy (rooted in `requests.exceptions.RequestException`), users would face a more challenging and inconsistent experience when handling errors specific to HTTP requests. It would be difficult to catch 'any Requests-related error' without also catching a broad range of unrelated system exceptions. Users would need to catch multiple, disparate standard exceptions (e.g., `TimeoutError`, `ConnectionError`, `KeyError` for specific header issues) from different parts of the Python standard library or third-party dependencies, leading to more verbose, error-prone, and less readable error handling code. The custom hierarchy provides a clear, consistent, and predictable API for robust error management.",
+      "affected_count": 6,
+      "affected_components": [
+        "Content Decoding",
+        "Core HTTP Client",
+        "Platform Compatibility",
+        "Project Build & Packaging",
+        "Security (TLS/SSL)",
+        "Session Management"
+      ],
+      "impacts": [
+        {
+          "dpr_id": "DPR-001",
+          "title": "Core HTTP Client Delegation to urllib3",
+          "component": "Core HTTP Client",
+          "relationship": "constrains",
+          "distance": 1,
+          "blast_radius": "critical",
+          "would_change": "Change propagates via 'constrains' to Core HTTP Client Delegation to urllib3."
+        },
+        {
+          "dpr_id": "DPR-002",
+          "title": "Introduction of a Session Object for State Persistence",
+          "component": "Session Management",
+          "relationship": "enables",
+          "distance": 1,
+          "blast_radius": "high",
+          "would_change": "Change propagates via 'enables' to Introduction of a Session Object for State Persistence."
+        },
+        {
+          "dpr_id": "DPR-003",
+          "title": "Standardized CA Certificate Verification via certifi",
+          "component": "Security (TLS/SSL)",
+          "relationship": "constrains",
+          "distance": 1,
+          "blast_radius": "critical",
+          "would_change": "Change propagates via 'constrains' to Standardized CA Certificate Verification via certifi."
+        },
+        {
+          "dpr_id": "DPR-004",
+          "title": "Explicit Python 3.10+ Requirement",
+          "component": "Platform Compatibility",
+          "relationship": "assumption_of",
+          "distance": 1,
+          "blast_radius": "high",
+          "would_change": "Change propagates via 'assumption_of' to Explicit Python 3.10+ Requirement."
+        },
+        {
+          "dpr_id": "DPR-005",
+          "title": "Character Encoding Detection Preference (charset_normalizer)",
+          "component": "Content Decoding",
+          "relationship": "constrains",
+          "distance": 1,
+          "blast_radius": "medium",
+          "would_change": "Change propagates via 'constrains' to Character Encoding Detection Preference (charset_normalizer)."
+        },
+        {
+          "dpr_id": "DPR-007",
+          "title": "pyproject.toml for Build System Standardization",
+          "component": "Project Build & Packaging",
+          "relationship": "assumption_of",
+          "distance": 2,
+          "blast_radius": "medium",
+          "would_change": "Change propagates via 'assumption_of' to pyproject.toml for Build System Standardization."
+        }
+      ],
+      "risk": {
+        "level": "extreme",
+        "critical": 2,
+        "total": 6
+      }
+    },
+    {
+      "scenario_id": "CF-005",
+      "target_dpr": "DPR-012",
+      "target_title": "`CaseInsensitiveDict` for HTTP Headers",
+      "question": "What if Requests had used a standard Python dictionary for HTTP headers instead of a custom `CaseInsensitiveDict`?",
+      "original_decision": "Implement and utilize a custom `CaseInsensitiveDict` for representing HTTP headers. This dictionary stores and retrieves header values in a case-insensitive manner, conforming to the HTTP specification.",
+      "alternative": "HTTP headers would be stored and retrieved using Python's built-in `dict`, requiring users to manually handle case sensitivity when accessing or setting header values.",
+      "reasoning": "HTTP headers are defined as case-insensitive (RFC 7230). If Requests used a standard dictionary, users would need to consistently normalize header names (e.g., always use 'Content-Type' or 'content-type') to ensure reliable access. This would be a constant source of bugs and frustration, as different servers or libraries might return headers with varying capitalization. The `CaseInsensitiveDict` abstracts away this complexity, making header access intuitive and compliant with HTTP specifications, significantly reducing boilerplate code and potential errors for users. Without it, the API for header manipulation would be less robust and more cumbersome.",
+      "affected_count": 0,
+      "affected_components": [],
+      "impacts": [],
+      "risk": {
+        "level": "low",
+        "critical": 0,
+        "total": 0
+      }
+    }
+  ]
+}

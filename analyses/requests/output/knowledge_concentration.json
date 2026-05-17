@@ -1,0 +1,456 @@
+{
+  "timestamp": "2026-05-17T04:10:33.556386+00:00",
+  "repository": "https://github.com/psf/requests",
+  "total_authors": 6,
+  "total_dprs": 15,
+  "author_summary": [
+    {
+      "author": "Ian Stapleton Cordasco",
+      "total_dprs": 1,
+      "dpr_ids": [
+        "DPR-004"
+      ],
+      "files_touched": 4,
+      "components": [
+        "Platform Compatibility"
+      ],
+      "is_spof": false
+    },
+    {
+      "author": "Kenneth Reitz",
+      "total_dprs": 6,
+      "dpr_ids": [
+        "DPR-002",
+        "DPR-003",
+        "DPR-006",
+        "DPR-012",
+        "DPR-013",
+        "DPR-015"
+      ],
+      "files_touched": 12,
+      "components": [
+        "Authentication",
+        "Cookie Management",
+        "Error Handling",
+        "HTTP Header Handling",
+        "Security (TLS/SSL)",
+        "Session Management"
+      ],
+      "is_spof": false
+    },
+    {
+      "author": "Kenneth Reitz (initial design)",
+      "total_dprs": 1,
+      "dpr_ids": [
+        "DPR-001"
+      ],
+      "files_touched": 6,
+      "components": [
+        "Core HTTP Client"
+      ],
+      "is_spof": false
+    },
+    {
+      "author": "Nate Prewitt",
+      "total_dprs": 1,
+      "dpr_ids": [
+        "DPR-004"
+      ],
+      "files_touched": 4,
+      "components": [
+        "Platform Compatibility"
+      ],
+      "is_spof": false
+    },
+    {
+      "author": "Requests Core Team",
+      "total_dprs": 14,
+      "dpr_ids": [
+        "DPR-001",
+        "DPR-002",
+        "DPR-003",
+        "DPR-004",
+        "DPR-005",
+        "DPR-006",
+        "DPR-007",
+        "DPR-008",
+        "DPR-010",
+        "DPR-011",
+        "DPR-012",
+        "DPR-013",
+        "DPR-014",
+        "DPR-015"
+      ],
+      "files_touched": 21,
+      "components": [
+        "Authentication",
+        "Code Quality / Developer Experience",
+        "Content Decoding",
+        "Cookie Management",
+        "Core HTTP Client",
+        "Developer Workflow / Build Automation",
+        "Developer Workflow / Code Quality",
+        "Error Handling",
+        "Extension Mechanism",
+        "HTTP Header Handling",
+        "Platform Compatibility",
+        "Project Build & Packaging",
+        "Security (TLS/SSL)",
+        "Session Management"
+      ],
+      "is_spof": false
+    },
+    {
+      "author": "Requests documentation contributors",
+      "total_dprs": 1,
+      "dpr_ids": [
+        "DPR-009"
+      ],
+      "files_touched": 5,
+      "components": [
+        "Documentation System"
+      ],
+      "is_spof": false
+    }
+  ],
+  "dpr_ownership": {
+    "DPR-001": {
+      "Kenneth Reitz (initial design)": 66.7,
+      "Requests Core Team": 33.3
+    },
+    "DPR-002": {
+      "Kenneth Reitz": 66.7,
+      "Requests Core Team": 33.3
+    },
+    "DPR-003": {
+      "Kenneth Reitz": 66.7,
+      "Requests Core Team": 33.3
+    },
+    "DPR-004": {
+      "Ian Stapleton Cordasco": 50.0,
+      "Nate Prewitt": 33.3,
+      "Requests Core Team": 16.7
+    },
+    "DPR-005": {
+      "Requests Core Team": 100.0
+    },
+    "DPR-006": {
+      "Kenneth Reitz": 66.7,
+      "Requests Core Team": 33.3
+    },
+    "DPR-007": {
+      "Requests Core Team": 100.0
+    },
+    "DPR-008": {
+      "Requests Core Team": 100.0
+    },
+    "DPR-009": {
+      "Requests documentation contributors": 100.0
+    },
+    "DPR-010": {
+      "Requests Core Team": 100.0
+    },
+    "DPR-011": {
+      "Requests Core Team": 100.0
+    },
+    "DPR-012": {
+      "Kenneth Reitz": 66.7,
+      "Requests Core Team": 33.3
+    },
+    "DPR-013": {
+      "Kenneth Reitz": 66.7,
+      "Requests Core Team": 33.3
+    },
+    "DPR-014": {
+      "Requests Core Team": 100.0
+    },
+    "DPR-015": {
+      "Kenneth Reitz": 66.7,
+      "Requests Core Team": 33.3
+    }
+  },
+  "component_concentration": {
+    "Core HTTP Client": {
+      "total_dprs": 2,
+      "authors": [
+        {
+          "author": "Kenneth Reitz (initial design)",
+          "dpr_count": 1,
+          "percentage": 50.0
+        },
+        {
+          "author": "Requests Core Team",
+          "dpr_count": 1,
+          "percentage": 50.0
+        }
+      ],
+      "concentration_risk": "medium"
+    },
+    "Session Management": {
+      "total_dprs": 2,
+      "authors": [
+        {
+          "author": "Kenneth Reitz",
+          "dpr_count": 1,
+          "percentage": 50.0
+        },
+        {
+          "author": "Requests Core Team",
+          "dpr_count": 1,
+          "percentage": 50.0
+        }
+      ],
+      "concentration_risk": "medium"
+    },
+    "Security (TLS/SSL)": {
+      "total_dprs": 2,
+      "authors": [
+        {
+          "author": "Kenneth Reitz",
+          "dpr_count": 1,
+          "percentage": 50.0
+        },
+        {
+          "author": "Requests Core Team",
+          "dpr_count": 1,
+          "percentage": 50.0
+        }
+      ],
+      "concentration_risk": "medium"
+    },
+    "Platform Compatibility": {
+      "total_dprs": 3,
+      "authors": [
+        {
+          "author": "Ian Stapleton Cordasco",
+          "dpr_count": 1,
+          "percentage": 33.3
+        },
+        {
+          "author": "Nate Prewitt",
+          "dpr_count": 1,
+          "percentage": 33.3
+        },
+        {
+          "author": "Requests Core Team",
+          "dpr_count": 1,
+          "percentage": 33.3
+        }
+      ],
+      "concentration_risk": "low"
+    },
+    "Content Decoding": {
+      "total_dprs": 1,
+      "authors": [
+        {
+          "author": "Requests Core Team",
+          "dpr_count": 1,
+          "percentage": 100.0
+        }
+      ],
+      "concentration_risk": "high"
+    },
+    "Error Handling": {
+      "total_dprs": 2,
+      "authors": [
+        {
+          "author": "Kenneth Reitz",
+          "dpr_count": 1,
+          "percentage": 50.0
+        },
+        {
+          "author": "Requests Core Team",
+          "dpr_count": 1,
+          "percentage": 50.0
+        }
+      ],
+      "concentration_risk": "medium"
+    },
+    "Project Build & Packaging": {
+      "total_dprs": 1,
+      "authors": [
+        {
+          "author": "Requests Core Team",
+          "dpr_count": 1,
+          "percentage": 100.0
+        }
+      ],
+      "concentration_risk": "high"
+    },
+    "Developer Workflow / Code Quality": {
+      "total_dprs": 1,
+      "authors": [
+        {
+          "author": "Requests Core Team",
+          "dpr_count": 1,
+          "percentage": 100.0
+        }
+      ],
+      "concentration_risk": "high"
+    },
+    "Documentation System": {
+      "total_dprs": 1,
+      "authors": [
+        {
+          "author": "Requests documentation contributors",
+          "dpr_count": 1,
+          "percentage": 100.0
+        }
+      ],
+      "concentration_risk": "high"
+    },
+    "Developer Workflow / Build Automation": {
+      "total_dprs": 1,
+      "authors": [
+        {
+          "author": "Requests Core Team",
+          "dpr_count": 1,
+          "percentage": 100.0
+        }
+      ],
+      "concentration_risk": "high"
+    },
+    "Code Quality / Developer Experience": {
+      "total_dprs": 1,
+      "authors": [
+        {
+          "author": "Requests Core Team",
+          "dpr_count": 1,
+          "percentage": 100.0
+        }
+      ],
+      "concentration_risk": "high"
+    },
+    "HTTP Header Handling": {
+      "total_dprs": 2,
+      "authors": [
+        {
+          "author": "Kenneth Reitz",
+          "dpr_count": 1,
+          "percentage": 50.0
+        },
+        {
+          "author": "Requests Core Team",
+          "dpr_count": 1,
+          "percentage": 50.0
+        }
+      ],
+      "concentration_risk": "medium"
+    },
+    "Authentication": {
+      "total_dprs": 2,
+      "authors": [
+        {
+          "author": "Kenneth Reitz",
+          "dpr_count": 1,
+          "percentage": 50.0
+        },
+        {
+          "author": "Requests Core Team",
+          "dpr_count": 1,
+          "percentage": 50.0
+        }
+      ],
+      "concentration_risk": "medium"
+    },
+    "Extension Mechanism": {
+      "total_dprs": 1,
+      "authors": [
+        {
+          "author": "Requests Core Team",
+          "dpr_count": 1,
+          "percentage": 100.0
+        }
+      ],
+      "concentration_risk": "high"
+    },
+    "Cookie Management": {
+      "total_dprs": 2,
+      "authors": [
+        {
+          "author": "Kenneth Reitz",
+          "dpr_count": 1,
+          "percentage": 50.0
+        },
+        {
+          "author": "Requests Core Team",
+          "dpr_count": 1,
+          "percentage": 50.0
+        }
+      ],
+      "concentration_risk": "medium"
+    }
+  },
+  "spof_alerts": [
+    {
+      "author": "Kenneth Reitz (initial design)",
+      "dpr_id": "DPR-001",
+      "dpr_title": "Core HTTP Client Delegation to urllib3",
+      "component": "Core HTTP Client",
+      "ownership_pct": 66.7,
+      "blast_radius": "critical",
+      "risk": "HIGH_CONCENTRATION",
+      "recommendation": "Engineer 'Kenneth Reitz (initial design)' holds 66.7% of causal knowledge about Core HTTP Client Delegation to urllib3 (Core HTTP Client). Knowledge transfer recommended."
+    },
+    {
+      "author": "Kenneth Reitz",
+      "dpr_id": "DPR-002",
+      "dpr_title": "Introduction of a Session Object for State Persistence",
+      "component": "Session Management",
+      "ownership_pct": 66.7,
+      "blast_radius": "high",
+      "risk": "HIGH_CONCENTRATION",
+      "recommendation": "Engineer 'Kenneth Reitz' holds 66.7% of causal knowledge about Introduction of a Session Object for State Persistence (Session Management). Knowledge transfer recommended."
+    },
+    {
+      "author": "Kenneth Reitz",
+      "dpr_id": "DPR-003",
+      "dpr_title": "Standardized CA Certificate Verification via certifi",
+      "component": "Security (TLS/SSL)",
+      "ownership_pct": 66.7,
+      "blast_radius": "critical",
+      "risk": "HIGH_CONCENTRATION",
+      "recommendation": "Engineer 'Kenneth Reitz' holds 66.7% of causal knowledge about Standardized CA Certificate Verification via certifi (Security (TLS/SSL)). Knowledge transfer recommended."
+    },
+    {
+      "author": "Kenneth Reitz",
+      "dpr_id": "DPR-006",
+      "dpr_title": "Centralized Exception Hierarchy",
+      "component": "Error Handling",
+      "ownership_pct": 66.7,
+      "blast_radius": "high",
+      "risk": "HIGH_CONCENTRATION",
+      "recommendation": "Engineer 'Kenneth Reitz' holds 66.7% of causal knowledge about Centralized Exception Hierarchy (Error Handling). Knowledge transfer recommended."
+    },
+    {
+      "author": "Kenneth Reitz",
+      "dpr_id": "DPR-012",
+      "dpr_title": "`CaseInsensitiveDict` for HTTP Headers",
+      "component": "HTTP Header Handling",
+      "ownership_pct": 66.7,
+      "blast_radius": "high",
+      "risk": "HIGH_CONCENTRATION",
+      "recommendation": "Engineer 'Kenneth Reitz' holds 66.7% of causal knowledge about `CaseInsensitiveDict` for HTTP Headers (HTTP Header Handling). Knowledge transfer recommended."
+    },
+    {
+      "author": "Kenneth Reitz",
+      "dpr_id": "DPR-013",
+      "dpr_title": "Extensible Authentication System",
+      "component": "Authentication",
+      "ownership_pct": 66.7,
+      "blast_radius": "high",
+      "risk": "HIGH_CONCENTRATION",
+      "recommendation": "Engineer 'Kenneth Reitz' holds 66.7% of causal knowledge about Extensible Authentication System (Authentication). Knowledge transfer recommended."
+    },
+    {
+      "author": "Kenneth Reitz",
+      "dpr_id": "DPR-015",
+      "dpr_title": "Browser-Style Cookie Management via `http.cookiejar`",
+      "component": "Cookie Management",
+      "ownership_pct": 66.7,
+      "blast_radius": "high",
+      "risk": "HIGH_CONCENTRATION",
+      "recommendation": "Engineer 'Kenneth Reitz' holds 66.7% of causal knowledge about Browser-Style Cookie Management via `http.cookiejar` (Cookie Management). Knowledge transfer recommended."
+    }
+  ]
+}

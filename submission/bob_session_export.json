@@ -1,0 +1,18 @@
+{
+  "tool": "IBM Bob IDE",
+  "session_type": "Full Repository Analysis",
+  "target_repository": "https://github.com/postgres/postgres",
+  "analysis_date": "2026-05-16T22:49:44.419439+00:00",
+  "layers_completed": [
+    "Layer 1: Decision Provenance Engine",
+    "Layer 2: CTG Builder",
+    "Layer 3: Assumption Decay Monitor"
+  ],
+  "outputs": {
+    "dprs_extracted": 15,
+    "ctg_edges": 25,
+    "decay_alerts": 5,
+    "files_analyzed": "Full repository (src/, doc/, contrib/)"
+  },
+  "session_notes": "Bob ingested the full PostgreSQL repository including git history. DPRs were extracted for MVCC, WAL, Storage, Autovacuum, ProcessModel, and Replication components."
+}

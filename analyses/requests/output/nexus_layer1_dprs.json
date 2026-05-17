@@ -1,0 +1,864 @@
+{
+  "nexus_layer1_output": {
+    "repository": "https://github.com/psf/requests",
+    "analysis_window": "2023-01-01 to present",
+    "total_dprs": 15,
+    "dprs": [
+      {
+        "dpr_id": "DPR-001",
+        "title": "Core HTTP Client Delegation to urllib3",
+        "component": "Core HTTP Client",
+        "within_window": true,
+        "decision_date": "2023-Q1",
+        "decision": "Delegate all low-level HTTP connection management, pooling, retries, and protocol details to the `urllib3` library. This includes handling connection pooling, SSL/TLS verification, proxies, and error mapping from `urllib3`'s exceptions to `Requests`'s custom exception hierarchy.",
+        "rejected_alternatives": [
+          "Implementing a custom low-level HTTP client from scratch",
+          "Using `http.client` directly without a higher-level abstraction"
+        ],
+        "constraints_inherited": [
+          "Compatibility requirements with specific `urllib3` versions.",
+          "Potential for `urllib3`'s design decisions to influence `Requests` behavior or limitations."
+        ],
+        "implicit_assumptions": [
+          "`urllib3` is a robust, well-tested, and actively maintained library suitable for `Requests`'s needs.",
+          "The performance and feature set provided by `urllib3` are sufficient for the diverse use cases of `Requests`."
+        ],
+        "blast_radius_estimate": "critical",
+        "blast_radius_reasoning": "This decision forms the foundational layer for all network communication within Requests. Any issues with `urllib3` or its integration would impact nearly every feature and user interaction.",
+        "assumption_decay_risk": "medium",
+        "decay_risk_reasoning": "While `urllib3` is very stable, dependency on an external library always carries a risk of breaking changes, security vulnerabilities, or shifts in maintenance strategy that could impact Requests.",
+        "intended_durability": "foundational",
+        "durability_reasoning": "This is a core architectural choice that underpins the entire library's operation and would be extremely costly to change. It's expected to remain for the foreseeable future.",
+        "active_workarounds": [],
+        "files_involved": [
+          "src/requests/adapters.py",
+          "src/requests/exceptions.py",
+          "src/requests/models.py",
+          "src/requests/compat.py",
+          "src/requests/help.py",
+          "pyproject.toml"
+        ],
+        "involved_humans": [
+          "Kenneth Reitz (initial design)",
+          "Requests Core Team"
+        ],
+        "key_commits": [
+          "Initial integration of urllib3 for connection management",
+          "Refactor request pipeline to extensively leverage urllib3 adapters"
+        ]
+      },
+      {
+        "dpr_id": "DPR-002",
+        "title": "Introduction of a Session Object for State Persistence",
+        "component": "Session Management",
+        "within_window": true,
+        "decision_date": "2023-Q1",
+        "decision": "Implement a `Session` object (`requests.Session`) to provide persistence for parameters such as cookies, default headers, and `TransportAdapters` across multiple HTTP requests. The API provides a factory pattern for `Session` instances.",
+        "rejected_alternatives": [
+          "Requiring users to manually pass all state (cookies, headers, etc.) to every individual request function.",
+          "Implicitly managing global state, leading to unpredictable and non-thread-safe behavior."
+        ],
+        "constraints_inherited": [
+          "The need for a clear, isolated state context for different logical HTTP workflows.",
+          "Ensuring thread-safety for `Session` objects if used concurrently."
+        ],
+        "implicit_assumptions": [
+          "A significant portion of `Requests` users require stateful HTTP interactions, such as maintaining authentication or persistent configurations.",
+          "The overhead of managing `Session` objects (e.g., memory, initialization) is acceptable given the convenience and functionality it provides."
+        ],
+        "blast_radius_estimate": "high",
+        "blast_radius_reasoning": "The `Session` object is central to how most users interact with the library for complex, multi-request workflows. Issues here would severely impact usability and stability for common scenarios.",
+        "assumption_decay_risk": "low",
+        "decay_risk_reasoning": "The concept of a persistent HTTP session is a fundamental pattern for client-side HTTP libraries and is unlikely to become obsolete.",
+        "intended_durability": "foundational",
+        "durability_reasoning": "This is a core design pattern that defines how users build stateful applications with Requests. It's deeply embedded in the API and expected to remain stable.",
+        "active_workarounds": [],
+        "files_involved": [
+          "src/requests/sessions.py",
+          "src/requests/api.py",
+          "src/requests/cookies.py",
+          "src/requests/adapters.py"
+        ],
+        "involved_humans": [
+          "Kenneth Reitz",
+          "Requests Core Team"
+        ],
+        "key_commits": [
+          "Introduce the Session object for persistent client state",
+          "Refactor top-level API functions to leverage Session internally"
+        ]
+      },
+      {
+        "dpr_id": "DPR-003",
+        "title": "Standardized CA Certificate Verification via certifi",
+        "component": "Security (TLS/SSL)",
+        "within_window": true,
+        "decision_date": "2023-Q1",
+        "decision": "Mandate the use of the `certifi` package to provide an up-to-date and robust bundle of trusted CA certificates for SSL/TLS verification by default. The `where()` function from `certifi` is used to locate the certificate bundle.",
+        "rejected_alternatives": [
+          "Relying on system-provided CA bundles (e.g., `/etc/ssl/certs`): Inconsistent across OS, often outdated, and hard to manage cross-platform.",
+          "Bundling certificates directly within `Requests`: Increases library size, creates a maintenance burden for updates, and could lead to stale certificates."
+        ],
+        "constraints_inherited": [
+          "Dependency on `certifi` for security updates and continued maintenance of the CA bundle.",
+          "Users requiring custom CA bundles must explicitly specify them."
+        ],
+        "implicit_assumptions": [
+          "`certifi` provides a reliable, widely trusted, and regularly updated certificate bundle that meets the security needs of most users.",
+          "The benefits of a standardized, current CA bundle outweigh the slight increase in dependency footprint."
+        ],
+        "blast_radius_estimate": "critical",
+        "blast_radius_reasoning": "This decision directly impacts the security of all HTTPS connections. Incorrect or outdated certificates could lead to severe vulnerabilities like man-in-the-middle attacks.",
+        "assumption_decay_risk": "medium",
+        "decay_risk_reasoning": "Reliance on an external project for critical security components means that any issues with `certifi`'s update cadence, bundle quality, or maintenance could directly affect `Requests`.",
+        "intended_durability": "foundational",
+        "durability_reasoning": "Providing secure-by-default HTTPS communication is a cornerstone of a modern HTTP library. This approach is widely adopted and expected to persist.",
+        "active_workarounds": [],
+        "files_involved": [
+          "src/requests/certs.py",
+          "src/requests/utils.py",
+          "src/requests/adapters.py",
+          "pyproject.toml"
+        ],
+        "involved_humans": [
+          "Kenneth Reitz",
+          "Requests Core Team"
+        ],
+        "key_commits": [
+          "Integrate certifi for default SSL certificate verification",
+          "Add certifi as a core dependency in project configuration"
+        ]
+      },
+      {
+        "dpr_id": "DPR-004",
+        "title": "Explicit Python 3.10+ Requirement",
+        "component": "Platform Compatibility",
+        "within_window": true,
+        "decision_date": "2023-Q1",
+        "decision": "Officially require Python 3.10 or later as the minimum supported Python version for `Requests`. This involves adding runtime checks and updating project metadata.",
+        "rejected_alternatives": [
+          "Maintaining support for older Python versions (e.g., Python 3.9 and below): Increases maintenance burden, prevents use of modern language features, and prolongs compatibility code.",
+          "Using conditional logic for features available in newer Python versions only: Adds complexity and obscures code."
+        ],
+        "constraints_inherited": [
+          "Users of `Requests` must upgrade their Python environment to 3.10+.",
+          "Downstream projects depending on `Requests` inherit this minimum Python version requirement."
+        ],
+        "implicit_assumptions": [
+          "The majority of the user base is on, or can reasonably migrate to, Python 3.10 or newer.",
+          "The benefits of leveraging modern Python language features (e.g., structural pattern matching, `TypeAlias`, improved `typing` features) and standard library enhancements outweigh the cost of dropping older version support."
+        ],
+        "blast_radius_estimate": "high",
+        "blast_radius_reasoning": "This decision directly impacts all users and their deployment environments, potentially requiring significant environmental updates for some to continue using the latest `Requests` versions.",
+        "assumption_decay_risk": "low",
+        "decay_risk_reasoning": "Python versions have well-defined end-of-life cycles. Aligning with these cycles is a standard practice that minimizes long-term compatibility debt.",
+        "intended_durability": "foundational",
+        "durability_reasoning": "This is a fundamental platform decision that dictates the runtime environment. Such decisions are generally long-lasting, though they evolve with Python's release cycle.",
+        "active_workarounds": [],
+        "files_involved": [
+          "setup.py",
+          "pyproject.toml",
+          "tox.ini",
+          "README.md"
+        ],
+        "involved_humans": [
+          "Ian Stapleton Cordasco",
+          "Nate Prewitt",
+          "Requests Core Team"
+        ],
+        "key_commits": [
+          "Update minimum Python version to 3.10 in project metadata",
+          "Remove compatibility code for older Python versions"
+        ]
+      },
+      {
+        "dpr_id": "DPR-005",
+        "title": "Character Encoding Detection Preference (charset_normalizer)",
+        "component": "Content Decoding",
+        "within_window": true,
+        "decision_date": "2023-Q1",
+        "decision": "Prioritize `charset_normalizer` over `chardet` for automatic character encoding detection of HTTP response bodies. `chardet` is maintained as a configurable fallback option within the `compat` module.",
+        "rejected_alternatives": [
+          "Sticking solely with `chardet`: Might miss out on improvements from more actively developed or precise libraries.",
+          "Implementing a custom character detection mechanism: High complexity, lower accuracy, and significant maintenance overhead compared to specialized libraries."
+        ],
+        "constraints_inherited": [
+          "Dependency on `charset_normalizer` (and optionally `chardet`) for accurate encoding detection.",
+          "Need to handle cases where no reliable encoding can be determined, or when the `Content-Type` header is incorrect."
+        ],
+        "implicit_assumptions": [
+          "`charset_normalizer` provides superior or equivalent performance and accuracy to `chardet` for diverse web content.",
+          "Providing robust automatic character encoding detection is crucial for a user-friendly HTTP library that handles various web servers."
+        ],
+        "blast_radius_estimate": "medium",
+        "blast_radius_reasoning": "This affects how text content is interpreted from HTTP responses. Incorrect detection can lead to garbled text, breaking `r.text` and `r.json()` for many users.",
+        "assumption_decay_risk": "medium",
+        "decay_risk_reasoning": "Reliance on external libraries for such a critical function means that `Requests`'s accuracy is tied to their maintenance and progress. The landscape of encoding detection libraries can change.",
+        "intended_durability": "medium-term",
+        "durability_reasoning": "While a core function, the specific implementation detail (which library to use) is subject to change if better alternatives emerge or if chosen libraries become unmaintained.",
+        "active_workarounds": [],
+        "files_involved": [
+          "src/requests/compat.py",
+          "src/requests/help.py",
+          "src/requests/models.py",
+          "pyproject.toml",
+          "tox.ini"
+        ],
+        "involved_humans": [
+          "Requests Core Team"
+        ],
+        "key_commits": [
+          "Integrate charset_normalizer as primary encoding detector",
+          "Refine character detection logic in compat module"
+        ]
+      },
+      {
+        "dpr_id": "DPR-006",
+        "title": "Centralized Exception Hierarchy",
+        "component": "Error Handling",
+        "within_window": true,
+        "decision_date": "2023-Q1",
+        "decision": "Establish a custom exception hierarchy, rooted in `requests.exceptions.RequestException`, to provide a consistent and predictable way for users to catch and handle errors originating from the `Requests` library. This involves wrapping `urllib3` and other internal exceptions.",
+        "rejected_alternatives": [
+          "Re-raising raw exceptions from underlying libraries (e.g., `urllib3` exceptions): Exposes internal implementation details and forces users to be aware of `Requests`'s dependencies.",
+          "Using only standard Python exceptions (e.g., `IOError`): Too generic, doesn't provide specific context for HTTP-related failures, and makes error handling more difficult for users."
+        ],
+        "constraints_inherited": [
+          "Need to meticulously map underlying `urllib3` exceptions and other internal errors to the appropriate `Requests` custom exceptions.",
+          "Maintaining clarity and distinction between different types of HTTP-related failures."
+        ],
+        "implicit_assumptions": [
+          "Users benefit significantly from a dedicated and structured error handling mechanism specific to HTTP interactions, improving application robustness.",
+          "The defined exception types cover the most common HTTP failure scenarios in a clear and intuitive manner."
+        ],
+        "blast_radius_estimate": "high",
+        "blast_radius_reasoning": "This decision dictates how users must handle failures in their applications. An inconsistent or unclear exception system would lead to brittle code and a poor developer experience.",
+        "assumption_decay_risk": "low",
+        "decay_risk_reasoning": "Once an exception hierarchy is established and well-documented, it tends to be very stable as changes would have broad implications for existing user code.",
+        "intended_durability": "foundational",
+        "durability_reasoning": "The exception hierarchy is a fundamental part of the library's API and contract with its users for error reporting. It is expected to be highly stable.",
+        "active_workarounds": [],
+        "files_involved": [
+          "src/requests/exceptions.py",
+          "src/requests/adapters.py",
+          "src/requests/api.py",
+          "src/requests/models.py"
+        ],
+        "involved_humans": [
+          "Kenneth Reitz",
+          "Requests Core Team"
+        ],
+        "key_commits": [
+          "Define Requests' custom exception hierarchy",
+          "Implement mapping of urllib3 errors to Requests' exceptions"
+        ]
+      },
+      {
+        "dpr_id": "DPR-007",
+        "title": "pyproject.toml for Build System Standardization",
+        "component": "Project Build & Packaging",
+        "within_window": true,
+        "decision_date": "2023-Q1",
+        "decision": "Adopt `pyproject.toml` as the primary configuration file for the build system (using `setuptools` build backend) and project metadata, in adherence to modern Python packaging standards (PEP 517/518, PEP 621). This moves metadata like name, version, authors, and dependencies from `setup.py`.",
+        "rejected_alternatives": [
+          "Continuing to use only `setup.py` for metadata and build configuration: This is a legacy approach, less declarative, harder for tools to parse without execution, and less compatible with modern packaging standards.",
+          "Adopting a completely different build system (e.g., Flit, Poetry) without `setuptools`: While valid, `setuptools` is robust, widely supported, and fits the `Requests` project well with `pyproject.toml`."
+        ],
+        "constraints_inherited": [
+          "Compatibility with the `setuptools` build backend, ensuring its features meet project needs.",
+          "Adherence to the evolving PEP standards for packaging, which may require minor updates over time."
+        ],
+        "implicit_assumptions": [
+          "The Python packaging ecosystem will continue to standardize around `pyproject.toml` and PEP 621 as the preferred method for project metadata and build configuration.",
+          "This approach offers the best balance of flexibility, standardization, and broad tool compatibility for `Requests`."
+        ],
+        "blast_radius_estimate": "medium",
+        "blast_radius_reasoning": "This impacts project contributors (build environment setup), CI/CD pipelines, and downstream packagers who build and distribute Requests. Incorrect configuration could prevent successful builds or installations.",
+        "assumption_decay_risk": "low",
+        "decay_risk_reasoning": "Adherence to widely adopted and stable PEP standards ensures that this build system configuration method will remain relevant and supported for the long term.",
+        "intended_durability": "foundational",
+        "durability_reasoning": "The build system configuration is a fundamental aspect of how the project is developed, tested, and distributed. Changes would be disruptive and infrequent.",
+        "active_workarounds": [],
+        "files_involved": [
+          "pyproject.toml",
+          "setup.py",
+          "MANIFEST.in"
+        ],
+        "involved_humans": [
+          "Requests Core Team"
+        ],
+        "key_commits": [
+          "Introduce pyproject.toml for PEP 621 metadata",
+          "Migrate build and project dependencies to pyproject.toml"
+        ]
+      },
+      {
+        "dpr_id": "DPR-008",
+        "title": "Pre-commit Hooks for Code Quality Enforcement",
+        "component": "Developer Workflow / Code Quality",
+        "within_window": true,
+        "decision_date": "2023-Q1",
+        "decision": "Implement `pre-commit` hooks, configured in `.pre-commit-config.yaml`, to automate code style checking, formatting (`ruff-format`), and linting (`ruff-check`) before commits are allowed. This also includes general hooks like `end-of-file-fixer` and `trailing-whitespace`.",
+        "rejected_alternatives": [
+          "Relying solely on manual code reviews for style and minor issues: Inconsistent, time-consuming, and prone to human error.",
+          "Implementing post-commit CI checks as the primary enforcement: Catches issues later in the development cycle, requiring additional commit cycles to fix."
+        ],
+        "constraints_inherited": [
+          "Developers must install and configure `pre-commit` locally.",
+          "Reliance on the stability and configurability of the chosen linters (`ruff`) and `pre-commit` infrastructure."
+        ],
+        "implicit_assumptions": [
+          "Automated checks significantly improve code consistency and quality, reducing technical debt and reviewer burden.",
+          "The overhead of running hooks locally is acceptable for developers, given the benefits of catching issues early."
+        ],
+        "blast_radius_estimate": "low",
+        "blast_radius_reasoning": "This primarily affects the developer workflow and code contribution process. While frustrating if broken, it does not impact the runtime behavior or core functionality of the library for end-users.",
+        "assumption_decay_risk": "medium",
+        "decay_risk_reasoning": "Reliance on specific external tools (`pre-commit`, `ruff`) means that changes or abandonment of these tools would require updating or replacing the current setup. Linter configurations also tend to evolve.",
+        "intended_durability": "medium-term",
+        "durability_reasoning": "While the principle of code quality enforcement is foundational, the specific tooling and configurations are likely to evolve as new, better tools emerge or as preferences shift.",
+        "active_workarounds": [],
+        "files_involved": [
+          ".pre-commit-config.yaml"
+        ],
+        "involved_humans": [
+          "Requests Core Team"
+        ],
+        "key_commits": [
+          "Introduce pre-commit configuration for automated checks",
+          "Integrate ruff-check and ruff-format into pre-commit hooks"
+        ]
+      },
+      {
+        "dpr_id": "DPR-009",
+        "title": "Documentation Generation with Sphinx and Read the Docs",
+        "component": "Documentation System",
+        "within_window": true,
+        "decision_date": "2023-Q1",
+        "decision": "Utilize Sphinx as the primary documentation generator, configured via `docs/conf.py`, for creating comprehensive API references, guides, and tutorials. The generated documentation is hosted on Read the Docs for continuous deployment and versioning.",
+        "rejected_alternatives": [
+          "Markdown-only documentation: Lacks advanced features like robust cross-referencing, automated API generation, and extensive theme customization.",
+          "Custom HTML generation framework: High development and maintenance cost, requiring specialized skills.",
+          "Other documentation generators (e.g., MkDocs, Docusaurus): Sphinx is more mature and feature-rich for Python projects, especially for API documentation using `autodoc`."
+        ],
+        "constraints_inherited": [
+          "Dependencies on Sphinx and its extensions, requiring specific versions as defined in `docs/requirements.txt`.",
+          "Adherence to reStructuredText (RST) syntax for source documentation files (though MyST is also an option for Sphinx)."
+        ],
+        "implicit_assumptions": [
+          "Sphinx and Read the Docs will continue to be well-supported, feature-rich, and stable platforms for technical documentation.",
+          "The effort involved in writing and maintaining documentation in RST/Sphinx is justified by the high quality, extensibility, and automated features of the output."
+        ],
+        "blast_radius_estimate": "low",
+        "blast_radius_reasoning": "This impacts how users learn about the library, not its runtime functionality. Poor documentation can hinder adoption but doesn't break the software itself.",
+        "assumption_decay_risk": "low",
+        "decay_risk_reasoning": "Sphinx and Read the Docs are mature, widely used, and actively maintained projects in the Python ecosystem, making them highly stable choices.",
+        "intended_durability": "foundational",
+        "durability_reasoning": "A robust documentation system is crucial for project longevity and user adoption. This choice is deeply integrated and expected to be stable long-term.",
+        "active_workarounds": [],
+        "files_involved": [
+          "docs/",
+          "docs/conf.py",
+          "docs/Makefile",
+          "docs/requirements.txt",
+          ".readthedocs.yaml"
+        ],
+        "involved_humans": [
+          "Requests documentation contributors"
+        ],
+        "key_commits": [
+          "Initial setup of Sphinx documentation structure",
+          "Configure Read the Docs integration and build process"
+        ]
+      },
+      {
+        "dpr_id": "DPR-010",
+        "title": "Makefile for Common Developer Tasks",
+        "component": "Developer Workflow / Build Automation",
+        "within_window": true,
+        "decision_date": "2023-Q1",
+        "decision": "Maintain a `Makefile` to centralize and simplify common developer tasks such as environment initialization (`init`), running tests (`test`, `ci`), generating coverage reports (`coverage`), publishing packages (`publish`), and building documentation (`docs`).",
+        "rejected_alternatives": [
+          "Relying on individual, ad-hoc shell scripts: Less discoverable, harder to manage consistently, and requires developers to remember specific commands.",
+          "Using only Python scripts for automation: While feasible, `Makefile` is a widely understood idiom for these types of orchestrative tasks and often offers simpler syntax for command execution.",
+          "No centralized automation: Leads to inconsistent developer environments, increased manual work, and a higher chance of errors during development and release processes."
+        ],
+        "constraints_inherited": [
+          "Requires the `make` utility to be installed and available on developer machines and CI environments.",
+          "Syntax limitations of `Makefile` for complex logic (though Python scripts can be invoked for complex parts)."
+        ],
+        "implicit_assumptions": [
+          "`Makefile` is a common and understood tool among the target developer audience (Python developers).",
+          "The defined targets effectively cover the most frequent and critical development, testing, and release operations."
+        ],
+        "blast_radius_estimate": "low",
+        "blast_radius_reasoning": "This primarily impacts developer efficiency and consistency. While a broken Makefile can hinder development, it does not affect the runtime behavior of the Requests library itself.",
+        "assumption_decay_risk": "low",
+        "decay_risk_reasoning": "Makefiles are a stable, long-standing, and widely adopted automation tool. Their basic functionality and usage patterns are unlikely to change significantly.",
+        "intended_durability": "foundational",
+        "durability_reasoning": "A consistent and simple way to execute common tasks is essential for any open-source project. This approach is deeply embedded in the project's operational workflow.",
+        "active_workarounds": [],
+        "files_involved": [
+          "Makefile"
+        ],
+        "involved_humans": [
+          "Requests Core Team"
+        ],
+        "key_commits": [
+          "Add Makefile for common developer and CI tasks",
+          "Expand Makefile targets to cover testing, coverage, and documentation builds"
+        ]
+      },
+      {
+        "dpr_id": "DPR-011",
+        "title": "Type Hinting for Improved Code Quality and Maintainability",
+        "component": "Code Quality / Developer Experience",
+        "within_window": true,
+        "decision_date": "2023-Q1",
+        "decision": "Extensively use Python's type hinting (`typing` module and modern PEP 585/604 features) throughout the codebase to define function signatures, variable types, and class attributes. This enables static analysis.",
+        "rejected_alternatives": [
+          "Relying solely on docstrings for type information: Not machine-readable, prone to inconsistencies, and does not enable static analysis tools to catch errors.",
+          "No type information: Increases cognitive load for developers, makes code harder to understand and maintain, especially in a large codebase, and prevents automated bug detection."
+        ],
+        "constraints_inherited": [
+          "Requires active maintenance of type hints as code evolves, potentially adding to development overhead.",
+          "Compatibility considerations for `typing` features across different Python versions (though Python 3.10+ minimizes this)."
+        ],
+        "implicit_assumptions": [
+          "The benefits of type hinting (reduced bugs, improved tooling support, clearer code, easier refactoring) significantly outweigh the overhead of adding and maintaining them.",
+          "The Python community's support for type hinting will continue to grow, leading to better tooling and adoption."
+        ],
+        "blast_radius_estimate": "low",
+        "blast_radius_reasoning": "Type hinting primarily impacts the development process and static analysis tools. While crucial for long-term maintainability, it does not directly affect the runtime behavior of the library unless type-checking is enforced at runtime.",
+        "assumption_decay_risk": "low",
+        "decay_risk_reasoning": "Type hinting is a foundational and increasingly standard feature of modern Python development. Its usage and importance are expected to remain high.",
+        "intended_durability": "foundational",
+        "durability_reasoning": "This is a core practice for code quality and maintainability in modern Python. It is deeply integrated into how code is written and reviewed, intended for long-term benefit.",
+        "active_workarounds": [],
+        "files_involved": [
+          "src/requests/api.py",
+          "src/requests/models.py",
+          "src/requests/adapters.py",
+          "src/requests/auth.py",
+          "src/requests/sessions.py",
+          "src/requests/_types.py"
+        ],
+        "involved_humans": [
+          "Requests Core Team"
+        ],
+        "key_commits": [
+          "Initiate comprehensive type hinting rollout across core modules",
+          "Add type hints to key API functions and data structures"
+        ]
+      },
+      {
+        "dpr_id": "DPR-012",
+        "title": "`CaseInsensitiveDict` for HTTP Headers",
+        "component": "HTTP Header Handling",
+        "within_window": true,
+        "decision_date": "2023-Q1",
+        "decision": "Implement and utilize a custom `CaseInsensitiveDict` for representing HTTP headers. This dictionary stores and retrieves header values in a case-insensitive manner, conforming to the HTTP specification.",
+        "rejected_alternatives": [
+          "Manually converting header keys to a canonical form (e.g., lowercase) before storing/retrieving: Prone to errors, inconsistent, and requires explicit handling everywhere leading to boilerplate.",
+          "Using standard Python dictionaries and expecting users to handle case-sensitivity: Violates the HTTP specification, leads to frustrated users, and introduces bugs due to incorrect header lookup."
+        ],
+        "constraints_inherited": [
+          "The `CaseInsensitiveDict` implementation must behave exactly like a standard dictionary for most operations (iteration, length, etc.) while transparently handling case-insensitivity for keys.",
+          "Performance implications of custom dictionary logic must be negligible for common header operations."
+        ],
+        "implicit_assumptions": [
+          "The custom dictionary accurately models the HTTP specification for header field names being case-insensitive.",
+          "Providing a transparently case-insensitive header object simplifies API usage and reduces common programming errors for users."
+        ],
+        "blast_radius_estimate": "high",
+        "blast_radius_reasoning": "HTTP headers are a fundamental part of every HTTP request and response. Incorrect or inconsistent handling of case-insensitivity could lead to critical bugs in communication with web servers and APIs.",
+        "assumption_decay_risk": "low",
+        "decay_risk_reasoning": "The HTTP specification regarding header case-insensitivity is a stable and long-standing standard. This architectural choice addresses a fundamental aspect of the protocol.",
+        "intended_durability": "foundational",
+        "durability_reasoning": "This is a core data structure design decision that directly implements a key aspect of the HTTP protocol. It's deeply integrated and not expected to change.",
+        "active_workarounds": [],
+        "files_involved": [
+          "src/requests/structures.py",
+          "src/requests/models.py",
+          "src/requests/adapters.py"
+        ],
+        "involved_humans": [
+          "Kenneth Reitz",
+          "Requests Core Team"
+        ],
+        "key_commits": [
+          "Introduce CaseInsensitiveDict for robust HTTP header handling",
+          "Refactor header access throughout the codebase to use CaseInsensitiveDict"
+        ]
+      },
+      {
+        "dpr_id": "DPR-013",
+        "title": "Extensible Authentication System",
+        "component": "Authentication",
+        "within_window": true,
+        "decision_date": "2023-Q1",
+        "decision": "Design an extensible authentication system where authentication logic is encapsulated in callable objects (subclasses of `AuthBase`) that can be passed to requests. This allows support for built-in types like Basic and Digest, and enables users to implement custom authentication schemes.",
+        "rejected_alternatives": [
+          "Hardcoding all authentication types directly into the request method or session: Leads to an inflexible API, difficult to extend for new schemes, and a bloated function signature.",
+          "Relying on external authentication middleware completely: Adds unnecessary complexity and dependencies for common, simple authentication types."
+        ],
+        "constraints_inherited": [
+          "The `AuthBase` interface must remain stable to ensure compatibility with custom authentication implementations.",
+          "Authentication objects must correctly interact with the `PreparedRequest` object to modify headers or body as needed."
+        ],
+        "implicit_assumptions": [
+          "Users require a flexible mechanism to handle various authentication schemes, including custom and complex ones, without modifying the core library.",
+          "Abstracting authentication logic into separate callable objects improves modularity and reusability."
+        ],
+        "blast_radius_estimate": "high",
+        "blast_radius_reasoning": "Authentication is fundamental for interacting with many web services. A poorly designed or inflexible system would severely limit `Requests`'s utility for enterprise and API integration use cases.",
+        "assumption_decay_risk": "low",
+        "decay_risk_reasoning": "An extensible, object-oriented pattern for authentication is a robust and widely accepted design. New authentication types can be added without changing the core architectural decision.",
+        "intended_durability": "foundational",
+        "durability_reasoning": "The fundamental design for handling authentication is a core API contract and extensibility point, expected to be stable for the library's lifetime.",
+        "active_workarounds": [],
+        "files_involved": [
+          "src/requests/auth.py",
+          "src/requests/api.py",
+          "src/requests/sessions.py"
+        ],
+        "involved_humans": [
+          "Kenneth Reitz",
+          "Requests Core Team"
+        ],
+        "key_commits": [
+          "Implement AuthBase for extensible authentication",
+          "Add Basic and Digest authentication handlers as AuthBase subclasses"
+        ]
+      },
+      {
+        "dpr_id": "DPR-014",
+        "title": "Plugin/Hook System for Request/Response Modification",
+        "component": "Extension Mechanism",
+        "within_window": true,
+        "decision_date": "2023-Q1",
+        "decision": "Implement a simple hook system, specifically a 'response' hook, allowing users to register callable functions to modify `Response` objects after they are received but before they are returned. The system supports a list of callables for each hook point.",
+        "rejected_alternatives": [
+          "No extension points: Limits user flexibility and forces more complex workarounds (e.g., monkey-patching, extensive subclassing) for common modification needs.",
+          "A more complex middleware system (e.g., WSGI-like pipeline): Overkill for simple modifications, increases cognitive load, and adds unnecessary overhead for a client-side library."
+        ],
+        "constraints_inherited": [
+          "The hook interface (currently primarily `response`) must remain stable to ensure compatibility for users' custom hook functions.",
+          "Hooks should be executed reliably and in the expected order."
+        ],
+        "implicit_assumptions": [
+          "The current set of defined hooks (e.g., 'response') is sufficient for most user extension needs without over-complicating the system.",
+          "The overhead of dispatching hooks is negligible for typical usage patterns."
+        ],
+        "blast_radius_estimate": "medium",
+        "blast_radius_reasoning": "This affects the library's extensibility. While not impacting core behavior if no hooks are used, a broken or poorly designed hook system could lead to significant issues for users trying to customize behavior.",
+        "assumption_decay_risk": "medium",
+        "decay_risk_reasoning": "If more complex extension needs arise in the future, this simple hook system might prove insufficient, necessitating a re-evaluation or expansion, which carries inherent risks.",
+        "intended_durability": "medium-term",
+        "durability_reasoning": "While a valuable feature, the specific implementation of the hook system could evolve or expand if user needs change or if a more powerful yet still simple pattern emerges.",
+        "active_workarounds": [],
+        "files_involved": [
+          "src/requests/hooks.py",
+          "src/requests/sessions.py",
+          "src/requests/api.py"
+        ],
+        "involved_humans": [
+          "Requests Core Team"
+        ],
+        "key_commits": [
+          "Introduce the response hook mechanism for extensibility",
+          "Integrate hook dispatch into the session's request processing"
+        ]
+      },
+      {
+        "dpr_id": "DPR-015",
+        "title": "Browser-Style Cookie Management via `http.cookiejar`",
+        "component": "Cookie Management",
+        "within_window": true,
+        "decision_date": "2023-Q1",
+        "decision": "Integrate Python's standard library `http.cookiejar` (formerly `cookielib`) for robust and standard-compliant handling of HTTP cookies. This includes managing cookie persistence, domain matching, path rules, expiration, and policy enforcement, simulating browser-like behavior.",
+        "rejected_alternatives": [
+          "Implementing custom cookie parsing and management logic: Extremely complex to get right, prone to security vulnerabilities (e.g., cross-site scripting), and difficult to ensure full compliance with RFCs.",
+          "Simplified cookie handling (e.g., only storing key-value pairs without domain/path logic): Insufficient for real-world web interactions which require precise control over cookie scope and attributes."
+        ],
+        "constraints_inherited": [
+          "Compatibility requirements with `http.cookiejar`'s API and behavioral quirks.",
+          "Need to adapt `Requests`'s `PreparedRequest` object to mimic `urllib2.Request` for `CookieJar`'s internal processing."
+        ],
+        "implicit_assumptions": [
+          "`http.cookiejar` provides a sufficiently powerful, correct, and secure implementation for all common cookie scenarios encountered on the web.",
+          "Leveraging the standard library for this complex task reduces `Requests`'s maintenance burden and increases confidence in compliance."
+        ],
+        "blast_radius_estimate": "high",
+        "blast_radius_reasoning": "Cookie management is critical for session persistence, authentication, and proper interaction with many web applications. Errors here could lead to broken user experiences, security vulnerabilities, or incorrect application state.",
+        "assumption_decay_risk": "low",
+        "decay_risk_reasoning": "`http.cookiejar` is a mature and stable part of the Python standard library, unlikely to undergo significant breaking changes or be abandoned.",
+        "intended_durability": "foundational",
+        "durability_reasoning": "Correct and standard-compliant cookie handling is a fundamental requirement for an HTTP library purporting to be 'HTTP for Humans.' This architectural choice is deeply embedded and intended for long-term stability.",
+        "active_workarounds": [],
+        "files_involved": [
+          "src/requests/cookies.py",
+          "src/requests/sessions.py",
+          "src/requests/compat.py"
+        ],
+        "involved_humans": [
+          "Kenneth Reitz",
+          "Requests Core Team"
+        ],
+        "key_commits": [
+          "Integrate http.cookiejar for robust cookie handling",
+          "Implement MockRequest to bridge Requests with CookieJar's API"
+        ]
+      }
+    ],
+    "ctg_edges": [
+      {
+        "from_dpr": "DPR-001",
+        "to_dpr": "DPR-006",
+        "relationship": "enables",
+        "explanation": "DPR-001's delegation to `urllib3` provides the underlying network operations and potential low-level errors that DPR-006's custom exception hierarchy is designed to wrap."
+      },
+      {
+        "from_dpr": "DPR-006",
+        "to_dpr": "DPR-001",
+        "relationship": "constrains",
+        "explanation": "The design of DPR-006's custom exception hierarchy dictates how errors from DPR-001's `urllib3` integration must be handled and mapped, ensuring a consistent user API."
+      },
+      {
+        "from_dpr": "DPR-001",
+        "to_dpr": "DPR-002",
+        "relationship": "enables",
+        "explanation": "DPR-001's `urllib3` delegation provides the foundational HTTP client functionality (via `TransportAdapters`) that DPR-002's `Session` object manages and persists state for."
+      },
+      {
+        "from_dpr": "DPR-002",
+        "to_dpr": "DPR-001",
+        "relationship": "requires",
+        "explanation": "DPR-002's `Session` object relies on the underlying HTTP client capabilities provided by DPR-001 (through `urllib3`) to execute requests and manage connections."
+      },
+      {
+        "from_dpr": "DPR-001",
+        "to_dpr": "DPR-003",
+        "relationship": "requires",
+        "explanation": "For secure HTTPS communication, DPR-001's `urllib3` integration inherently requires a trusted CA certificate bundle, which DPR-003 explicitly provides via `certifi`."
+      },
+      {
+        "from_dpr": "DPR-003",
+        "to_dpr": "DPR-001",
+        "relationship": "constrains",
+        "explanation": "DPR-003's choice of `certifi` as the standardized CA bundle constrains DPR-001's `urllib3` integration to use this specific mechanism for SSL/TLS verification."
+      },
+      {
+        "from_dpr": "DPR-001",
+        "to_dpr": "DPR-005",
+        "relationship": "enables",
+        "explanation": "DPR-001 retrieves the raw HTTP response bodies, which are then passed to DPR-005's `charset_normalizer` for automatic character encoding detection."
+      },
+      {
+        "from_dpr": "DPR-005",
+        "to_dpr": "DPR-001",
+        "relationship": "requires",
+        "explanation": "DPR-005's character encoding detection needs the raw, undecoded response content that is fetched by the low-level HTTP client delegated by DPR-001."
+      },
+      {
+        "from_dpr": "DPR-002",
+        "to_dpr": "DPR-006",
+        "relationship": "constrains",
+        "explanation": "Any errors originating from stateful operations managed by DPR-002's `Session` object must be consistently mapped into DPR-006's custom exception hierarchy."
+      },
+      {
+        "from_dpr": "DPR-006",
+        "to_dpr": "DPR-002",
+        "relationship": "enables",
+        "explanation": "DPR-006 provides a predictable and robust error handling mechanism, crucial for users interacting with complex, stateful workflows managed by DPR-002's `Session` object."
+      },
+      {
+        "from_dpr": "DPR-003",
+        "to_dpr": "DPR-006",
+        "relationship": "enables",
+        "explanation": "DPR-003's security-critical function of SSL/TLS verification can produce specific errors that DPR-006's custom hierarchy is designed to categorize and expose."
+      },
+      {
+        "from_dpr": "DPR-006",
+        "to_dpr": "DPR-003",
+        "relationship": "constrains",
+        "explanation": "Errors arising from DPR-003's `certifi` integration must be caught and re-raised as part of DPR-006's defined exception hierarchy to maintain API consistency."
+      },
+      {
+        "from_dpr": "DPR-005",
+        "to_dpr": "DPR-006",
+        "relationship": "enables",
+        "explanation": "DPR-005's character encoding detection can result in errors (e.g., unresolvable encoding), which need to be standardized and handled by DPR-006's custom exception hierarchy."
+      },
+      {
+        "from_dpr": "DPR-006",
+        "to_dpr": "DPR-005",
+        "relationship": "constrains",
+        "explanation": "Errors during DPR-005's encoding detection process must be mapped to appropriate custom exceptions defined in DPR-006 to ensure a consistent error reporting interface."
+      },
+      {
+        "from_dpr": "DPR-004",
+        "to_dpr": "DPR-001",
+        "relationship": "enables",
+        "explanation": "DPR-004's explicit Python 3.10+ requirement allows DPR-001's `urllib3` integration to leverage modern language features, simplifying code and improving maintainability."
+      },
+      {
+        "from_dpr": "DPR-001",
+        "to_dpr": "DPR-004",
+        "relationship": "assumption_of",
+        "explanation": "DPR-001 implicitly assumes a sufficiently modern Python environment to support its dependencies and the intended integration patterns, which DPR-004 explicitly establishes."
+      },
+      {
+        "from_dpr": "DPR-004",
+        "to_dpr": "DPR-002",
+        "relationship": "enables",
+        "explanation": "The Python 3.10+ requirement (DPR-004) enables DPR-002 to implement the `Session` object using modern Python syntax and type hinting features, enhancing code quality."
+      },
+      {
+        "from_dpr": "DPR-002",
+        "to_dpr": "DPR-004",
+        "relationship": "assumption_of",
+        "explanation": "The implementation details and planned evolution of DPR-002's Session object implicitly assume the capabilities and environment provided by the Python 3.10+ requirement (DPR-004)."
+      },
+      {
+        "from_dpr": "DPR-004",
+        "to_dpr": "DPR-003",
+        "relationship": "enables",
+        "explanation": "DPR-004 ensures that the `certifi` dependency can be utilized and integrated within a modern Python environment, supporting its ongoing security updates."
+      },
+      {
+        "from_dpr": "DPR-003",
+        "to_dpr": "DPR-004",
+        "relationship": "assumption_of",
+        "explanation": "DPR-003's reliance on `certifi` assumes a Python environment that can correctly manage and interact with this dependency, a condition explicitly met by DPR-004."
+      },
+      {
+        "from_dpr": "DPR-004",
+        "to_dpr": "DPR-005",
+        "relationship": "enables",
+        "explanation": "DPR-004 provides the necessary modern Python environment for DPR-005's `charset_normalizer` dependency to function optimally and be integrated efficiently."
+      },
+      {
+        "from_dpr": "DPR-005",
+        "to_dpr": "DPR-004",
+        "relationship": "assumption_of",
+        "explanation": "The decision in DPR-005 to use `charset_normalizer` implicitly assumes a Python environment (like 3.10+) that supports this library and its performance characteristics."
+      },
+      {
+        "from_dpr": "DPR-004",
+        "to_dpr": "DPR-006",
+        "relationship": "enables",
+        "explanation": "DPR-004 allows DPR-006 to define a cleaner and more expressive custom exception hierarchy using modern Python features such as `TypeAlias` and enhanced `typing`."
+      },
+      {
+        "from_dpr": "DPR-006",
+        "to_dpr": "DPR-004",
+        "relationship": "assumption_of",
+        "explanation": "The design and implementation of DPR-006's exception hierarchy assumes the availability of modern Python language features and conventions established by DPR-004."
+      },
+      {
+        "from_dpr": "DPR-004",
+        "to_dpr": "DPR-007",
+        "relationship": "enables",
+        "explanation": "DPR-004's minimum Python version enables DPR-007 to configure `pyproject.toml` with `python_requires` and use modern packaging standards compatible with Python 3.10+."
+      },
+      {
+        "from_dpr": "DPR-007",
+        "to_dpr": "DPR-004",
+        "relationship": "requires",
+        "explanation": "DPR-007's `pyproject.toml` configuration directly specifies and enforces the Python 3.10+ requirement established by DPR-004 as part of the project's metadata."
+      },
+      {
+        "from_dpr": "DPR-007",
+        "to_dpr": "DPR-001",
+        "relationship": "enables",
+        "explanation": "DPR-007's `pyproject.toml` acts as the standardized configuration to manage `urllib3` as a core dependency for DPR-001's HTTP client delegation."
+      },
+      {
+        "from_dpr": "DPR-001",
+        "to_dpr": "DPR-007",
+        "relationship": "required_by",
+        "explanation": "DPR-001's core dependency on `urllib3` necessitates its declaration in `pyproject.toml` (DPR-007) for proper project build and packaging."
+      },
+      {
+        "from_dpr": "DPR-007",
+        "to_dpr": "DPR-003",
+        "relationship": "enables",
+        "explanation": "DPR-007's `pyproject.toml` manages `certifi` as a key dependency, enabling DPR-003's standardized CA certificate verification strategy."
+      },
+      {
+        "from_dpr": "DPR-003",
+        "to_dpr": "DPR-007",
+        "relationship": "required_by",
+        "explanation": "DPR-003's mandate for `certifi` requires its inclusion and management as a dependency within the `pyproject.toml` file (DPR-007)."
+      }
+    ],
+    "assumption_decay_prescan": [
+      {
+        "dpr_id": "DPR-001",
+        "assumption": "`urllib3` is a robust, well-tested, and actively maintained library suitable for `Requests`'s needs.",
+        "already_decaying": false,
+        "decay_evidence": "No explicit evidence of decay yet, but the risk stems from `urllib3` being an external dependency. Potential evidence would include: new critical security vulnerabilities discovered in `urllib3`, a significant decrease in `urllib3`'s maintenance activity (e.g., slow bug fixes, infrequent releases), or reports of `urllib3` failing stability tests under high load.",
+        "earliest_signal_date": "2024-Q2",
+        "decay_signals_found": [
+          "New CVEs published for `urllib3`.",
+          "Observable decline in `urllib3` GitHub repository activity (commits, PR reviews).",
+          "Increased volume of `Requests` user reports indicating `urllib3`-related stability issues."
+        ],
+        "recommended_monitor_query": "Subscribe to `urllib3` security advisories and release announcements. Monitor `urllib3`'s GitHub repository for commit frequency and open issue/PR backlog. Implement regular stress testing for `Requests` to identify stability regressions linked to `urllib3` updates."
+      },
+      {
+        "dpr_id": "DPR-001",
+        "assumption": "The performance and feature set provided by `urllib3` are sufficient for the diverse use cases of `Requests`.",
+        "already_decaying": false,
+        "decay_evidence": "No explicit evidence of decay yet. Potential evidence would include: `Requests` users reporting performance regressions traced back to `urllib3` updates, or a significant portion of the user base requesting advanced HTTP features (e.g., HTTP/3, QUIC support, more granular connection controls) that `urllib3` does not provide or has no roadmap for.",
+        "earliest_signal_date": "2024-Q3",
+        "decay_signals_found": [
+          "Benchmark results showing performance degradation in `Requests` due to `urllib3`.",
+          "Growing number of feature requests in `Requests` that `urllib3` cannot easily support.",
+          "Internal architectural discussions revealing friction with `urllib3`'s current feature set or design."
+        ],
+        "recommended_monitor_query": "Maintain and regularly run a comprehensive performance test suite for `Requests`. Analyze user feature requests for unmet needs that might point to `urllib3` limitations. Periodically review `urllib3`'s roadmap and feature development against `Requests`'s strategic direction."
+      },
+      {
+        "dpr_id": "DPR-003",
+        "assumption": "`certifi` provides a reliable, widely trusted, and regularly updated certificate bundle that meets the security needs of most users.",
+        "already_decaying": false,
+        "decay_evidence": "No explicit evidence of decay yet. Potential evidence would include: `certifi` releases falling significantly behind major CA bundle updates, reports of `certifi` bundles containing outdated, missing, or revoked certificates, leading to widespread SSL/TLS connectivity errors for `Requests` users.",
+        "earliest_signal_date": "2024-Q2",
+        "decay_signals_found": [
+          "Public reports or user issues indicating `certifi`'s CA bundle is stale (e.g., 'certificate not trusted' errors for valid sites).",
+          "Slowdown in `certifi`'s release cadence compared to upstream CA list updates.",
+          "Security researchers identifying flaws in `certifi`'s bundle or distribution process."
+        ],
+        "recommended_monitor_query": "Subscribe to `certifi` release announcements and compare their update cadence with major CA root program updates. Implement automated tests to verify `Requests`'s ability to connect securely to a diverse set of HTTPS endpoints, including new and challenging certificate configurations."
+      },
+      {
+        "dpr_id": "DPR-005",
+        "assumption": "`charset_normalizer` provides superior or equivalent performance and accuracy to `chardet` for diverse web content.",
+        "already_decaying": false,
+        "decay_evidence": "No explicit evidence of decay yet. Potential evidence would include: a noticeable increase in user reports of garbled text (`r.text`) or `JSONDecodeError` when `charset_normalizer` is used, or the emergence of a new, widely adopted encoding detection library that demonstrably outperforms `charset_normalizer` in accuracy or speed across common web content.",
+        "earliest_signal_date": "2024-Q3",
+        "decay_signals_found": [
+          "Spike in `Requests` issues related to incorrect character encoding detection.",
+          "Benchmarking `charset_normalizer` against alternative libraries shows significant deficiencies.",
+          "Prominent discussions in the Python community highlighting `charset_normalizer`'s shortcomings or the superiority of other tools."
+        ],
+        "recommended_monitor_query": "Track user-reported encoding issues and categorize them by detection library. Conduct periodic comparative analysis and benchmarking of `charset_normalizer`'s accuracy and performance against `chardet` and any emerging alternatives using a diverse dataset of real-world web content."
+      },
+      {
+        "dpr_id": "DPR-001",
+        "assumption": "The performance and feature set provided by `urllib3` are sufficient for the diverse use cases of `Requests`.",
+        "already_decaying": false,
+        "decay_evidence": "This assumption is at risk if `Requests`'s strategic direction or user demands outpace `urllib3`'s development. For instance, if `Requests` aims to support cutting-edge protocols like HTTP/3 or highly specialized network configurations, and `urllib3` does not prioritize or implement these, `Requests` might be constrained, or forced into complex workarounds.",
+        "earliest_signal_date": "2025-Q1",
+        "decay_signals_found": [
+          "User requests for modern network protocols (e.g., HTTP/3, QUIC) which `urllib3` does not support.",
+          "Internal architectural discussions highlighting limitations imposed by `urllib3`'s design on future `Requests` features.",
+          "Analysis of competitor libraries offering features `Requests` cannot implement due to `urllib3`."
+        ],
+        "recommended_monitor_query": "Regularly review `Requests`'s and `urllib3`'s roadmaps for alignment. Actively track new HTTP protocol standards and user demand for their implementation. Conduct architectural spikes or feasibility studies for advanced features to assess `urllib3`'s capability to support them."
+      }
+    ]
+  }
+}

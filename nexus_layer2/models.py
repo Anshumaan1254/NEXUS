@@ -88,12 +88,13 @@ class NexusLayer1Wrapper(BaseModel):
     nexus_layer1_output: NexusLayer1Output
 
 
-def load_layer1(json_path: str = "postgres-analysis/output/nexus_layer1_dprs.json") -> NexusLayer1Output:
+def load_layer1(json_path: str = None) -> NexusLayer1Output:
     """
     Load and validate Layer 1 output from JSON file
     
     Args:
-        json_path: Path to the Layer 1 JSON output file
+        json_path: Path to the Layer 1 JSON output file.
+                   If None, auto-resolves relative to this script's directory.
         
     Returns:
         Validated NexusLayer1Output object
@@ -102,12 +103,26 @@ def load_layer1(json_path: str = "postgres-analysis/output/nexus_layer1_dprs.jso
         FileNotFoundError: If JSON file doesn't exist
         ValidationError: If JSON doesn't match expected schema
     """
-    path = Path(json_path)
+    if json_path is None:
+        # Resolve relative to this script's parent (project root)
+        script_dir = Path(__file__).resolve().parent
+        project_root = script_dir.parent
+        path = project_root / "postgres-analysis" / "output" / "nexus_layer1_dprs.json"
+    else:
+        path = Path(json_path)
     
     if not path.exists():
-        raise FileNotFoundError(f"Layer 1 output not found at: {json_path}")
+        # Also try relative to CWD
+        alt_path = Path("postgres-analysis/output/nexus_layer1_dprs.json")
+        if alt_path.exists():
+            path = alt_path
+        else:
+            raise FileNotFoundError(
+                f"Layer 1 output not found at: {path}\n"
+                f"  Also tried: {alt_path.resolve()}"
+            )
     
-    print(f"📂 Loading Layer 1 output from: {json_path}")
+    print(f"📂 Loading Layer 1 output from: {path}")
     
     with open(path, 'r', encoding='utf-8') as f:
         data = json.load(f)

@@ -1,0 +1,268 @@
+{
+  "timestamp": "2026-05-17T00:12:33.495226+00:00",
+  "repository": "https://github.com/WordPress/WordPress",
+  "total_authors": 4,
+  "total_dprs": 8,
+  "author_summary": [
+    {
+      "author": "Core WordPress Developers",
+      "total_dprs": 7,
+      "dpr_ids": [
+        "DPR-001",
+        "DPR-002",
+        "DPR-003",
+        "DPR-004",
+        "DPR-005",
+        "DPR-006",
+        "DPR-008"
+      ],
+      "files_touched": 17,
+      "components": [
+        "Authentication & Authorization",
+        "Comment System",
+        "Configuration Management",
+        "Core Bootstrap",
+        "Media Handling",
+        "Network Management (Multisite)",
+        "Task Scheduling"
+      ],
+      "is_spof": true
+    },
+    {
+      "author": "Frontend Developers",
+      "total_dprs": 1,
+      "dpr_ids": [
+        "DPR-007"
+      ],
+      "files_touched": 7,
+      "components": [
+        "Theme Development / Asset Management"
+      ],
+      "is_spof": false
+    },
+    {
+      "author": "James Heinrich (getID3 author)",
+      "total_dprs": 1,
+      "dpr_ids": [
+        "DPR-005"
+      ],
+      "files_touched": 3,
+      "components": [
+        "Media Handling"
+      ],
+      "is_spof": false
+    },
+    {
+      "author": "WordPress Theme Developers",
+      "total_dprs": 1,
+      "dpr_ids": [
+        "DPR-007"
+      ],
+      "files_touched": 7,
+      "components": [
+        "Theme Development / Asset Management"
+      ],
+      "is_spof": false
+    }
+  ],
+  "dpr_ownership": {
+    "DPR-001": {
+      "Core WordPress Developers": 100.0
+    },
+    "DPR-002": {
+      "Core WordPress Developers": 100.0
+    },
+    "DPR-003": {
+      "Core WordPress Developers": 100.0
+    },
+    "DPR-004": {
+      "Core WordPress Developers": 100.0
+    },
+    "DPR-005": {
+      "Core WordPress Developers": 66.7,
+      "James Heinrich (getID3 author)": 33.3
+    },
+    "DPR-006": {
+      "Core WordPress Developers": 100.0
+    },
+    "DPR-007": {
+      "WordPress Theme Developers": 66.7,
+      "Frontend Developers": 33.3
+    },
+    "DPR-008": {
+      "Core WordPress Developers": 100.0
+    }
+  },
+  "component_concentration": {
+    "Core Bootstrap": {
+      "total_dprs": 1,
+      "authors": [
+        {
+          "author": "Core WordPress Developers",
+          "dpr_count": 1,
+          "percentage": 100.0
+        }
+      ],
+      "concentration_risk": "high"
+    },
+    "Configuration Management": {
+      "total_dprs": 1,
+      "authors": [
+        {
+          "author": "Core WordPress Developers",
+          "dpr_count": 1,
+          "percentage": 100.0
+        }
+      ],
+      "concentration_risk": "high"
+    },
+    "Task Scheduling": {
+      "total_dprs": 1,
+      "authors": [
+        {
+          "author": "Core WordPress Developers",
+          "dpr_count": 1,
+          "percentage": 100.0
+        }
+      ],
+      "concentration_risk": "high"
+    },
+    "Network Management (Multisite)": {
+      "total_dprs": 1,
+      "authors": [
+        {
+          "author": "Core WordPress Developers",
+          "dpr_count": 1,
+          "percentage": 100.0
+        }
+      ],
+      "concentration_risk": "high"
+    },
+    "Media Handling": {
+      "total_dprs": 2,
+      "authors": [
+        {
+          "author": "Core WordPress Developers",
+          "dpr_count": 1,
+          "percentage": 50.0
+        },
+        {
+          "author": "James Heinrich (getID3 author)",
+          "dpr_count": 1,
+          "percentage": 50.0
+        }
+      ],
+      "concentration_risk": "medium"
+    },
+    "Comment System": {
+      "total_dprs": 1,
+      "authors": [
+        {
+          "author": "Core WordPress Developers",
+          "dpr_count": 1,
+          "percentage": 100.0
+        }
+      ],
+      "concentration_risk": "high"
+    },
+    "Theme Development / Asset Management": {
+      "total_dprs": 2,
+      "authors": [
+        {
+          "author": "WordPress Theme Developers",
+          "dpr_count": 1,
+          "percentage": 50.0
+        },
+        {
+          "author": "Frontend Developers",
+          "dpr_count": 1,
+          "percentage": 50.0
+        }
+      ],
+      "concentration_risk": "medium"
+    },
+    "Authentication & Authorization": {
+      "total_dprs": 1,
+      "authors": [
+        {
+          "author": "Core WordPress Developers",
+          "dpr_count": 1,
+          "percentage": 100.0
+        }
+      ],
+      "concentration_risk": "high"
+    }
+  },
+  "spof_alerts": [
+    {
+      "author": "Core WordPress Developers",
+      "dpr_id": "DPR-001",
+      "dpr_title": "Front Controller and Core Bootstrap Mechanism",
+      "component": "Core Bootstrap",
+      "ownership_pct": 100.0,
+      "blast_radius": "critical",
+      "risk": "SPOF",
+      "recommendation": "Engineer 'Core WordPress Developers' holds 100.0% of causal knowledge about Front Controller and Core Bootstrap Mechanism (Core Bootstrap). Their departure is a critical SPOF."
+    },
+    {
+      "author": "Core WordPress Developers",
+      "dpr_id": "DPR-002",
+      "dpr_title": "Externalized Configuration with `wp-config.php`",
+      "component": "Configuration Management",
+      "ownership_pct": 100.0,
+      "blast_radius": "critical",
+      "risk": "SPOF",
+      "recommendation": "Engineer 'Core WordPress Developers' holds 100.0% of causal knowledge about Externalized Configuration with `wp-config.php` (Configuration Management). Their departure is a critical SPOF."
+    },
+    {
+      "author": "Core WordPress Developers",
+      "dpr_id": "DPR-003",
+      "dpr_title": "Pseudo-Cron for Background Task Scheduling",
+      "component": "Task Scheduling",
+      "ownership_pct": 100.0,
+      "blast_radius": "high",
+      "risk": "SPOF",
+      "recommendation": "Engineer 'Core WordPress Developers' holds 100.0% of causal knowledge about Pseudo-Cron for Background Task Scheduling (Task Scheduling). Their departure is a critical SPOF."
+    },
+    {
+      "author": "Core WordPress Developers",
+      "dpr_id": "DPR-004",
+      "dpr_title": "Multi-Site Network Architecture",
+      "component": "Network Management (Multisite)",
+      "ownership_pct": 100.0,
+      "blast_radius": "critical",
+      "risk": "SPOF",
+      "recommendation": "Engineer 'Core WordPress Developers' holds 100.0% of causal knowledge about Multi-Site Network Architecture (Network Management (Multisite)). Their departure is a critical SPOF."
+    },
+    {
+      "author": "Core WordPress Developers",
+      "dpr_id": "DPR-005",
+      "dpr_title": "Integration of `getID3()` for Media Metadata Processing",
+      "component": "Media Handling",
+      "ownership_pct": 66.7,
+      "blast_radius": "high",
+      "risk": "HIGH_CONCENTRATION",
+      "recommendation": "Engineer 'Core WordPress Developers' holds 66.7% of causal knowledge about Integration of `getID3()` for Media Metadata Processing (Media Handling). Knowledge transfer recommended."
+    },
+    {
+      "author": "Core WordPress Developers",
+      "dpr_id": "DPR-006",
+      "dpr_title": "Dedicated Comment Post Handling",
+      "component": "Comment System",
+      "ownership_pct": 100.0,
+      "blast_radius": "high",
+      "risk": "SPOF",
+      "recommendation": "Engineer 'Core WordPress Developers' holds 100.0% of causal knowledge about Dedicated Comment Post Handling (Comment System). Their departure is a critical SPOF."
+    },
+    {
+      "author": "Core WordPress Developers",
+      "dpr_id": "DPR-008",
+      "dpr_title": "Centralized User Authentication and Management",
+      "component": "Authentication & Authorization",
+      "ownership_pct": 100.0,
+      "blast_radius": "critical",
+      "risk": "SPOF",
+      "recommendation": "Engineer 'Core WordPress Developers' holds 100.0% of causal knowledge about Centralized User Authentication and Management (Authentication & Authorization). Their departure is a critical SPOF."
+    }
+  ]
+}

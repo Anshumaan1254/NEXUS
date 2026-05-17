@@ -1,0 +1,512 @@
+{
+  "timestamp": "2026-05-16T22:49:43.543761+00:00",
+  "repository": "https://github.com/postgres/postgres",
+  "total_authors": 12,
+  "total_dprs": 15,
+  "author_summary": [
+    {
+      "author": "Alvaro Herrera",
+      "total_dprs": 2,
+      "dpr_ids": [
+        "DPR-006",
+        "DPR-008"
+      ],
+      "files_touched": 3,
+      "components": [
+        "Autovacuum",
+        "Storage"
+      ],
+      "is_spof": false
+    },
+    {
+      "author": "Andres Freund",
+      "total_dprs": 2,
+      "dpr_ids": [
+        "DPR-004",
+        "DPR-011"
+      ],
+      "files_touched": 3,
+      "components": [
+        "MVCC",
+        "Storage"
+      ],
+      "is_spof": false
+    },
+    {
+      "author": "Fujii Masao",
+      "total_dprs": 2,
+      "dpr_ids": [
+        "DPR-013",
+        "DPR-014"
+      ],
+      "files_touched": 2,
+      "components": [
+        "Replication",
+        "WAL"
+      ],
+      "is_spof": false
+    },
+    {
+      "author": "Greg Smith",
+      "total_dprs": 1,
+      "dpr_ids": [
+        "DPR-012"
+      ],
+      "files_touched": 2,
+      "components": [
+        "WAL"
+      ],
+      "is_spof": false
+    },
+    {
+      "author": "Heikki Linnakangas",
+      "total_dprs": 4,
+      "dpr_ids": [
+        "DPR-003",
+        "DPR-005",
+        "DPR-007",
+        "DPR-014"
+      ],
+      "files_touched": 6,
+      "components": [
+        "MVCC",
+        "Replication",
+        "WAL"
+      ],
+      "is_spof": false
+    },
+    {
+      "author": "Jan Wieck",
+      "total_dprs": 1,
+      "dpr_ids": [
+        "DPR-002"
+      ],
+      "files_touched": 1,
+      "components": [
+        "Storage"
+      ],
+      "is_spof": false
+    },
+    {
+      "author": "Original PostgreSQL team",
+      "total_dprs": 2,
+      "dpr_ids": [
+        "DPR-001",
+        "DPR-009"
+      ],
+      "files_touched": 3,
+      "components": [
+        "ProcessModel",
+        "Storage"
+      ],
+      "is_spof": true
+    },
+    {
+      "author": "Pavan Deolasee",
+      "total_dprs": 1,
+      "dpr_ids": [
+        "DPR-005"
+      ],
+      "files_touched": 2,
+      "components": [
+        "MVCC"
+      ],
+      "is_spof": false
+    },
+    {
+      "author": "Tom Lane",
+      "total_dprs": 9,
+      "dpr_ids": [
+        "DPR-002",
+        "DPR-003",
+        "DPR-004",
+        "DPR-005",
+        "DPR-006",
+        "DPR-007",
+        "DPR-008",
+        "DPR-011",
+        "DPR-012"
+      ],
+      "files_touched": 13,
+      "components": [
+        "Autovacuum",
+        "MVCC",
+        "Storage",
+        "WAL"
+      ],
+      "is_spof": false
+    },
+    {
+      "author": "Vadim Mikheev",
+      "total_dprs": 4,
+      "dpr_ids": [
+        "DPR-003",
+        "DPR-007",
+        "DPR-010",
+        "DPR-013"
+      ],
+      "files_touched": 4,
+      "components": [
+        "MVCC",
+        "WAL"
+      ],
+      "is_spof": true
+    },
+    {
+      "author": "pgBouncer: Marko Kreen",
+      "total_dprs": 1,
+      "dpr_ids": [
+        "DPR-015"
+      ],
+      "files_touched": 1,
+      "components": [
+        "ProcessModel"
+      ],
+      "is_spof": false
+    },
+    {
+      "author": "pgPool: Tatsuo Ishii",
+      "total_dprs": 1,
+      "dpr_ids": [
+        "DPR-015"
+      ],
+      "files_touched": 1,
+      "components": [
+        "ProcessModel"
+      ],
+      "is_spof": false
+    }
+  ],
+  "dpr_ownership": {
+    "DPR-001": {
+      "Original PostgreSQL team": 100.0
+    },
+    "DPR-002": {
+      "Jan Wieck": 66.7,
+      "Tom Lane": 33.3
+    },
+    "DPR-003": {
+      "Vadim Mikheev": 50.0,
+      "Tom Lane": 33.3,
+      "Heikki Linnakangas": 16.7
+    },
+    "DPR-004": {
+      "Tom Lane": 66.7,
+      "Andres Freund": 33.3
+    },
+    "DPR-005": {
+      "Pavan Deolasee": 50.0,
+      "Tom Lane": 33.3,
+      "Heikki Linnakangas": 16.7
+    },
+    "DPR-006": {
+      "Tom Lane": 66.7,
+      "Alvaro Herrera": 33.3
+    },
+    "DPR-007": {
+      "Vadim Mikheev": 50.0,
+      "Tom Lane": 33.3,
+      "Heikki Linnakangas": 16.7
+    },
+    "DPR-008": {
+      "Alvaro Herrera": 66.7,
+      "Tom Lane": 33.3
+    },
+    "DPR-009": {
+      "Original PostgreSQL team": 100.0
+    },
+    "DPR-010": {
+      "Vadim Mikheev": 100.0
+    },
+    "DPR-011": {
+      "Tom Lane": 66.7,
+      "Andres Freund": 33.3
+    },
+    "DPR-012": {
+      "Tom Lane": 66.7,
+      "Greg Smith": 33.3
+    },
+    "DPR-013": {
+      "Vadim Mikheev": 66.7,
+      "Fujii Masao": 33.3
+    },
+    "DPR-014": {
+      "Heikki Linnakangas": 66.7,
+      "Fujii Masao": 33.3
+    },
+    "DPR-015": {
+      "pgBouncer: Marko Kreen": 66.7,
+      "pgPool: Tatsuo Ishii": 33.3
+    }
+  },
+  "component_concentration": {
+    "Storage": {
+      "total_dprs": 7,
+      "authors": [
+        {
+          "author": "Tom Lane",
+          "dpr_count": 3,
+          "percentage": 42.9
+        },
+        {
+          "author": "Original PostgreSQL team",
+          "dpr_count": 1,
+          "percentage": 14.3
+        },
+        {
+          "author": "Jan Wieck",
+          "dpr_count": 1,
+          "percentage": 14.3
+        },
+        {
+          "author": "Alvaro Herrera",
+          "dpr_count": 1,
+          "percentage": 14.3
+        },
+        {
+          "author": "Andres Freund",
+          "dpr_count": 1,
+          "percentage": 14.3
+        }
+      ],
+      "concentration_risk": "medium"
+    },
+    "MVCC": {
+      "total_dprs": 9,
+      "authors": [
+        {
+          "author": "Tom Lane",
+          "dpr_count": 3,
+          "percentage": 33.3
+        },
+        {
+          "author": "Vadim Mikheev",
+          "dpr_count": 2,
+          "percentage": 22.2
+        },
+        {
+          "author": "Heikki Linnakangas",
+          "dpr_count": 2,
+          "percentage": 22.2
+        },
+        {
+          "author": "Andres Freund",
+          "dpr_count": 1,
+          "percentage": 11.1
+        },
+        {
+          "author": "Pavan Deolasee",
+          "dpr_count": 1,
+          "percentage": 11.1
+        }
+      ],
+      "concentration_risk": "low"
+    },
+    "WAL": {
+      "total_dprs": 7,
+      "authors": [
+        {
+          "author": "Vadim Mikheev",
+          "dpr_count": 2,
+          "percentage": 28.6
+        },
+        {
+          "author": "Tom Lane",
+          "dpr_count": 2,
+          "percentage": 28.6
+        },
+        {
+          "author": "Heikki Linnakangas",
+          "dpr_count": 1,
+          "percentage": 14.3
+        },
+        {
+          "author": "Greg Smith",
+          "dpr_count": 1,
+          "percentage": 14.3
+        },
+        {
+          "author": "Fujii Masao",
+          "dpr_count": 1,
+          "percentage": 14.3
+        }
+      ],
+      "concentration_risk": "low"
+    },
+    "Autovacuum": {
+      "total_dprs": 2,
+      "authors": [
+        {
+          "author": "Alvaro Herrera",
+          "dpr_count": 1,
+          "percentage": 50.0
+        },
+        {
+          "author": "Tom Lane",
+          "dpr_count": 1,
+          "percentage": 50.0
+        }
+      ],
+      "concentration_risk": "medium"
+    },
+    "ProcessModel": {
+      "total_dprs": 3,
+      "authors": [
+        {
+          "author": "Original PostgreSQL team",
+          "dpr_count": 1,
+          "percentage": 33.3
+        },
+        {
+          "author": "pgBouncer: Marko Kreen",
+          "dpr_count": 1,
+          "percentage": 33.3
+        },
+        {
+          "author": "pgPool: Tatsuo Ishii",
+          "dpr_count": 1,
+          "percentage": 33.3
+        }
+      ],
+      "concentration_risk": "low"
+    },
+    "Replication": {
+      "total_dprs": 2,
+      "authors": [
+        {
+          "author": "Heikki Linnakangas",
+          "dpr_count": 1,
+          "percentage": 50.0
+        },
+        {
+          "author": "Fujii Masao",
+          "dpr_count": 1,
+          "percentage": 50.0
+        }
+      ],
+      "concentration_risk": "medium"
+    }
+  },
+  "spof_alerts": [
+    {
+      "author": "Original PostgreSQL team",
+      "dpr_id": "DPR-001",
+      "dpr_title": "8KB Fixed Page Size",
+      "component": "Storage",
+      "ownership_pct": 100.0,
+      "blast_radius": "critical",
+      "risk": "SPOF",
+      "recommendation": "Engineer 'Original PostgreSQL team' holds 100.0% of causal knowledge about 8KB Fixed Page Size (Storage). Their departure is a critical SPOF."
+    },
+    {
+      "author": "Jan Wieck",
+      "dpr_id": "DPR-002",
+      "dpr_title": "TOAST - The Oversized-Attribute Storage Technique",
+      "component": "Storage",
+      "ownership_pct": 66.7,
+      "blast_radius": "high",
+      "risk": "HIGH_CONCENTRATION",
+      "recommendation": "Engineer 'Jan Wieck' holds 66.7% of causal knowledge about TOAST - The Oversized-Attribute Storage Technique (Storage). Knowledge transfer recommended."
+    },
+    {
+      "author": "Tom Lane",
+      "dpr_id": "DPR-004",
+      "dpr_title": "32-bit Transaction ID with Wraparound",
+      "component": "MVCC",
+      "ownership_pct": 66.7,
+      "blast_radius": "critical",
+      "risk": "HIGH_CONCENTRATION",
+      "recommendation": "Engineer 'Tom Lane' holds 66.7% of causal knowledge about 32-bit Transaction ID with Wraparound (MVCC). Knowledge transfer recommended."
+    },
+    {
+      "author": "Tom Lane",
+      "dpr_id": "DPR-006",
+      "dpr_title": "Vacuum as Separate Maintenance Process",
+      "component": "Storage",
+      "ownership_pct": 66.7,
+      "blast_radius": "critical",
+      "risk": "HIGH_CONCENTRATION",
+      "recommendation": "Engineer 'Tom Lane' holds 66.7% of causal knowledge about Vacuum as Separate Maintenance Process (Storage). Knowledge transfer recommended."
+    },
+    {
+      "author": "Alvaro Herrera",
+      "dpr_id": "DPR-008",
+      "dpr_title": "Autovacuum as Background Daemon",
+      "component": "Autovacuum",
+      "ownership_pct": 66.7,
+      "blast_radius": "critical",
+      "risk": "HIGH_CONCENTRATION",
+      "recommendation": "Engineer 'Alvaro Herrera' holds 66.7% of causal knowledge about Autovacuum as Background Daemon (Autovacuum). Knowledge transfer recommended."
+    },
+    {
+      "author": "Original PostgreSQL team",
+      "dpr_id": "DPR-009",
+      "dpr_title": "Multi-Process Architecture",
+      "component": "ProcessModel",
+      "ownership_pct": 100.0,
+      "blast_radius": "critical",
+      "risk": "SPOF",
+      "recommendation": "Engineer 'Original PostgreSQL team' holds 100.0% of causal knowledge about Multi-Process Architecture (ProcessModel). Their departure is a critical SPOF."
+    },
+    {
+      "author": "Vadim Mikheev",
+      "dpr_id": "DPR-010",
+      "dpr_title": "Snapshot Isolation as Default",
+      "component": "MVCC",
+      "ownership_pct": 100.0,
+      "blast_radius": "high",
+      "risk": "SPOF",
+      "recommendation": "Engineer 'Vadim Mikheev' holds 100.0% of causal knowledge about Snapshot Isolation as Default (MVCC). Their departure is a critical SPOF."
+    },
+    {
+      "author": "Tom Lane",
+      "dpr_id": "DPR-011",
+      "dpr_title": "Shared Buffer Pool with Clock-Sweep",
+      "component": "Storage",
+      "ownership_pct": 66.7,
+      "blast_radius": "critical",
+      "risk": "HIGH_CONCENTRATION",
+      "recommendation": "Engineer 'Tom Lane' holds 66.7% of causal knowledge about Shared Buffer Pool with Clock-Sweep (Storage). Knowledge transfer recommended."
+    },
+    {
+      "author": "Tom Lane",
+      "dpr_id": "DPR-012",
+      "dpr_title": "Checkpoint-Based Crash Recovery",
+      "component": "WAL",
+      "ownership_pct": 66.7,
+      "blast_radius": "high",
+      "risk": "HIGH_CONCENTRATION",
+      "recommendation": "Engineer 'Tom Lane' holds 66.7% of causal knowledge about Checkpoint-Based Crash Recovery (WAL). Knowledge transfer recommended."
+    },
+    {
+      "author": "Vadim Mikheev",
+      "dpr_id": "DPR-013",
+      "dpr_title": "Full-Page Writes for Torn Page Protection",
+      "component": "WAL",
+      "ownership_pct": 66.7,
+      "blast_radius": "high",
+      "risk": "HIGH_CONCENTRATION",
+      "recommendation": "Engineer 'Vadim Mikheev' holds 66.7% of causal knowledge about Full-Page Writes for Torn Page Protection (WAL). Knowledge transfer recommended."
+    },
+    {
+      "author": "Heikki Linnakangas",
+      "dpr_id": "DPR-014",
+      "dpr_title": "Streaming Replication via WAL Shipping",
+      "component": "Replication",
+      "ownership_pct": 66.7,
+      "blast_radius": "high",
+      "risk": "HIGH_CONCENTRATION",
+      "recommendation": "Engineer 'Heikki Linnakangas' holds 66.7% of causal knowledge about Streaming Replication via WAL Shipping (Replication). Knowledge transfer recommended."
+    },
+    {
+      "author": "pgBouncer: Marko Kreen",
+      "dpr_id": "DPR-015",
+      "dpr_title": "External Connection Pooling Required",
+      "component": "ProcessModel",
+      "ownership_pct": 66.7,
+      "blast_radius": "high",
+      "risk": "HIGH_CONCENTRATION",
+      "recommendation": "Engineer 'pgBouncer: Marko Kreen' holds 66.7% of causal knowledge about External Connection Pooling Required (ProcessModel). Knowledge transfer recommended."
+    }
+  ]
+}

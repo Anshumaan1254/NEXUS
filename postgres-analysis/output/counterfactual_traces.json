@@ -1,0 +1,359 @@
+{
+  "timestamp": "2026-05-16T22:49:43.413534+00:00",
+  "repository": "https://github.com/postgres/postgres",
+  "traces": [
+    {
+      "scenario_id": "CF-001",
+      "target_dpr": "DPR-001",
+      "target_title": "8KB Fixed Page Size",
+      "question": "What if PostgreSQL used 16KB pages instead of 8KB?",
+      "original_decision": "PostgreSQL uses a fixed 8KB page size (BLCKSZ) as the fundamental unit of storage and I/O.",
+      "alternative": "Use 16KB fixed page size",
+      "reasoning": "Modern NVMe SSDs use 16-32KB internal pages. 16KB would reduce TOAST usage and improve I/O efficiency.",
+      "affected_count": 10,
+      "affected_components": [
+        "Autovacuum",
+        "MVCC",
+        "Storage",
+        "WAL"
+      ],
+      "impacts": [
+        {
+          "dpr_id": "DPR-002",
+          "title": "TOAST - The Oversized-Attribute Storage Technique",
+          "component": "Storage",
+          "relationship": "constrains",
+          "distance": 1,
+          "blast_radius": "high",
+          "would_change": "Change to 'Use 16KB fixed page size...' propagates via 'constrains' to TOAST - The Oversized-Attribute Storage Technique."
+        },
+        {
+          "dpr_id": "DPR-003",
+          "title": "MVCC via Tuple Versioning in Heap",
+          "component": "MVCC",
+          "relationship": "constrains",
+          "distance": 3,
+          "blast_radius": "critical",
+          "would_change": "Change to 'Use 16KB fixed page size...' propagates via 'constrains' to MVCC via Tuple Versioning in Heap."
+        },
+        {
+          "dpr_id": "DPR-004",
+          "title": "32-bit Transaction ID with Wraparound",
+          "component": "MVCC",
+          "relationship": "constrains",
+          "distance": 4,
+          "blast_radius": "critical",
+          "would_change": "Change to 'Use 16KB fixed page size...' propagates via 'constrains' to 32-bit Transaction ID with Wraparound."
+        },
+        {
+          "dpr_id": "DPR-005",
+          "title": "HOT (Heap-Only Tuple) Updates",
+          "component": "MVCC",
+          "relationship": "constrains",
+          "distance": 1,
+          "blast_radius": "high",
+          "would_change": "Change to 'Use 16KB fixed page size...' propagates via 'constrains' to HOT (Heap-Only Tuple) Updates."
+        },
+        {
+          "dpr_id": "DPR-006",
+          "title": "Vacuum as Separate Maintenance Process",
+          "component": "Storage",
+          "relationship": "constrains",
+          "distance": 2,
+          "blast_radius": "critical",
+          "would_change": "Change to 'Use 16KB fixed page size...' propagates via 'constrains' to Vacuum as Separate Maintenance Process."
+        },
+        {
+          "dpr_id": "DPR-008",
+          "title": "Autovacuum as Background Daemon",
+          "component": "Autovacuum",
+          "relationship": "constrains",
+          "distance": 3,
+          "blast_radius": "critical",
+          "would_change": "Change to 'Use 16KB fixed page size...' propagates via 'constrains' to Autovacuum as Background Daemon."
+        },
+        {
+          "dpr_id": "DPR-010",
+          "title": "Snapshot Isolation as Default",
+          "component": "MVCC",
+          "relationship": "constrains",
+          "distance": 4,
+          "blast_radius": "high",
+          "would_change": "Change to 'Use 16KB fixed page size...' propagates via 'constrains' to Snapshot Isolation as Default."
+        },
+        {
+          "dpr_id": "DPR-011",
+          "title": "Shared Buffer Pool with Clock-Sweep",
+          "component": "Storage",
+          "relationship": "constrains",
+          "distance": 1,
+          "blast_radius": "critical",
+          "would_change": "Change to 'Use 16KB fixed page size...' propagates via 'constrains' to Shared Buffer Pool with Clock-Sweep."
+        },
+        {
+          "dpr_id": "DPR-012",
+          "title": "Checkpoint-Based Crash Recovery",
+          "component": "WAL",
+          "relationship": "constrains",
+          "distance": 1,
+          "blast_radius": "high",
+          "would_change": "Change to 'Use 16KB fixed page size...' propagates via 'constrains' to Checkpoint-Based Crash Recovery."
+        },
+        {
+          "dpr_id": "DPR-013",
+          "title": "Full-Page Writes for Torn Page Protection",
+          "component": "WAL",
+          "relationship": "constrains",
+          "distance": 1,
+          "blast_radius": "high",
+          "would_change": "Change to 'Use 16KB fixed page size...' propagates via 'constrains' to Full-Page Writes for Torn Page Protection."
+        }
+      ],
+      "risk": {
+        "level": "extreme",
+        "critical": 5,
+        "total": 10
+      }
+    },
+    {
+      "scenario_id": "CF-002",
+      "target_dpr": "DPR-003",
+      "target_title": "MVCC via Tuple Versioning in Heap",
+      "question": "What if PostgreSQL used undo logs instead of in-heap tuple versioning?",
+      "original_decision": "MVCC by storing multiple row versions in heap with xmin/xmax for visibility.",
+      "alternative": "Use undo tablespace for old row versions",
+      "reasoning": "Undo-based MVCC eliminates table bloat, removes need for aggressive vacuum, prevents XID wraparound.",
+      "affected_count": 5,
+      "affected_components": [
+        "Autovacuum",
+        "MVCC",
+        "Storage"
+      ],
+      "impacts": [
+        {
+          "dpr_id": "DPR-004",
+          "title": "32-bit Transaction ID with Wraparound",
+          "component": "MVCC",
+          "relationship": "requires",
+          "distance": 1,
+          "blast_radius": "critical",
+          "would_change": "Change to 'Use undo tablespace for old row versions...' propagates via 'requires' to 32-bit Transaction ID with Wraparound."
+        },
+        {
+          "dpr_id": "DPR-005",
+          "title": "HOT (Heap-Only Tuple) Updates",
+          "component": "MVCC",
+          "relationship": "enables",
+          "distance": 1,
+          "blast_radius": "high",
+          "would_change": "Change to 'Use undo tablespace for old row versions...' propagates via 'enables' to HOT (Heap-Only Tuple) Updates."
+        },
+        {
+          "dpr_id": "DPR-006",
+          "title": "Vacuum as Separate Maintenance Process",
+          "component": "Storage",
+          "relationship": "requires",
+          "distance": 1,
+          "blast_radius": "critical",
+          "would_change": "Change to 'Use undo tablespace for old row versions...' propagates via 'requires' to Vacuum as Separate Maintenance Process."
+        },
+        {
+          "dpr_id": "DPR-008",
+          "title": "Autovacuum as Background Daemon",
+          "component": "Autovacuum",
+          "relationship": "requires",
+          "distance": 1,
+          "blast_radius": "critical",
+          "would_change": "Change to 'Use undo tablespace for old row versions...' propagates via 'requires' to Autovacuum as Background Daemon."
+        },
+        {
+          "dpr_id": "DPR-010",
+          "title": "Snapshot Isolation as Default",
+          "component": "MVCC",
+          "relationship": "enables",
+          "distance": 1,
+          "blast_radius": "high",
+          "would_change": "Change to 'Use undo tablespace for old row versions...' propagates via 'enables' to Snapshot Isolation as Default."
+        }
+      ],
+      "risk": {
+        "level": "extreme",
+        "critical": 3,
+        "total": 5
+      }
+    },
+    {
+      "scenario_id": "CF-003",
+      "target_dpr": "DPR-004",
+      "target_title": "32-bit Transaction ID with Wraparound",
+      "question": "What if PostgreSQL used 64-bit transaction IDs?",
+      "original_decision": "XIDs are 32-bit wrapping after ~4B transactions, requiring periodic vacuum freeze.",
+      "alternative": "Use 64-bit XIDs eliminating wraparound",
+      "reasoning": "64-bit XIDs never wrap around, eliminating vacuum freeze and forced shutdown risk.",
+      "affected_count": 5,
+      "affected_components": [
+        "Autovacuum",
+        "MVCC",
+        "Storage"
+      ],
+      "impacts": [
+        {
+          "dpr_id": "DPR-003",
+          "title": "MVCC via Tuple Versioning in Heap",
+          "component": "MVCC",
+          "relationship": "assumption_of",
+          "distance": 1,
+          "blast_radius": "critical",
+          "would_change": "Change to 'Use 64-bit XIDs eliminating wraparound...' propagates via 'assumption_of' to MVCC via Tuple Versioning in Heap."
+        },
+        {
+          "dpr_id": "DPR-005",
+          "title": "HOT (Heap-Only Tuple) Updates",
+          "component": "MVCC",
+          "relationship": "assumption_of",
+          "distance": 2,
+          "blast_radius": "high",
+          "would_change": "Change to 'Use 64-bit XIDs eliminating wraparound...' propagates via 'assumption_of' to HOT (Heap-Only Tuple) Updates."
+        },
+        {
+          "dpr_id": "DPR-006",
+          "title": "Vacuum as Separate Maintenance Process",
+          "component": "Storage",
+          "relationship": "requires",
+          "distance": 1,
+          "blast_radius": "critical",
+          "would_change": "Change to 'Use 64-bit XIDs eliminating wraparound...' propagates via 'requires' to Vacuum as Separate Maintenance Process."
+        },
+        {
+          "dpr_id": "DPR-008",
+          "title": "Autovacuum as Background Daemon",
+          "component": "Autovacuum",
+          "relationship": "requires",
+          "distance": 1,
+          "blast_radius": "critical",
+          "would_change": "Change to 'Use 64-bit XIDs eliminating wraparound...' propagates via 'requires' to Autovacuum as Background Daemon."
+        },
+        {
+          "dpr_id": "DPR-010",
+          "title": "Snapshot Isolation as Default",
+          "component": "MVCC",
+          "relationship": "assumption_of",
+          "distance": 2,
+          "blast_radius": "high",
+          "would_change": "Change to 'Use 64-bit XIDs eliminating wraparound...' propagates via 'assumption_of' to Snapshot Isolation as Default."
+        }
+      ],
+      "risk": {
+        "level": "extreme",
+        "critical": 3,
+        "total": 5
+      }
+    },
+    {
+      "scenario_id": "CF-004",
+      "target_dpr": "DPR-009",
+      "target_title": "Multi-Process Architecture",
+      "question": "What if PostgreSQL adopted multi-threaded architecture?",
+      "original_decision": "Process-per-connection, not multi-threaded.",
+      "alternative": "Thread-per-connection with shared address space",
+      "reasoning": "Threading reduces memory per connection, eliminates need for external poolers like pgBouncer.",
+      "affected_count": 4,
+      "affected_components": [
+        "ProcessModel",
+        "Storage",
+        "WAL"
+      ],
+      "impacts": [
+        {
+          "dpr_id": "DPR-011",
+          "title": "Shared Buffer Pool with Clock-Sweep",
+          "component": "Storage",
+          "relationship": "requires",
+          "distance": 1,
+          "blast_radius": "critical",
+          "would_change": "Change to 'Thread-per-connection with shared address space...' propagates via 'requires' to Shared Buffer Pool with Clock-Sweep."
+        },
+        {
+          "dpr_id": "DPR-012",
+          "title": "Checkpoint-Based Crash Recovery",
+          "component": "WAL",
+          "relationship": "requires",
+          "distance": 2,
+          "blast_radius": "high",
+          "would_change": "Change to 'Thread-per-connection with shared address space...' propagates via 'requires' to Checkpoint-Based Crash Recovery."
+        },
+        {
+          "dpr_id": "DPR-013",
+          "title": "Full-Page Writes for Torn Page Protection",
+          "component": "WAL",
+          "relationship": "requires",
+          "distance": 3,
+          "blast_radius": "high",
+          "would_change": "Change to 'Thread-per-connection with shared address space...' propagates via 'requires' to Full-Page Writes for Torn Page Protection."
+        },
+        {
+          "dpr_id": "DPR-015",
+          "title": "External Connection Pooling Required",
+          "component": "ProcessModel",
+          "relationship": "requires",
+          "distance": 1,
+          "blast_radius": "high",
+          "would_change": "Change to 'Thread-per-connection with shared address space...' propagates via 'requires' to External Connection Pooling Required."
+        }
+      ],
+      "risk": {
+        "level": "high",
+        "critical": 1,
+        "total": 4
+      }
+    },
+    {
+      "scenario_id": "CF-005",
+      "target_dpr": "DPR-007",
+      "target_title": "Write-Ahead Logging (WAL) for Durability",
+      "question": "What if PostgreSQL used shadow paging instead of WAL?",
+      "original_decision": "All modifications written to sequential WAL before data pages.",
+      "alternative": "Copy-on-write shadow paging for crash recovery",
+      "reasoning": "Shadow paging eliminates WAL writes but complicates streaming replication.",
+      "affected_count": 3,
+      "affected_components": [
+        "Replication",
+        "WAL"
+      ],
+      "impacts": [
+        {
+          "dpr_id": "DPR-012",
+          "title": "Checkpoint-Based Crash Recovery",
+          "component": "WAL",
+          "relationship": "enables",
+          "distance": 1,
+          "blast_radius": "high",
+          "would_change": "Change to 'Copy-on-write shadow paging for crash recovery...' propagates via 'enables' to Checkpoint-Based Crash Recovery."
+        },
+        {
+          "dpr_id": "DPR-013",
+          "title": "Full-Page Writes for Torn Page Protection",
+          "component": "WAL",
+          "relationship": "requires",
+          "distance": 1,
+          "blast_radius": "high",
+          "would_change": "Change to 'Copy-on-write shadow paging for crash recovery...' propagates via 'requires' to Full-Page Writes for Torn Page Protection."
+        },
+        {
+          "dpr_id": "DPR-014",
+          "title": "Streaming Replication via WAL Shipping",
+          "component": "Replication",
+          "relationship": "enables",
+          "distance": 1,
+          "blast_radius": "high",
+          "would_change": "Change to 'Copy-on-write shadow paging for crash recovery...' propagates via 'enables' to Streaming Replication via WAL Shipping."
+        }
+      ],
+      "risk": {
+        "level": "medium",
+        "critical": 0,
+        "total": 3
+      }
+    }
+  ]
+}

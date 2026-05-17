@@ -1,0 +1,8 @@
+{
+  "extraPaths": [
+    "./nexus_layer2"
+  ],
+  "reportMissingImports": "warning",
+  "reportOptionalMemberAccess": "none",
+  "pythonVersion": "3.13"
+}

@@ -1,0 +1,1585 @@
+{
+  "metadata": {
+    "generated_at": "2026-05-17T00:12:33.537959+00:00",
+    "repository": "https://github.com/WordPress/WordPress",
+    "analysis_window": "2023-01-01 to present",
+    "total_dprs": 8,
+    "total_edges": 16,
+    "total_decay_alerts": 3
+  },
+  "dprs": [
+    {
+      "dpr_id": "DPR-001",
+      "title": "Front Controller and Core Bootstrap Mechanism",
+      "component": "Core Bootstrap",
+      "within_window": true,
+      "decision_date": "2023-Q1",
+      "decision": "WordPress employs a front controller pattern where `index.php` (or other entry points like `wp-admin/admin.php`) bootstraps the entire application. This involves loading `wp-blog-header.php`, which then includes `wp-load.php` to define `ABSPATH`, load `wp-config.php`, and subsequently `wp-settings.php` to initialize the WordPress environment and finally load the active theme's template. This centralizes request handling and ensures a consistent application environment.",
+      "rejected_alternatives": [
+        "Direct file access for each feature (e.g., `view_post.php`, `edit_comment.php`)",
+        "Decentralized application initialization logic across multiple entry points"
+      ],
+      "constraints_inherited": [
+        "Web server environment (Apache/Nginx rewrite rules)",
+        "PHP's request-response execution model"
+      ],
+      "implicit_assumptions": [
+        "Web servers can be configured with rewrite rules to direct all non-static requests to the primary front controller (`index.php`).",
+        "The `wp-config.php` file will exist and contain necessary database and security definitions for environment initialization."
+      ],
+      "blast_radius_estimate": "critical",
+      "blast_radius_reasoning": "This is the foundational entry point for nearly all public-facing and administrative requests. Any failure or significant change here would render the entire application inoperable.",
+      "assumption_decay_risk": "low",
+      "decay_risk_reasoning": "The front controller pattern is a well-established web architecture. The assumptions about web server configuration and `wp-config.php` are fundamental to WordPress's operation and are explicitly managed during installation, making them highly stable.",
+      "intended_durability": "foundational",
+      "durability_reasoning": "This pattern has been central to WordPress since its inception and is fundamental to its operation. It is unlikely to change without a complete re-architecture of the core system.",
+      "active_workarounds": [],
+      "files_involved": [
+        "index.php",
+        "wp-blog-header.php",
+        "wp-load.php",
+        "wp-config-sample.php",
+        "wp-settings.php"
+      ],
+      "involved_humans": [
+        "Core WordPress Developers"
+      ],
+      "key_commits": [
+        "Initial architectural design of the WordPress bootstrap sequence."
+      ]
+    },
+    {
+      "dpr_id": "DPR-002",
+      "title": "Externalized Configuration with `wp-config.php`",
+      "component": "Configuration Management",
+      "within_window": true,
+      "decision_date": "2023-Q1",
+      "decision": "Core configuration, including database credentials and security salts (AUTH_KEY, SECURE_AUTH_KEY, etc.), is externalized into a `wp-config.php` file, separate from the core WordPress codebase. This file is typically located in the root or one level above the web root for enhanced security. `wp-config-sample.php` serves as a template for new installations.",
+      "rejected_alternatives": [
+        "Hardcoding database credentials in core files",
+        "Storing sensitive configuration data in the database itself (which would require initial credentials to access)"
+      ],
+      "constraints_inherited": [
+        "PHP's file system access and inclusion mechanisms",
+        "Common web hosting practices and security recommendations"
+      ],
+      "implicit_assumptions": [
+        "The `wp-config.php` file will be properly secured (e.g., correct file permissions, placed outside the web root if feasible).",
+        "Users and administrators understand the importance of unique security salts for each installation to secure cookies and authentication."
+      ],
+      "blast_radius_estimate": "critical",
+      "blast_radius_reasoning": "`wp-config.php` holds sensitive database credentials and cryptographic salts. Compromise of this file allows full database access and session hijacking. Improper configuration prevents the site from running entirely.",
+      "assumption_decay_risk": "low",
+      "decay_risk_reasoning": "The concept of separating configuration from code is a fundamental security best practice. The need for unique, strong secrets for cryptographic operations remains constant and is a well-understood principle.",
+      "intended_durability": "foundational",
+      "durability_reasoning": "This configuration approach has been integral to WordPress's security and deployment model since its early versions and is a cornerstone of its architecture.",
+      "active_workarounds": [],
+      "files_involved": [
+        "wp-config-sample.php",
+        "wp-load.php"
+      ],
+      "involved_humans": [
+        "Core WordPress Developers"
+      ],
+      "key_commits": [
+        "Initial introduction of `wp-config.php` and security salt definitions."
+      ]
+    },
+    {
+      "dpr_id": "DPR-003",
+      "title": "Pseudo-Cron for Background Task Scheduling",
+      "component": "Task Scheduling",
+      "within_window": true,
+      "decision_date": "2023-Q1",
+      "decision": "WordPress implements a pseudo-cron system (`wp-cron.php`) that triggers scheduled tasks (e.g., publishing scheduled posts, checking for updates) when a user visits the site. This system is designed to be non-blocking, often leveraging `fastcgi_finish_request()` or `litespeed_finish_request()` to allow the user's request to complete while cron tasks run in the background.",
+      "rejected_alternatives": [
+        "Relying solely on server-level cron jobs (which requires more technical setup and might not be available on all shared hosting).",
+        "Executing all cron tasks synchronously within the user request (which would significantly slow down page loads and negatively impact user experience)."
+      ],
+      "constraints_inherited": [
+        "PHP execution environment (specifically, the availability of non-blocking functions)",
+        "Limitations of shared hosting environments (often no direct SSH/server cron access for users)"
+      ],
+      "implicit_assumptions": [
+        "The website will receive a sufficient number of visits to trigger `wp-cron.php` regularly enough for scheduled tasks to execute in a timely manner.",
+        "`fastcgi_finish_request()` or similar non-blocking functions are available and correctly configured on the hosting environment."
+      ],
+      "blast_radius_estimate": "high",
+      "blast_radius_reasoning": "Affects the timeliness of all scheduled events (posts, updates, maintenance). If cron fails or doesn't run, crucial functionality can break or fall behind, leading to data inconsistencies, outdated content, or security vulnerabilities due to delayed updates.",
+      "assumption_decay_risk": "medium",
+      "decay_risk_reasoning": "While non-blocking functions are increasingly common, their availability isn't universal across all PHP configurations. The reliance on user visits means that low-traffic sites can suffer from significantly delayed tasks, necessitating a server-level cron workaround for optimal performance.",
+      "intended_durability": "medium-term",
+      "durability_reasoning": "This solution addresses a common hosting constraint for many users. While it might evolve with more robust native background processing mechanisms in PHP or WordPress, it remains a practical solution for its target audience.",
+      "active_workarounds": [
+        "Disabling `wp-cron.php` via `DISABLE_WP_CRON` and setting up a true server-side cron job."
+      ],
+      "files_involved": [
+        "wp-cron.php",
+        "wp-load.php"
+      ],
+      "involved_humans": [
+        "Core WordPress Developers"
+      ],
+      "key_commits": [
+        "Introduction of `wp-cron.php` and subsequent improvements like non-blocking execution functions."
+      ]
+    },
+    {
+      "dpr_id": "DPR-004",
+      "title": "Multi-Site Network Architecture",
+      "component": "Network Management (Multisite)",
+      "within_window": true,
+      "decision_date": "2023-Q1",
+      "decision": "WordPress supports a \"Multisite\" architecture, allowing a single WordPress installation to host multiple independent websites that share a common codebase and database (with separate tables for each site). This is explicitly managed through mechanisms like `is_multisite()` checks and dedicated activation flows (`wpmu_activate_signup`).",
+      "rejected_alternatives": [
+        "Maintaining multiple entirely separate WordPress installations for each site (increased overhead for maintenance and updates).",
+        "A custom, plugin-based framework for managing multiple sites that isn't built into core (potential for inconsistency and integration challenges)."
+      ],
+      "constraints_inherited": [
+        "Database schema design for shared versus site-specific tables",
+        "Performance implications of a larger, potentially more complex single database"
+      ],
+      "implicit_assumptions": [
+        "Network administrators require centralized management and simplified updates for multiple WordPress sites with shared resources.",
+        "The performance impact of a larger, shared database structure is acceptable for the target scale of typical multisite networks."
+      ],
+      "blast_radius_estimate": "critical",
+      "blast_radius_reasoning": "Multisite is a fundamental mode of operation for WordPress. Issues in multisite logic can lead to cross-site data leakage, incorrect site activation, or general network instability, affecting multiple websites simultaneously.",
+      "assumption_decay_risk": "low",
+      "decay_risk_reasoning": "Multisite is a deeply integrated and stable feature. The assumptions about its utility for network administrators and its performance characteristics for typical use cases have proven durable over many years.",
+      "intended_durability": "foundational",
+      "durability_reasoning": "Multisite has been a core feature for many years and is used by a significant portion of the WordPress ecosystem, making it a foundational architectural element.",
+      "active_workarounds": [],
+      "files_involved": [
+        "wp-activate.php",
+        "wp-includes/ms-functions.php",
+        "wp-includes/ms-settings.php"
+      ],
+      "involved_humans": [
+        "Core WordPress Developers"
+      ],
+      "key_commits": [
+        "Integration of WordPress MU features into core WordPress."
+      ]
+    },
+    {
+      "dpr_id": "DPR-005",
+      "title": "Integration of `getID3()` for Media Metadata Processing",
+      "component": "Media Handling",
+      "within_window": true,
+      "decision_date": "2023-Q1",
+      "decision": "WordPress integrates the external `getID3()` library to read and parse metadata from various audio, video, and image file formats (e.g., ID3v1/v2, APE, Ogg, MP3, JPEG). This allows WordPress to extract information like duration, dimensions, and tags for media library items without relying on server-side shell commands.",
+      "rejected_alternatives": [
+        "Developing an in-house media metadata parser (resource-intensive and complex).",
+        "Relying on external server-side command-line tools (e.g., FFmpeg) which require specific server configurations and might not be available on shared hosting environments.",
+        "Not providing rich media metadata (which would limit functionality and user experience)."
+      ],
+      "constraints_inherited": [
+        "PHP's ability to interact with binary file data",
+        "The wide variety of media file formats and their associated metadata standards"
+      ],
+      "implicit_assumptions": [
+        "The `getID3()` library is reliable, actively maintained, and handles a sufficiently broad range of media formats required by WordPress users.",
+        "The licensing terms of `getID3()` (GPL, LGPL, MPL) are compatible with WordPress's GPL license and overall open-source strategy."
+      ],
+      "blast_radius_estimate": "high",
+      "blast_radius_reasoning": "Affects media uploads and library functionality. Issues could lead to corrupted or incorrect metadata, failed uploads, security vulnerabilities from malformed files, or performance degradation during media processing.",
+      "assumption_decay_risk": "medium",
+      "decay_risk_reasoning": "External libraries introduce maintenance dependencies. The `getID3()` README's mention of older PHP requirements for specific versions indicates a potential for version management challenges and potential security vulnerabilities if not regularly updated. The maintenance status of `getID3()` itself is an external factor.",
+      "intended_durability": "medium-term",
+      "durability_reasoning": "While robust media handling is core to a CMS, the specific third-party library might be replaced or augmented in the future if better, more performant, or more actively maintained alternatives emerge, or if PHP's native capabilities evolve to cover this functionality.",
+      "active_workarounds": [],
+      "files_involved": [
+        "wp-includes/class-wp-image-editor.php (implied)",
+        "wp-includes/media.php (implied for metadata handling)",
+        "getID3 library files (implied from README)"
+      ],
+      "involved_humans": [
+        "Core WordPress Developers",
+        "James Heinrich (getID3 author)"
+      ],
+      "key_commits": [
+        "Commits related to initial integration of `getID3` and subsequent updates."
+      ]
+    },
+    {
+      "dpr_id": "DPR-006",
+      "title": "Dedicated Comment Post Handling",
+      "component": "Comment System",
+      "within_window": true,
+      "decision_date": "2023-Q1",
+      "decision": "WordPress routes all comment submissions through a dedicated endpoint, `wp-comments-post.php`. This file strictly enforces the POST method, includes `wp-load.php` for environment setup, processes the comment via `wp_handle_comment_submission()`, and handles errors or redirects, preventing duplicate submissions and ensuring proper validation and security.",
+      "rejected_alternatives": [
+        "Handling comment submissions directly within `index.php` or a generic AJAX endpoint without specific validation logic (increases complexity and security risk).",
+        "Allowing GET requests for comment submissions (a significant security risk, as it could lead to accidental or malicious comment creation through simple links)."
+      ],
+      "constraints_inherited": [
+        "HTTP protocol standards (POST for data submission)",
+        "Web security best practices (prevention of duplicate submissions, proper input validation)"
+      ],
+      "implicit_assumptions": [
+        "A dedicated, distinct endpoint provides better separation of concerns and facilitates specific security and anti-spam measures for comments.",
+        "The `wp_handle_comment_submission()` function encapsulates sufficient validation, sanitization, and processing logic to mitigate common web vulnerabilities."
+      ],
+      "blast_radius_estimate": "high",
+      "blast_radius_reasoning": "Directly handles user-generated content and is a common target for spam and abuse. Flaws could lead to security vulnerabilities (e.g., XSS, SQLi), spam overwhelming the site, or broken commenting functionality, impacting site integrity and user trust.",
+      "assumption_decay_risk": "low",
+      "decay_risk_reasoning": "The pattern of a dedicated submission endpoint with robust server-side validation is a standard and durable web security practice that remains essential for user-generated content.",
+      "intended_durability": "foundational",
+      "durability_reasoning": "The comment system is a core feature of WordPress, and this architectural approach to handling submissions is deeply ingrained and stable, reflecting long-standing web security principles.",
+      "active_workarounds": [],
+      "files_involved": [
+        "wp-comments-post.php",
+        "wp-load.php",
+        "wp-includes/comment.php"
+      ],
+      "involved_humans": [
+        "Core WordPress Developers"
+      ],
+      "key_commits": [
+        "Initial implementation of `wp-comments-post.php` and subsequent security and spam prevention enhancements."
+      ]
+    },
+    {
+      "dpr_id": "DPR-007",
+      "title": "Modern Frontend Tooling for Themes",
+      "component": "Theme Development / Asset Management",
+      "within_window": true,
+      "decision_date": "2023-Q1",
+      "decision": "Modern default WordPress themes (e.g., TwentyNineteen, TwentyTwenty, TwentyTwentyFive) adopt a contemporary frontend development workflow, utilizing Node.js-based tools such as npm, `node-sass`, `postcss`, `autoprefixer`, `rtlcss`, `cssnano`, and `@wordpress/browserslist-config` for compiling, prefixing, optimizing, and linting CSS. This is evidenced by `package.json` and `package-lock.json` files within theme directories.",
+      "rejected_alternatives": [
+        "Manual CSS authoring without preprocessors or build steps (less efficient and maintainable).",
+        "Relying on server-side PHP to generate CSS (less efficient for static assets and adds server load).",
+        "Using older, less standardized, or unsupported build tools for frontend assets."
+      ],
+      "constraints_inherited": [
+        "The need for efficient, maintainable, and optimized CSS/JS assets.",
+        "Cross-browser compatibility requirements and support for modern CSS features."
+      ],
+      "implicit_assumptions": [
+        "Theme developers have a Node.js environment available to run these build tools during theme development and asset compilation.",
+        "The benefits of a more robust build pipeline (e.g., CSS optimization, RTL generation, autoprefixing, accessibility linting) outweigh the added complexity for theme authors.",
+        "The WordPress ecosystem will continue to support and encourage modern frontend development practices."
+      ],
+      "blast_radius_estimate": "medium",
+      "blast_radius_reasoning": "Primarily affects theme development workflows and the efficiency/compatibility of theme assets. Issues could lead to broken theme styles, increased load times, or developer frustration, but not core application failure.",
+      "assumption_decay_risk": "high",
+      "decay_risk_reasoning": "Frontend tooling evolves rapidly. Specific packages, versions, or even entire toolchains can become outdated quickly, requiring continuous updates to maintain compatibility, security, and developer efficiency. Node.js engine requirements also change frequently.",
+      "intended_durability": "short-term",
+      "durability_reasoning": "While the *idea* of a modern build process is foundational for theme development, the *specific tools and versions* used are subject to frequent change due to rapid evolution in the frontend ecosystem.",
+      "active_workarounds": [],
+      "files_involved": [
+        "wp-content/themes/twentynineteen/package.json",
+        "wp-content/themes/twentynineteen/package-lock.json",
+        "wp-content/themes/twentytwenty/package.json",
+        "wp-content/themes/twentytwenty/package-lock.json",
+        "wp-content/themes/twentytwentyfive/package.json",
+        "wp-content/themes/twentytwentyfive/package-lock.json",
+        "wp-content/themes/twentytwenty/.stylelintrc.json"
+      ],
+      "involved_humans": [
+        "WordPress Theme Developers",
+        "Frontend Developers"
+      ],
+      "key_commits": [
+        "Introduction of `package.json` and build scripts to default themes (e.g., TwentyNineteen)."
+      ]
+    },
+    {
+      "dpr_id": "DPR-008",
+      "title": "Centralized User Authentication and Management",
+      "component": "Authentication & Authorization",
+      "within_window": true,
+      "decision_date": "2023-Q1",
+      "decision": "All core user authentication, registration, password reset, and password recovery functionalities are centralized within `wp-login.php`. This file handles different actions (`login`, `register`, `lostpassword`) based on query parameters and includes security measures like `force_ssl_admin()` redirects and robust error handling through functions like `login_header()`, providing a single, consistent gateway for user access.",
+      "rejected_alternatives": [
+        "Distributing authentication logic across multiple files or separate modules without a unified entry point (increases complexity and risk of inconsistent security).",
+        "Relying solely on external authentication systems without a core WordPress fallback (limits self-hosting capabilities and introduces external dependencies)."
+      ],
+      "constraints_inherited": [
+        "Web security standards (e.g., mandatory SSL for sensitive actions like login)",
+        "Robust session management and cookie handling requirements for user persistence"
+      ],
+      "implicit_assumptions": [
+        "A single, well-audited file for all primary authentication flows reduces the attack surface and ensures consistent application of security practices.",
+        "The login process needs to be flexible enough to support various authentication methods and extensions (e.g., passwordless, two-factor via plugins) through its extensive action and filter hooks."
+      ],
+      "blast_radius_estimate": "critical",
+      "blast_radius_reasoning": "This file is the gateway to administrative and user accounts. Any vulnerability (e.g., bypass, injection, brute-force flaw) could lead to full site compromise, unauthorized user access, or denial of service, impacting the entire WordPress installation.",
+      "assumption_decay_risk": "low",
+      "decay_risk_reasoning": "Centralizing critical security functions is a durable architectural pattern. The need for secure, robust, and extensible authentication remains constant and is a primary concern for any web application.",
+      "intended_durability": "foundational",
+      "durability_reasoning": "User authentication is a fundamental aspect of any content management system. This centralized approach has been stable and critical to WordPress's security model for a very long time, evolving with security best practices.",
+      "active_workarounds": [],
+      "files_involved": [
+        "wp-login.php",
+        "wp-load.php",
+        "wp-includes/pluggable.php",
+        "wp-includes/user.php"
+      ],
+      "involved_humans": [
+        "Core WordPress Developers"
+      ],
+      "key_commits": [
+        "Initial development and continuous security enhancements of `wp-login.php`."
+      ]
+    }
+  ],
+  "ctg_edges": [
+    {
+      "from_dpr": "DPR-002",
+      "to_dpr": "DPR-001",
+      "relationship": "enables",
+      "explanation": "DPR-002 (externalized configuration) provides the necessary database credentials and security salts that `wp-load.php` (part of DPR-001's bootstrap) requires to initialize the application environment."
+    },
+    {
+      "from_dpr": "DPR-001",
+      "to_dpr": "DPR-002",
+      "relationship": "requires",
+      "explanation": "The front controller's bootstrap mechanism (DPR-001) explicitly states it involves loading `wp-config.php`, and assumes its existence and correct definitions, making it a prerequisite for environment initialization."
+    },
+    {
+      "from_dpr": "DPR-001",
+      "to_dpr": "DPR-003",
+      "relationship": "enables",
+      "explanation": "DPR-003 (pseudo-cron) is triggered 'when a user visits the site,' and these visits are processed by the front controller (DPR-001), thus providing the necessary execution context for cron tasks."
+    },
+    {
+      "from_dpr": "DPR-003",
+      "to_dpr": "DPR-001",
+      "relationship": "requires",
+      "explanation": "`wp-cron.php` (DPR-003) relies on the core bootstrap mechanism (DPR-001, specifically `wp-load.php`) to set up the necessary WordPress environment before it can execute scheduled tasks."
+    },
+    {
+      "from_dpr": "DPR-001",
+      "to_dpr": "DPR-006",
+      "relationship": "enables",
+      "explanation": "The dedicated comment post handler (`wp-comments-post.php` from DPR-006) includes `wp-load.php`, which is a core component of the bootstrap mechanism defined in DPR-001, providing the necessary environment."
+    },
+    {
+      "from_dpr": "DPR-006",
+      "to_dpr": "DPR-001",
+      "relationship": "requires",
+      "explanation": "`wp-comments-post.php` (DPR-006) requires the fundamental WordPress environment to be set up, which is achieved through the bootstrap process defined in DPR-001."
+    },
+    {
+      "from_dpr": "DPR-002",
+      "to_dpr": "DPR-004",
+      "relationship": "enables",
+      "explanation": "DPR-002 (wp-config.php) provides the essential database connection parameters and can contain specific constants (e.g., `WP_ALLOW_MULTISITE`) that activate and configure the Multisite network architecture (DPR-004)."
+    },
+    {
+      "from_dpr": "DPR-004",
+      "to_dpr": "DPR-002",
+      "relationship": "requires",
+      "explanation": "The Multisite architecture (DPR-004) fundamentally depends on `wp-config.php` (DPR-002) for database connectivity and its specific configuration directives to operate correctly."
+    },
+    {
+      "from_dpr": "DPR-001",
+      "to_dpr": "DPR-005",
+      "relationship": "enables",
+      "explanation": "The front controller's full bootstrap (DPR-001) establishes the complete WordPress environment where `wp-includes/media.php` and its integration of `getID3` (DPR-005) become available for media processing."
+    },
+    {
+      "from_dpr": "DPR-005",
+      "to_dpr": "DPR-001",
+      "relationship": "requires",
+      "explanation": "The `getID3` integration (DPR-005) depends on the overarching WordPress application being fully initialized and running, which is orchestrated by the front controller (DPR-001)."
+    },
+    {
+      "from_dpr": "DPR-002",
+      "to_dpr": "DPR-001",
+      "relationship": "assumption_of",
+      "explanation": "DPR-001 explicitly lists an implicit assumption that 'The `wp-config.php` file will exist and contain necessary database and security definitions for environment initialization,' which is the core concern of DPR-002."
+    },
+    {
+      "from_dpr": "DPR-001",
+      "to_dpr": "DPR-003",
+      "relationship": "assumption_of",
+      "explanation": "DPR-003 assumes 'The website will receive a sufficient number of visits to trigger `wp-cron.php` regularly enough,' and these user visits are fundamentally processed by the front controller (DPR-001)."
+    },
+    {
+      "from_dpr": "DPR-001",
+      "to_dpr": "DPR-002",
+      "relationship": "temporal_precedes",
+      "explanation": "The initial execution of the front controller (`index.php` in DPR-001) is the first step in the bootstrap sequence that leads to the subsequent loading of `wp-config.php` (DPR-002) via `wp-load.php`."
+    },
+    {
+      "from_dpr": "DPR-004",
+      "to_dpr": "DPR-006",
+      "relationship": "constrains",
+      "explanation": "If Multisite (DPR-004) is active, the comment handling system (DPR-006) must be designed to correctly associate comments with the specific site within the network, imposing constraints on its data storage and retrieval logic."
+    },
+    {
+      "from_dpr": "DPR-002",
+      "to_dpr": "DPR-005",
+      "relationship": "requires",
+      "explanation": "DPR-005 processes media metadata, which is typically stored in the database. This storage operation requires database connection credentials, which are managed and provided by `wp-config.php` (DPR-002)."
+    },
+    {
+      "from_dpr": "DPR-004",
+      "to_dpr": "DPR-003",
+      "relationship": "constrains",
+      "explanation": "In a Multisite environment (DPR-004), the pseudo-cron system (DPR-003) is constrained to correctly identify the active site context and execute tasks relevant to that site, potentially requiring additional logic for task scheduling across the network."
+    }
+  ],
+  "assumptions": [
+    {
+      "dpr_id": "DPR-003",
+      "assumption": "The website will receive a sufficient number of visits to trigger `wp-cron.php` regularly enough for scheduled tasks to execute in a timely manner.",
+      "already_decaying": true,
+      "decay_evidence": "Low-traffic sites consistently suffer from significantly delayed scheduled tasks, often necessitating manual intervention or server-level cron workarounds to ensure timely execution. This indicates the assumption of 'sufficient visits' isn't universally met.",
+      "earliest_signal_date": "2023-Q1",
+      "decay_signals_found": [
+        "Scheduled posts or updates consistently publish/execute late on low-traffic sites.",
+        "Increased usage of `DISABLE_WP_CRON` and server-side cron jobs by users/hosts.",
+        "User complaints about delayed plugin/theme updates or site maintenance tasks."
+      ],
+      "recommended_monitor_query": "Monitor `wp-cron.php` execution logs on diverse WordPress installations, specifically observing the time delta between scheduled and actual task execution on sites with varying traffic levels. Track instances where `DISABLE_WP_CRON` is activated."
+    },
+    {
+      "dpr_id": "DPR-003",
+      "assumption": "`fastcgi_finish_request()` or similar non-blocking functions are available and correctly configured on the hosting environment.",
+      "already_decaying": true,
+      "decay_evidence": "While these non-blocking functions are becoming more common, their availability and correct configuration are not universal across all PHP and hosting environments. Some shared hosting providers may not support them, leading to synchronous cron execution.",
+      "earliest_signal_date": "2023-Q1",
+      "decay_signals_found": [
+        "Reports of slow page loads when `wp-cron.php` triggers on specific hosting environments.",
+        "Errors in server logs indicating `fastcgi_finish_request()` or similar functions are not found or fail.",
+        "Hosting providers explicitly disabling or not supporting these functions for various reasons."
+      ],
+      "recommended_monitor_query": "Implement telemetry to detect if `fastcgi_finish_request()` or `litespeed_finish_request()` are successfully utilized by `wp-cron.php` and their impact on request completion times. Survey common hosting environments for configuration patterns regarding these functions."
+    },
+    {
+      "dpr_id": "DPR-005",
+      "assumption": "The `getID3()` library is reliable, actively maintained, and handles a sufficiently broad range of media formats required by WordPress users.",
+      "already_decaying": true,
+      "decay_evidence": "The `getID3()` library's own documentation mentions older PHP requirements for specific versions, indicating potential for version management challenges and security vulnerabilities if not regularly updated. The maintenance status of `getID3()` is an external factor not fully controlled by WordPress, posing an inherent decay risk.",
+      "earliest_signal_date": "2023-Q1",
+      "decay_signals_found": [
+        "Reports of media upload failures or incorrect metadata extraction for newer or less common media formats.",
+        "Discovery of security vulnerabilities in `getID3()` that WordPress depends on.",
+        "Inactivity or infrequent updates from the `getID3()` project maintainers.",
+        "Compatibility issues with newer PHP versions leading to deprecation warnings or errors."
+      ],
+      "recommended_monitor_query": "Actively monitor the `getID3()` library's release cycle, public vulnerability databases (CVEs) for `getID3()`, and WordPress support channels for issues related to media metadata processing, especially concerning new file formats or PHP versions."
+    }
+  ],
+  "risk_scores": [
+    {
+      "dpr_id": "DPR-003",
+      "title": "Pseudo-Cron for Background Task Scheduling",
+      "component": "Task Scheduling",
+      "composite_risk": 61.0,
+      "blast_radius_score": 75.0,
+      "decay_risk_score": 50.0,
+      "connectivity_score": 100.0,
+      "workaround_pressure": 20.0,
+      "active_decay": true,
+      "downstream_count": 5,
+      "upstream_count": 5
+    },
+    {
+      "dpr_id": "DPR-005",
+      "title": "Integration of `getID3()` for Media Metadata Processing",
+      "component": "Media Handling",
+      "composite_risk": 58.0,
+      "blast_radius_score": 75.0,
+      "decay_risk_score": 50.0,
+      "connectivity_score": 100.0,
+      "workaround_pressure": 0.0,
+      "active_decay": true,
+      "downstream_count": 5,
+      "upstream_count": 5
+    },
+    {
+      "dpr_id": "DPR-001",
+      "title": "Front Controller and Core Bootstrap Mechanism",
+      "component": "Core Bootstrap",
+      "composite_risk": 56.2,
+      "blast_radius_score": 100.0,
+      "decay_risk_score": 25.0,
+      "connectivity_score": 100.0,
+      "workaround_pressure": 0.0,
+      "active_decay": false,
+      "downstream_count": 5,
+      "upstream_count": 5
+    },
+    {
+      "dpr_id": "DPR-002",
+      "title": "Externalized Configuration with `wp-config.php`",
+      "component": "Configuration Management",
+      "composite_risk": 56.2,
+      "blast_radius_score": 100.0,
+      "decay_risk_score": 25.0,
+      "connectivity_score": 100.0,
+      "workaround_pressure": 0.0,
+      "active_decay": false,
+      "downstream_count": 5,
+      "upstream_count": 5
+    },
+    {
+      "dpr_id": "DPR-004",
+      "title": "Multi-Site Network Architecture",
+      "component": "Network Management (Multisite)",
+      "composite_risk": 56.2,
+      "blast_radius_score": 100.0,
+      "decay_risk_score": 25.0,
+      "connectivity_score": 100.0,
+      "workaround_pressure": 0.0,
+      "active_decay": false,
+      "downstream_count": 5,
+      "upstream_count": 5
+    },
+    {
+      "dpr_id": "DPR-006",
+      "title": "Dedicated Comment Post Handling",
+      "component": "Comment System",
+      "composite_risk": 48.7,
+      "blast_radius_score": 75.0,
+      "decay_risk_score": 25.0,
+      "connectivity_score": 100.0,
+      "workaround_pressure": 0.0,
+      "active_decay": false,
+      "downstream_count": 5,
+      "upstream_count": 5
+    },
+    {
+      "dpr_id": "DPR-007",
+      "title": "Modern Frontend Tooling for Themes",
+      "component": "Theme Development / Asset Management",
+      "composite_risk": 40.0,
+      "blast_radius_score": 50.0,
+      "decay_risk_score": 100.0,
+      "connectivity_score": 0.0,
+      "workaround_pressure": 0.0,
+      "active_decay": false,
+      "downstream_count": 0,
+      "upstream_count": 0
+    },
+    {
+      "dpr_id": "DPR-008",
+      "title": "Centralized User Authentication and Management",
+      "component": "Authentication & Authorization",
+      "composite_risk": 36.2,
+      "blast_radius_score": 100.0,
+      "decay_risk_score": 25.0,
+      "connectivity_score": 0.0,
+      "workaround_pressure": 0.0,
+      "active_decay": false,
+      "downstream_count": 0,
+      "upstream_count": 0
+    }
+  ],
+  "remediation_backlog": [
+    {
+      "priority": "P1",
+      "dpr_id": "DPR-003",
+      "title": "Pseudo-Cron for Background Task Scheduling",
+      "component": "Task Scheduling",
+      "risk_score": 61.0,
+      "actions": [
+        "Address 2 active decay alert(s)"
+      ],
+      "estimated_effort": "medium"
+    },
+    {
+      "priority": "P1",
+      "dpr_id": "DPR-005",
+      "title": "Integration of `getID3()` for Media Metadata Processing",
+      "component": "Media Handling",
+      "risk_score": 58.0,
+      "actions": [
+        "Address 1 active decay alert(s)"
+      ],
+      "estimated_effort": "medium"
+    },
+    {
+      "priority": "P1",
+      "dpr_id": "DPR-001",
+      "title": "Front Controller and Core Bootstrap Mechanism",
+      "component": "Core Bootstrap",
+      "risk_score": 56.2,
+      "actions": [
+        "Add blast radius monitoring and alerts"
+      ],
+      "estimated_effort": "medium"
+    },
+    {
+      "priority": "P1",
+      "dpr_id": "DPR-002",
+      "title": "Externalized Configuration with `wp-config.php`",
+      "component": "Configuration Management",
+      "risk_score": 56.2,
+      "actions": [
+        "Add blast radius monitoring and alerts"
+      ],
+      "estimated_effort": "medium"
+    },
+    {
+      "priority": "P1",
+      "dpr_id": "DPR-004",
+      "title": "Multi-Site Network Architecture",
+      "component": "Network Management (Multisite)",
+      "risk_score": 56.2,
+      "actions": [
+        "Add blast radius monitoring and alerts"
+      ],
+      "estimated_effort": "medium"
+    },
+    {
+      "priority": "P2",
+      "dpr_id": "DPR-006",
+      "title": "Dedicated Comment Post Handling",
+      "component": "Comment System",
+      "risk_score": 48.7,
+      "actions": [
+        "Monitor and reassess next cycle"
+      ],
+      "estimated_effort": "low"
+    },
+    {
+      "priority": "P2",
+      "dpr_id": "DPR-007",
+      "title": "Modern Frontend Tooling for Themes",
+      "component": "Theme Development / Asset Management",
+      "risk_score": 40.0,
+      "actions": [
+        "Schedule quarterly assumption review"
+      ],
+      "estimated_effort": "low"
+    }
+  ],
+  "counterfactual_traces": [
+    {
+      "scenario_id": "CF-001",
+      "target_dpr": "DPR-001",
+      "target_title": "Front Controller and Core Bootstrap Mechanism",
+      "question": "What if WordPress adopted a more modular, component-based bootstrap and request routing mechanism instead of a monolithic front controller?",
+      "original_decision": "WordPress employs a front controller pattern where `index.php` (or other entry points like `wp-admin/admin.php`) bootstraps the entire application. This involves loading `wp-blog-header.php`, which then includes `wp-load.php` to define `ABSPATH`, load `wp-config.php`, and subsequently `wp-settings.php` to initialize the WordPress environment and finally load the active theme's template. This centralizes request handling and ensures a consistent application environment.",
+      "alternative": "Instead of `index.php` (or `wp-admin/admin.php`) bootstrapping the entire application, WordPress would utilize a more granular, dependency-injection-based or micro-kernel architecture. Components would be loaded explicitly as needed based on the request URI, perhaps via a dedicated routing library, significantly decoupling the various parts of the system during startup.",
+      "reasoning": "This alternative would likely lead to a more testable, maintainable, and potentially performant core. Developers could more easily understand and modify specific parts of the bootstrap process without affecting the whole. It could also open doors for more sophisticated routing, API-first development, and even different types of application entry points (e.g., CLI commands) that don't need to load the entire web environment, reducing overhead and improving flexibility.",
+      "affected_count": 5,
+      "affected_components": [
+        "Comment System",
+        "Configuration Management",
+        "Media Handling",
+        "Network Management (Multisite)",
+        "Task Scheduling"
+      ],
+      "impacts": [
+        {
+          "dpr_id": "DPR-002",
+          "title": "Externalized Configuration with `wp-config.php`",
+          "component": "Configuration Management",
+          "relationship": "temporal_precedes",
+          "distance": 1,
+          "blast_radius": "critical",
+          "would_change": "Change propagates via 'temporal_precedes' to Externalized Configuration with `wp-config.php`."
+        },
+        {
+          "dpr_id": "DPR-003",
+          "title": "Pseudo-Cron for Background Task Scheduling",
+          "component": "Task Scheduling",
+          "relationship": "assumption_of",
+          "distance": 1,
+          "blast_radius": "high",
+          "would_change": "Change propagates via 'assumption_of' to Pseudo-Cron for Background Task Scheduling."
+        },
+        {
+          "dpr_id": "DPR-004",
+          "title": "Multi-Site Network Architecture",
+          "component": "Network Management (Multisite)",
+          "relationship": "temporal_precedes",
+          "distance": 2,
+          "blast_radius": "critical",
+          "would_change": "Change propagates via 'temporal_precedes' to Multi-Site Network Architecture."
+        },
+        {
+          "dpr_id": "DPR-005",
+          "title": "Integration of `getID3()` for Media Metadata Processing",
+          "component": "Media Handling",
+          "relationship": "enables",
+          "distance": 1,
+          "blast_radius": "high",
+          "would_change": "Change propagates via 'enables' to Integration of `getID3()` for Media Metadata Processing."
+        },
+        {
+          "dpr_id": "DPR-006",
+          "title": "Dedicated Comment Post Handling",
+          "component": "Comment System",
+          "relationship": "enables",
+          "distance": 1,
+          "blast_radius": "high",
+          "would_change": "Change propagates via 'enables' to Dedicated Comment Post Handling."
+        }
+      ],
+      "risk": {
+        "level": "extreme",
+        "critical": 2,
+        "total": 5
+      }
+    },
+    {
+      "scenario_id": "CF-002",
+      "target_dpr": "DPR-003",
+      "target_title": "Pseudo-Cron for Background Task Scheduling",
+      "question": "What if WordPress had always required a true server-side cron job or integrated with a dedicated message queue for background task scheduling?",
+      "original_decision": "WordPress implements a pseudo-cron system (`wp-cron.php`) that triggers scheduled tasks (e.g., publishing scheduled posts, checking for updates) when a user visits the site. This system is designed to be non-blocking, often leveraging `fastcgi_finish_request()` or `litespeed_finish_request()` to allow the user's request to complete while cron tasks run in the background.",
+      "alternative": "Instead of relying on the pseudo-cron system (`wp-cron.php`) that triggers tasks on user visits, WordPress would have been designed from the outset to depend on actual operating system cron jobs (e.g., `crontab`) or a dedicated message queue/task runner system (like RabbitMQ, Redis Queue) for all scheduled tasks. `wp-cron.php` would either not exist or would solely act as a dispatcher for the external system.",
+      "reasoning": "This change would result in much more reliable and predictable task execution, avoiding the inconsistencies and delays inherent in `wp-cron.php` on low-traffic or high-traffic sites. It would also offload task processing from user requests, improving site performance and user experience. While it would introduce an additional server configuration requirement, it aligns better with best practices for scalable application design and distributed systems.",
+      "affected_count": 5,
+      "affected_components": [
+        "Comment System",
+        "Configuration Management",
+        "Core Bootstrap",
+        "Media Handling",
+        "Network Management (Multisite)"
+      ],
+      "impacts": [
+        {
+          "dpr_id": "DPR-001",
+          "title": "Front Controller and Core Bootstrap Mechanism",
+          "component": "Core Bootstrap",
+          "relationship": "requires",
+          "distance": 1,
+          "blast_radius": "critical",
+          "would_change": "Change propagates via 'requires' to Front Controller and Core Bootstrap Mechanism."
+        },
+        {
+          "dpr_id": "DPR-002",
+          "title": "Externalized Configuration with `wp-config.php`",
+          "component": "Configuration Management",
+          "relationship": "requires",
+          "distance": 2,
+          "blast_radius": "critical",
+          "would_change": "Change propagates via 'requires' to Externalized Configuration with `wp-config.php`."
+        },
+        {
+          "dpr_id": "DPR-004",
+          "title": "Multi-Site Network Architecture",
+          "component": "Network Management (Multisite)",
+          "relationship": "requires",
+          "distance": 3,
+          "blast_radius": "critical",
+          "would_change": "Change propagates via 'requires' to Multi-Site Network Architecture."
+        },
+        {
+          "dpr_id": "DPR-005",
+          "title": "Integration of `getID3()` for Media Metadata Processing",
+          "component": "Media Handling",
+          "relationship": "requires",
+          "distance": 2,
+          "blast_radius": "high",
+          "would_change": "Change propagates via 'requires' to Integration of `getID3()` for Media Metadata Processing."
+        },
+        {
+          "dpr_id": "DPR-006",
+          "title": "Dedicated Comment Post Handling",
+          "component": "Comment System",
+          "relationship": "requires",
+          "distance": 2,
+          "blast_radius": "high",
+          "would_change": "Change propagates via 'requires' to Dedicated Comment Post Handling."
+        }
+      ],
+      "risk": {
+        "level": "extreme",
+        "critical": 3,
+        "total": 5
+      }
+    },
+    {
+      "scenario_id": "CF-003",
+      "target_dpr": "DPR-004",
+      "target_title": "Multi-Site Network Architecture",
+      "question": "What if WordPress Multisite was never developed, and the core philosophy encouraged truly independent installations for each site, or a more isolated multi-tenant architecture?",
+      "original_decision": "WordPress supports a \"Multisite\" architecture, allowing a single WordPress installation to host multiple independent websites that share a common codebase and database (with separate tables for each site). This is explicitly managed through mechanisms like `is_multisite()` checks and dedicated activation flows (`wpmu_activate_signup`).",
+      "alternative": "Rather than a single installation hosting multiple sites sharing a codebase and a database with separate tables, WordPress would promote or enforce completely separate WordPress installations for each website. Alternatively, a more isolated multi-tenant architecture might have been explored, perhaps involving database sharding or stricter tenant isolation at a deeper level than shared tables.",
+      "reasoning": "This would likely lead to enhanced security isolation between sites, as a compromise of one site would be less likely to directly affect others. It could simplify individual site upgrades and maintenance, as there wouldn't be the complexities of managing a network. However, it would significantly increase the operational overhead for users needing to manage multiple sites, as each would require its own installation, database, and potentially server resources, making centralized management much harder without external tooling.",
+      "affected_count": 5,
+      "affected_components": [
+        "Comment System",
+        "Configuration Management",
+        "Core Bootstrap",
+        "Media Handling",
+        "Task Scheduling"
+      ],
+      "impacts": [
+        {
+          "dpr_id": "DPR-001",
+          "title": "Front Controller and Core Bootstrap Mechanism",
+          "component": "Core Bootstrap",
+          "relationship": "requires",
+          "distance": 2,
+          "blast_radius": "critical",
+          "would_change": "Change propagates via 'requires' to Front Controller and Core Bootstrap Mechanism."
+        },
+        {
+          "dpr_id": "DPR-002",
+          "title": "Externalized Configuration with `wp-config.php`",
+          "component": "Configuration Management",
+          "relationship": "requires",
+          "distance": 1,
+          "blast_radius": "critical",
+          "would_change": "Change propagates via 'requires' to Externalized Configuration with `wp-config.php`."
+        },
+        {
+          "dpr_id": "DPR-003",
+          "title": "Pseudo-Cron for Background Task Scheduling",
+          "component": "Task Scheduling",
+          "relationship": "constrains",
+          "distance": 1,
+          "blast_radius": "high",
+          "would_change": "Change propagates via 'constrains' to Pseudo-Cron for Background Task Scheduling."
+        },
+        {
+          "dpr_id": "DPR-005",
+          "title": "Integration of `getID3()` for Media Metadata Processing",
+          "component": "Media Handling",
+          "relationship": "requires",
+          "distance": 2,
+          "blast_radius": "high",
+          "would_change": "Change propagates via 'requires' to Integration of `getID3()` for Media Metadata Processing."
+        },
+        {
+          "dpr_id": "DPR-006",
+          "title": "Dedicated Comment Post Handling",
+          "component": "Comment System",
+          "relationship": "constrains",
+          "distance": 1,
+          "blast_radius": "high",
+          "would_change": "Change propagates via 'constrains' to Dedicated Comment Post Handling."
+        }
+      ],
+      "risk": {
+        "level": "extreme",
+        "critical": 2,
+        "total": 5
+      }
+    },
+    {
+      "scenario_id": "CF-004",
+      "target_dpr": "DPR-002",
+      "target_title": "Externalized Configuration with `wp-config.php`",
+      "question": "What if WordPress primarily stored its dynamic configuration in the database or relied heavily on environment variables instead of `wp-config.php` for most settings?",
+      "original_decision": "Core configuration, including database credentials and security salts (AUTH_KEY, SECURE_AUTH_KEY, etc.), is externalized into a `wp-config.php` file, separate from the core WordPress codebase. This file is typically located in the root or one level above the web root for enhanced security. `wp-config-sample.php` serves as a template for new installations.",
+      "alternative": "Core configuration, especially sensitive data like database credentials and security salts, would primarily be sourced from environment variables, adhering to 'The Twelve-Factor App' principles. Other dynamic settings (e.g., debug modes, certain plugin configurations) would be managed via the administration interface and stored persistently in the database, with `wp-config.php` being either minimal or deprecated.",
+      "reasoning": "This approach would significantly streamline modern deployment workflows, especially for containerized or cloud-native environments where `wp-config.php` can be an immutable infrastructure challenge. It would make WordPress more 'cloud-friendly' and align with contemporary DevOps practices, allowing for easier configuration management across different environments without modifying files. However, it would introduce new security considerations regarding environment variable management and potentially complicate debugging if configuration isn't easily inspectable.",
+      "affected_count": 5,
+      "affected_components": [
+        "Comment System",
+        "Core Bootstrap",
+        "Media Handling",
+        "Network Management (Multisite)",
+        "Task Scheduling"
+      ],
+      "impacts": [
+        {
+          "dpr_id": "DPR-001",
+          "title": "Front Controller and Core Bootstrap Mechanism",
+          "component": "Core Bootstrap",
+          "relationship": "assumption_of",
+          "distance": 1,
+          "blast_radius": "critical",
+          "would_change": "Change propagates via 'assumption_of' to Front Controller and Core Bootstrap Mechanism."
+        },
+        {
+          "dpr_id": "DPR-003",
+          "title": "Pseudo-Cron for Background Task Scheduling",
+          "component": "Task Scheduling",
+          "relationship": "assumption_of",
+          "distance": 2,
+          "blast_radius": "high",
+          "would_change": "Change propagates via 'assumption_of' to Pseudo-Cron for Background Task Scheduling."
+        },
+        {
+          "dpr_id": "DPR-004",
+          "title": "Multi-Site Network Architecture",
+          "component": "Network Management (Multisite)",
+          "relationship": "enables",
+          "distance": 1,
+          "blast_radius": "critical",
+          "would_change": "Change propagates via 'enables' to Multi-Site Network Architecture."
+        },
+        {
+          "dpr_id": "DPR-005",
+          "title": "Integration of `getID3()` for Media Metadata Processing",
+          "component": "Media Handling",
+          "relationship": "requires",
+          "distance": 1,
+          "blast_radius": "high",
+          "would_change": "Change propagates via 'requires' to Integration of `getID3()` for Media Metadata Processing."
+        },
+        {
+          "dpr_id": "DPR-006",
+          "title": "Dedicated Comment Post Handling",
+          "component": "Comment System",
+          "relationship": "assumption_of",
+          "distance": 2,
+          "blast_radius": "high",
+          "would_change": "Change propagates via 'assumption_of' to Dedicated Comment Post Handling."
+        }
+      ],
+      "risk": {
+        "level": "extreme",
+        "critical": 2,
+        "total": 5
+      }
+    },
+    {
+      "scenario_id": "CF-005",
+      "target_dpr": "DPR-006",
+      "target_title": "Dedicated Comment Post Handling",
+      "question": "What if comment submissions were handled primarily via a dedicated REST API endpoint from the beginning, instead of a direct POST to `wp-comments-post.php`?",
+      "original_decision": "WordPress routes all comment submissions through a dedicated endpoint, `wp-comments-post.php`. This file strictly enforces the POST method, includes `wp-load.php` for environment setup, processes the comment via `wp_handle_comment_submission()`, and handles errors or redirects, preventing duplicate submissions and ensuring proper validation and security.",
+      "alternative": "All comment submissions would be processed through an AJAX request to a well-defined REST API endpoint (e.g., `/wp-json/wp/v2/comments`). This endpoint would handle validation, spam checking, and database insertion, returning a structured JSON response to the client. The `wp-comments-post.php` file would either not exist or be a legacy fallback.",
+      "reasoning": "This decision would have modernized frontend development in WordPress significantly earlier, facilitating better integration with JavaScript-heavy themes and single-page applications. It would provide a more robust and secure method for handling submissions, leveraging API standards, built-in nonce handling, and structured error responses. It would also simplify the creation of decoupled frontends and improve the user experience by enabling asynchronous comment submission without full page reloads.",
+      "affected_count": 5,
+      "affected_components": [
+        "Configuration Management",
+        "Core Bootstrap",
+        "Media Handling",
+        "Network Management (Multisite)",
+        "Task Scheduling"
+      ],
+      "impacts": [
+        {
+          "dpr_id": "DPR-001",
+          "title": "Front Controller and Core Bootstrap Mechanism",
+          "component": "Core Bootstrap",
+          "relationship": "requires",
+          "distance": 1,
+          "blast_radius": "critical",
+          "would_change": "Change propagates via 'requires' to Front Controller and Core Bootstrap Mechanism."
+        },
+        {
+          "dpr_id": "DPR-002",
+          "title": "Externalized Configuration with `wp-config.php`",
+          "component": "Configuration Management",
+          "relationship": "requires",
+          "distance": 2,
+          "blast_radius": "critical",
+          "would_change": "Change propagates via 'requires' to Externalized Configuration with `wp-config.php`."
+        },
+        {
+          "dpr_id": "DPR-003",
+          "title": "Pseudo-Cron for Background Task Scheduling",
+          "component": "Task Scheduling",
+          "relationship": "requires",
+          "distance": 2,
+          "blast_radius": "high",
+          "would_change": "Change propagates via 'requires' to Pseudo-Cron for Background Task Scheduling."
+        },
+        {
+          "dpr_id": "DPR-004",
+          "title": "Multi-Site Network Architecture",
+          "component": "Network Management (Multisite)",
+          "relationship": "requires",
+          "distance": 3,
+          "blast_radius": "critical",
+          "would_change": "Change propagates via 'requires' to Multi-Site Network Architecture."
+        },
+        {
+          "dpr_id": "DPR-005",
+          "title": "Integration of `getID3()` for Media Metadata Processing",
+          "component": "Media Handling",
+          "relationship": "requires",
+          "distance": 2,
+          "blast_radius": "high",
+          "would_change": "Change propagates via 'requires' to Integration of `getID3()` for Media Metadata Processing."
+        }
+      ],
+      "risk": {
+        "level": "extreme",
+        "critical": 3,
+        "total": 5
+      }
+    }
+  ],
+  "knowledge_concentration": {
+    "timestamp": "2026-05-17T00:12:33.495226+00:00",
+    "repository": "https://github.com/WordPress/WordPress",
+    "total_authors": 4,
+    "total_dprs": 8,
+    "author_summary": [
+      {
+        "author": "Core WordPress Developers",
+        "total_dprs": 7,
+        "dpr_ids": [
+          "DPR-001",
+          "DPR-002",
+          "DPR-003",
+          "DPR-004",
+          "DPR-005",
+          "DPR-006",
+          "DPR-008"
+        ],
+        "files_touched": 17,
+        "components": [
+          "Authentication & Authorization",
+          "Comment System",
+          "Configuration Management",
+          "Core Bootstrap",
+          "Media Handling",
+          "Network Management (Multisite)",
+          "Task Scheduling"
+        ],
+        "is_spof": true
+      },
+      {
+        "author": "Frontend Developers",
+        "total_dprs": 1,
+        "dpr_ids": [
+          "DPR-007"
+        ],
+        "files_touched": 7,
+        "components": [
+          "Theme Development / Asset Management"
+        ],
+        "is_spof": false
+      },
+      {
+        "author": "James Heinrich (getID3 author)",
+        "total_dprs": 1,
+        "dpr_ids": [
+          "DPR-005"
+        ],
+        "files_touched": 3,
+        "components": [
+          "Media Handling"
+        ],
+        "is_spof": false
+      },
+      {
+        "author": "WordPress Theme Developers",
+        "total_dprs": 1,
+        "dpr_ids": [
+          "DPR-007"
+        ],
+        "files_touched": 7,
+        "components": [
+          "Theme Development / Asset Management"
+        ],
+        "is_spof": false
+      }
+    ],
+    "dpr_ownership": {
+      "DPR-001": {
+        "Core WordPress Developers": 100.0
+      },
+      "DPR-002": {
+        "Core WordPress Developers": 100.0
+      },
+      "DPR-003": {
+        "Core WordPress Developers": 100.0
+      },
+      "DPR-004": {
+        "Core WordPress Developers": 100.0
+      },
+      "DPR-005": {
+        "Core WordPress Developers": 66.7,
+        "James Heinrich (getID3 author)": 33.3
+      },
+      "DPR-006": {
+        "Core WordPress Developers": 100.0
+      },
+      "DPR-007": {
+        "WordPress Theme Developers": 66.7,
+        "Frontend Developers": 33.3
+      },
+      "DPR-008": {
+        "Core WordPress Developers": 100.0
+      }
+    },
+    "component_concentration": {
+      "Core Bootstrap": {
+        "total_dprs": 1,
+        "authors": [
+          {
+            "author": "Core WordPress Developers",
+            "dpr_count": 1,
+            "percentage": 100.0
+          }
+        ],
+        "concentration_risk": "high"
+      },
+      "Configuration Management": {
+        "total_dprs": 1,
+        "authors": [
+          {
+            "author": "Core WordPress Developers",
+            "dpr_count": 1,
+            "percentage": 100.0
+          }
+        ],
+        "concentration_risk": "high"
+      },
+      "Task Scheduling": {
+        "total_dprs": 1,
+        "authors": [
+          {
+            "author": "Core WordPress Developers",
+            "dpr_count": 1,
+            "percentage": 100.0
+          }
+        ],
+        "concentration_risk": "high"
+      },
+      "Network Management (Multisite)": {
+        "total_dprs": 1,
+        "authors": [
+          {
+            "author": "Core WordPress Developers",
+            "dpr_count": 1,
+            "percentage": 100.0
+          }
+        ],
+        "concentration_risk": "high"
+      },
+      "Media Handling": {
+        "total_dprs": 2,
+        "authors": [
+          {
+            "author": "Core WordPress Developers",
+            "dpr_count": 1,
+            "percentage": 50.0
+          },
+          {
+            "author": "James Heinrich (getID3 author)",
+            "dpr_count": 1,
+            "percentage": 50.0
+          }
+        ],
+        "concentration_risk": "medium"
+      },
+      "Comment System": {
+        "total_dprs": 1,
+        "authors": [
+          {
+            "author": "Core WordPress Developers",
+            "dpr_count": 1,
+            "percentage": 100.0
+          }
+        ],
+        "concentration_risk": "high"
+      },
+      "Theme Development / Asset Management": {
+        "total_dprs": 2,
+        "authors": [
+          {
+            "author": "WordPress Theme Developers",
+            "dpr_count": 1,
+            "percentage": 50.0
+          },
+          {
+            "author": "Frontend Developers",
+            "dpr_count": 1,
+            "percentage": 50.0
+          }
+        ],
+        "concentration_risk": "medium"
+      },
+      "Authentication & Authorization": {
+        "total_dprs": 1,
+        "authors": [
+          {
+            "author": "Core WordPress Developers",
+            "dpr_count": 1,
+            "percentage": 100.0
+          }
+        ],
+        "concentration_risk": "high"
+      }
+    },
+    "spof_alerts": [
+      {
+        "author": "Core WordPress Developers",
+        "dpr_id": "DPR-001",
+        "dpr_title": "Front Controller and Core Bootstrap Mechanism",
+        "component": "Core Bootstrap",
+        "ownership_pct": 100.0,
+        "blast_radius": "critical",
+        "risk": "SPOF",
+        "recommendation": "Engineer 'Core WordPress Developers' holds 100.0% of causal knowledge about Front Controller and Core Bootstrap Mechanism (Core Bootstrap). Their departure is a critical SPOF."
+      },
+      {
+        "author": "Core WordPress Developers",
+        "dpr_id": "DPR-002",
+        "dpr_title": "Externalized Configuration with `wp-config.php`",
+        "component": "Configuration Management",
+        "ownership_pct": 100.0,
+        "blast_radius": "critical",
+        "risk": "SPOF",
+        "recommendation": "Engineer 'Core WordPress Developers' holds 100.0% of causal knowledge about Externalized Configuration with `wp-config.php` (Configuration Management). Their departure is a critical SPOF."
+      },
+      {
+        "author": "Core WordPress Developers",
+        "dpr_id": "DPR-003",
+        "dpr_title": "Pseudo-Cron for Background Task Scheduling",
+        "component": "Task Scheduling",
+        "ownership_pct": 100.0,
+        "blast_radius": "high",
+        "risk": "SPOF",
+        "recommendation": "Engineer 'Core WordPress Developers' holds 100.0% of causal knowledge about Pseudo-Cron for Background Task Scheduling (Task Scheduling). Their departure is a critical SPOF."
+      },
+      {
+        "author": "Core WordPress Developers",
+        "dpr_id": "DPR-004",
+        "dpr_title": "Multi-Site Network Architecture",
+        "component": "Network Management (Multisite)",
+        "ownership_pct": 100.0,
+        "blast_radius": "critical",
+        "risk": "SPOF",
+        "recommendation": "Engineer 'Core WordPress Developers' holds 100.0% of causal knowledge about Multi-Site Network Architecture (Network Management (Multisite)). Their departure is a critical SPOF."
+      },
+      {
+        "author": "Core WordPress Developers",
+        "dpr_id": "DPR-005",
+        "dpr_title": "Integration of `getID3()` for Media Metadata Processing",
+        "component": "Media Handling",
+        "ownership_pct": 66.7,
+        "blast_radius": "high",
+        "risk": "HIGH_CONCENTRATION",
+        "recommendation": "Engineer 'Core WordPress Developers' holds 66.7% of causal knowledge about Integration of `getID3()` for Media Metadata Processing (Media Handling). Knowledge transfer recommended."
+      },
+      {
+        "author": "Core WordPress Developers",
+        "dpr_id": "DPR-006",
+        "dpr_title": "Dedicated Comment Post Handling",
+        "component": "Comment System",
+        "ownership_pct": 100.0,
+        "blast_radius": "high",
+        "risk": "SPOF",
+        "recommendation": "Engineer 'Core WordPress Developers' holds 100.0% of causal knowledge about Dedicated Comment Post Handling (Comment System). Their departure is a critical SPOF."
+      },
+      {
+        "author": "Core WordPress Developers",
+        "dpr_id": "DPR-008",
+        "dpr_title": "Centralized User Authentication and Management",
+        "component": "Authentication & Authorization",
+        "ownership_pct": 100.0,
+        "blast_radius": "critical",
+        "risk": "SPOF",
+        "recommendation": "Engineer 'Core WordPress Developers' holds 100.0% of causal knowledge about Centralized User Authentication and Management (Authentication & Authorization). Their departure is a critical SPOF."
+      }
+    ]
+  },
+  "decay_monitor": {
+    "monitor_run_timestamp": "2026-05-17T00:12:17.126199+00:00",
+    "repository": "https://github.com/WordPress/WordPress",
+    "total_dprs_monitored": 8,
+    "dpr_reports": [
+      {
+        "dpr_id": "DPR-001",
+        "title": "Front Controller and Core Bootstrap Mechanism",
+        "component": "Core Bootstrap",
+        "overall_status": "stable",
+        "blast_radius": {
+          "downstream_count": 5,
+          "downstream_dprs": [
+            "DPR-002",
+            "DPR-003",
+            "DPR-004",
+            "DPR-005",
+            "DPR-006"
+          ],
+          "total_graph_nodes": 8,
+          "impact_percentage": 71.4
+        },
+        "assumption_checks": [
+          {
+            "assumption": "Web servers can be configured with rewrite rules to direct all non-static requests to the primary front controller (`index.php`).",
+            "holds": true,
+            "confidence": 0.8,
+            "reason": "No decay signals detected in current monitoring cycle",
+            "severity": "stable"
+          },
+          {
+            "assumption": "The `wp-config.php` file will exist and contain necessary database and security definitions for environment initialization.",
+            "holds": true,
+            "confidence": 0.8,
+            "reason": "No decay signals detected in current monitoring cycle",
+            "severity": "stable"
+          }
+        ],
+        "active_workarounds": [],
+        "recommendation": "STABLE: Front Controller and Core Bootstrap Mechanism assumptions appear to hold. Continue routine monitoring."
+      },
+      {
+        "dpr_id": "DPR-002",
+        "title": "Externalized Configuration with `wp-config.php`",
+        "component": "Configuration Management",
+        "overall_status": "stable",
+        "blast_radius": {
+          "downstream_count": 5,
+          "downstream_dprs": [
+            "DPR-001",
+            "DPR-003",
+            "DPR-004",
+            "DPR-005",
+            "DPR-006"
+          ],
+          "total_graph_nodes": 8,
+          "impact_percentage": 71.4
+        },
+        "assumption_checks": [
+          {
+            "assumption": "The `wp-config.php` file will be properly secured (e.g., correct file permissions, placed outside the web root if feasible).",
+            "holds": true,
+            "confidence": 0.8,
+            "reason": "No decay signals detected in current monitoring cycle",
+            "severity": "stable"
+          },
+          {
+            "assumption": "Users and administrators understand the importance of unique security salts for each installation to secure cookies and authentication.",
+            "holds": true,
+            "confidence": 0.8,
+            "reason": "No decay signals detected in current monitoring cycle",
+            "severity": "stable"
+          }
+        ],
+        "active_workarounds": [],
+        "recommendation": "STABLE: Externalized Configuration with `wp-config.php` assumptions appear to hold. Continue routine monitoring."
+      },
+      {
+        "dpr_id": "DPR-003",
+        "title": "Pseudo-Cron for Background Task Scheduling",
+        "component": "Task Scheduling",
+        "overall_status": "critical",
+        "blast_radius": {
+          "downstream_count": 5,
+          "downstream_dprs": [
+            "DPR-001",
+            "DPR-002",
+            "DPR-004",
+            "DPR-005",
+            "DPR-006"
+          ],
+          "total_graph_nodes": 8,
+          "impact_percentage": 71.4
+        },
+        "assumption_checks": [
+          {
+            "assumption": "The website will receive a sufficient number of visits to trigger `wp-cron.php` regularly enough for scheduled tasks to execute in a timely manner.",
+            "holds": false,
+            "confidence": 0.3,
+            "reason": "Low-traffic sites consistently suffer from significantly delayed scheduled tasks, often necessitating manual intervention or server-level cron workarounds to ensure timely execution. This indicates the assumption of 'sufficient visits' isn't universally met.",
+            "severity": "critical"
+          },
+          {
+            "assumption": "`fastcgi_finish_request()` or similar non-blocking functions are available and correctly configured on the hosting environment.",
+            "holds": false,
+            "confidence": 0.3,
+            "reason": "While these non-blocking functions are becoming more common, their availability and correct configuration are not universal across all PHP and hosting environments. Some shared hosting providers may not support them, leading to synchronous cron execution.",
+            "severity": "critical"
+          }
+        ],
+        "active_workarounds": [
+          "Disabling `wp-cron.php` via `DISABLE_WP_CRON` and setting up a true server-side cron job."
+        ],
+        "recommendation": "URGENT: Pseudo-Cron for Background Task Scheduling has decaying assumptions with 5 downstream dependencies. Schedule immediate architectural review. Consider: Disabling `wp-cron.php` via `DISABLE_WP_CRON` and setting up a true server-side cron job.."
+      },
+      {
+        "dpr_id": "DPR-004",
+        "title": "Multi-Site Network Architecture",
+        "component": "Network Management (Multisite)",
+        "overall_status": "stable",
+        "blast_radius": {
+          "downstream_count": 5,
+          "downstream_dprs": [
+            "DPR-001",
+            "DPR-002",
+            "DPR-003",
+            "DPR-005",
+            "DPR-006"
+          ],
+          "total_graph_nodes": 8,
+          "impact_percentage": 71.4
+        },
+        "assumption_checks": [
+          {
+            "assumption": "Network administrators require centralized management and simplified updates for multiple WordPress sites with shared resources.",
+            "holds": true,
+            "confidence": 0.8,
+            "reason": "No decay signals detected in current monitoring cycle",
+            "severity": "stable"
+          },
+          {
+            "assumption": "The performance impact of a larger, shared database structure is acceptable for the target scale of typical multisite networks.",
+            "holds": true,
+            "confidence": 0.8,
+            "reason": "No decay signals detected in current monitoring cycle",
+            "severity": "stable"
+          }
+        ],
+        "active_workarounds": [],
+        "recommendation": "STABLE: Multi-Site Network Architecture assumptions appear to hold. Continue routine monitoring."
+      },
+      {
+        "dpr_id": "DPR-005",
+        "title": "Integration of `getID3()` for Media Metadata Processing",
+        "component": "Media Handling",
+        "overall_status": "critical",
+        "blast_radius": {
+          "downstream_count": 5,
+          "downstream_dprs": [
+            "DPR-001",
+            "DPR-002",
+            "DPR-003",
+            "DPR-004",
+            "DPR-006"
+          ],
+          "total_graph_nodes": 8,
+          "impact_percentage": 71.4
+        },
+        "assumption_checks": [
+          {
+            "assumption": "The `getID3()` library is reliable, actively maintained, and handles a sufficiently broad range of media formats required by WordPress users.",
+            "holds": false,
+            "confidence": 0.3,
+            "reason": "The `getID3()` library's own documentation mentions older PHP requirements for specific versions, indicating potential for version management challenges and security vulnerabilities if not regularly updated. The maintenance status of `getID3()` is an external factor not fully controlled by WordPress, posing an inherent decay risk.",
+            "severity": "critical"
+          },
+          {
+            "assumption": "The licensing terms of `getID3()` (GPL, LGPL, MPL) are compatible with WordPress's GPL license and overall open-source strategy.",
+            "holds": true,
+            "confidence": 0.8,
+            "reason": "No decay signals detected in current monitoring cycle",
+            "severity": "stable"
+          }
+        ],
+        "active_workarounds": [],
+        "recommendation": "URGENT: Integration of `getID3()` for Media Metadata Processing has decaying assumptions with 5 downstream dependencies. Schedule immediate architectural review. Consider: No existing workarounds."
+      },
+      {
+        "dpr_id": "DPR-006",
+        "title": "Dedicated Comment Post Handling",
+        "component": "Comment System",
+        "overall_status": "stable",
+        "blast_radius": {
+          "downstream_count": 5,
+          "downstream_dprs": [
+            "DPR-001",
+            "DPR-002",
+            "DPR-003",
+            "DPR-004",
+            "DPR-005"
+          ],
+          "total_graph_nodes": 8,
+          "impact_percentage": 71.4
+        },
+        "assumption_checks": [
+          {
+            "assumption": "A dedicated, distinct endpoint provides better separation of concerns and facilitates specific security and anti-spam measures for comments.",
+            "holds": true,
+            "confidence": 0.8,
+            "reason": "No decay signals detected in current monitoring cycle",
+            "severity": "stable"
+          },
+          {
+            "assumption": "The `wp_handle_comment_submission()` function encapsulates sufficient validation, sanitization, and processing logic to mitigate common web vulnerabilities.",
+            "holds": true,
+            "confidence": 0.8,
+            "reason": "No decay signals detected in current monitoring cycle",
+            "severity": "stable"
+          }
+        ],
+        "active_workarounds": [],
+        "recommendation": "STABLE: Dedicated Comment Post Handling assumptions appear to hold. Continue routine monitoring."
+      },
+      {
+        "dpr_id": "DPR-007",
+        "title": "Modern Frontend Tooling for Themes",
+        "component": "Theme Development / Asset Management",
+        "overall_status": "stable",
+        "blast_radius": {
+          "downstream_count": 0,
+          "downstream_dprs": [],
+          "total_graph_nodes": 8,
+          "impact_percentage": 0.0
+        },
+        "assumption_checks": [
+          {
+            "assumption": "Theme developers have a Node.js environment available to run these build tools during theme development and asset compilation.",
+            "holds": true,
+            "confidence": 0.8,
+            "reason": "No decay signals detected in current monitoring cycle",
+            "severity": "stable"
+          },
+          {
+            "assumption": "The benefits of a more robust build pipeline (e.g., CSS optimization, RTL generation, autoprefixing, accessibility linting) outweigh the added complexity for theme authors.",
+            "holds": true,
+            "confidence": 0.8,
+            "reason": "No decay signals detected in current monitoring cycle",
+            "severity": "stable"
+          },
+          {
+            "assumption": "The WordPress ecosystem will continue to support and encourage modern frontend development practices.",
+            "holds": true,
+            "confidence": 0.8,
+            "reason": "No decay signals detected in current monitoring cycle",
+            "severity": "stable"
+          }
+        ],
+        "active_workarounds": [],
+        "recommendation": "STABLE: Modern Frontend Tooling for Themes assumptions appear to hold. Continue routine monitoring."
+      },
+      {
+        "dpr_id": "DPR-008",
+        "title": "Centralized User Authentication and Management",
+        "component": "Authentication & Authorization",
+        "overall_status": "stable",
+        "blast_radius": {
+          "downstream_count": 0,
+          "downstream_dprs": [],
+          "total_graph_nodes": 8,
+          "impact_percentage": 0.0
+        },
+        "assumption_checks": [
+          {
+            "assumption": "A single, well-audited file for all primary authentication flows reduces the attack surface and ensures consistent application of security practices.",
+            "holds": true,
+            "confidence": 0.8,
+            "reason": "No decay signals detected in current monitoring cycle",
+            "severity": "stable"
+          },
+          {
+            "assumption": "The login process needs to be flexible enough to support various authentication methods and extensions (e.g., passwordless, two-factor via plugins) through its extensive action and filter hooks.",
+            "holds": true,
+            "confidence": 0.8,
+            "reason": "No decay signals detected in current monitoring cycle",
+            "severity": "stable"
+          }
+        ],
+        "active_workarounds": [],
+        "recommendation": "STABLE: Centralized User Authentication and Management assumptions appear to hold. Continue routine monitoring."
+      }
+    ],
+    "summary": {
+      "critical": 2,
+      "warning": 0,
+      "stable": 6,
+      "most_impactful_dprs": [
+        {
+          "dpr_id": "DPR-001",
+          "title": "Front Controller and Core Bootstrap Mechanism",
+          "downstream_count": 5,
+          "status": "stable"
+        },
+        {
+          "dpr_id": "DPR-002",
+          "title": "Externalized Configuration with `wp-config.php`",
+          "downstream_count": 5,
+          "status": "stable"
+        },
+        {
+          "dpr_id": "DPR-003",
+          "title": "Pseudo-Cron for Background Task Scheduling",
+          "downstream_count": 5,
+          "status": "critical"
+        }
+      ]
+    }
+  }
+}

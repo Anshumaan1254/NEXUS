@@ -1,0 +1,725 @@
+{
+  "monitor_run_timestamp": "2026-05-16T22:49:42.996004+00:00",
+  "repository": "https://github.com/postgres/postgres",
+  "total_dprs_monitored": 15,
+  "dpr_reports": [
+    {
+      "dpr_id": "DPR-001",
+      "title": "8KB Fixed Page Size",
+      "component": "Storage",
+      "overall_status": "stable",
+      "blast_radius": {
+        "downstream_count": 10,
+        "downstream_dprs": [
+          "DPR-002",
+          "DPR-003",
+          "DPR-004",
+          "DPR-005",
+          "DPR-006",
+          "DPR-008",
+          "DPR-010",
+          "DPR-011",
+          "DPR-012",
+          "DPR-013"
+        ],
+        "total_graph_nodes": 15,
+        "impact_percentage": 71.4
+      },
+      "assumption_checks": [
+        {
+          "assumption": "INFERRED: 8KB aligns with filesystem blocks",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "INFERRED: Most rows fit in 8KB",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "INFERRED: OS cache works well with 8KB",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        }
+      ],
+      "active_workarounds": [
+        "TOAST for large values",
+        "Fillfactor tuning",
+        "Custom builds with different BLCKSZ"
+      ],
+      "recommendation": "STABLE: 8KB Fixed Page Size assumptions appear to hold. Continue routine monitoring."
+    },
+    {
+      "dpr_id": "DPR-002",
+      "title": "TOAST - The Oversized-Attribute Storage Technique",
+      "component": "Storage",
+      "overall_status": "stable",
+      "blast_radius": {
+        "downstream_count": 6,
+        "downstream_dprs": [
+          "DPR-003",
+          "DPR-004",
+          "DPR-005",
+          "DPR-006",
+          "DPR-008",
+          "DPR-010"
+        ],
+        "total_graph_nodes": 15,
+        "impact_percentage": 42.9
+      },
+      "assumption_checks": [
+        {
+          "assumption": "INFERRED: Large values accessed less frequently",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "INFERRED: Compression ratios good enough",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "INFERRED: Decompression overhead acceptable",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        }
+      ],
+      "active_workarounds": [
+        "SET STORAGE EXTERNAL",
+        "SET STORAGE MAIN",
+        "Application-level compression"
+      ],
+      "recommendation": "STABLE: TOAST - The Oversized-Attribute Storage Technique assumptions appear to hold. Continue routine monitoring."
+    },
+    {
+      "dpr_id": "DPR-003",
+      "title": "MVCC via Tuple Versioning in Heap",
+      "component": "MVCC",
+      "overall_status": "warning",
+      "blast_radius": {
+        "downstream_count": 5,
+        "downstream_dprs": [
+          "DPR-004",
+          "DPR-005",
+          "DPR-006",
+          "DPR-008",
+          "DPR-010"
+        ],
+        "total_graph_nodes": 15,
+        "impact_percentage": 35.7
+      },
+      "assumption_checks": [
+        {
+          "assumption": "INFERRED: Transactions are short-lived",
+          "holds": true,
+          "confidence": 0.5,
+          "reason": "High decay risk with 5 active workarounds suggests assumption pressure. Workarounds: HOT updates, Aggressive autovacuum, Partitioning",
+          "severity": "warning"
+        },
+        {
+          "assumption": "INFERRED: Reads tolerate dead tuples",
+          "holds": true,
+          "confidence": 0.5,
+          "reason": "High decay risk with 5 active workarounds suggests assumption pressure. Workarounds: HOT updates, Aggressive autovacuum, Partitioning",
+          "severity": "warning"
+        },
+        {
+          "assumption": "INFERRED: Vacuum keeps up",
+          "holds": true,
+          "confidence": 0.5,
+          "reason": "High decay risk with 5 active workarounds suggests assumption pressure. Workarounds: HOT updates, Aggressive autovacuum, Partitioning",
+          "severity": "warning"
+        }
+      ],
+      "active_workarounds": [
+        "HOT updates",
+        "Aggressive autovacuum",
+        "Partitioning",
+        "pg_repack",
+        "Long-transaction monitoring"
+      ],
+      "recommendation": "MONITOR: MVCC via Tuple Versioning in Heap shows early warning signs. Track metrics and prepare contingency plan."
+    },
+    {
+      "dpr_id": "DPR-004",
+      "title": "32-bit Transaction ID with Wraparound",
+      "component": "MVCC",
+      "overall_status": "critical",
+      "blast_radius": {
+        "downstream_count": 5,
+        "downstream_dprs": [
+          "DPR-003",
+          "DPR-005",
+          "DPR-006",
+          "DPR-008",
+          "DPR-010"
+        ],
+        "total_graph_nodes": 15,
+        "impact_percentage": 35.7
+      },
+      "assumption_checks": [
+        {
+          "assumption": "INFERRED: Won't exceed 2B between freezes",
+          "holds": false,
+          "confidence": 0.3,
+          "reason": "High-throughput OLTP systems (100K+ TPS) can generate 2B transactions in ~6 hours",
+          "severity": "critical"
+        },
+        {
+          "assumption": "INFERRED: Vacuum freeze completes in time",
+          "holds": true,
+          "confidence": 0.5,
+          "reason": "High decay risk with 5 active workarounds suggests assumption pressure. Workarounds: Aggressive freeze_max_age, age(datfrozenxid) monitoring, Manual VACUUM FREEZE",
+          "severity": "warning"
+        },
+        {
+          "assumption": "INFERRED: 32-bit saves enough space",
+          "holds": true,
+          "confidence": 0.5,
+          "reason": "High decay risk with 5 active workarounds suggests assumption pressure. Workarounds: Aggressive freeze_max_age, age(datfrozenxid) monitoring, Manual VACUUM FREEZE",
+          "severity": "warning"
+        }
+      ],
+      "active_workarounds": [
+        "Aggressive freeze_max_age",
+        "age(datfrozenxid) monitoring",
+        "Manual VACUUM FREEZE",
+        "Partitioning",
+        "PG14+ failsafe"
+      ],
+      "recommendation": "URGENT: 32-bit Transaction ID with Wraparound has decaying assumptions with 5 downstream dependencies. Schedule immediate architectural review. Consider: Aggressive freeze_max_age, age(datfrozenxid) monitoring."
+    },
+    {
+      "dpr_id": "DPR-005",
+      "title": "HOT (Heap-Only Tuple) Updates",
+      "component": "MVCC",
+      "overall_status": "stable",
+      "blast_radius": {
+        "downstream_count": 5,
+        "downstream_dprs": [
+          "DPR-003",
+          "DPR-004",
+          "DPR-006",
+          "DPR-008",
+          "DPR-010"
+        ],
+        "total_graph_nodes": 15,
+        "impact_percentage": 35.7
+      },
+      "assumption_checks": [
+        {
+          "assumption": "INFERRED: Most updates don't change indexed columns",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "INFERRED: Pages have space",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "INFERRED: Chain traversal < index update cost",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        }
+      ],
+      "active_workarounds": [
+        "Fillfactor tuning (70%)",
+        "Avoid indexes on updated columns",
+        "Partial indexes",
+        "Monitor n_tup_hot_upd"
+      ],
+      "recommendation": "STABLE: HOT (Heap-Only Tuple) Updates assumptions appear to hold. Continue routine monitoring."
+    },
+    {
+      "dpr_id": "DPR-006",
+      "title": "Vacuum as Separate Maintenance Process",
+      "component": "Storage",
+      "overall_status": "critical",
+      "blast_radius": {
+        "downstream_count": 5,
+        "downstream_dprs": [
+          "DPR-003",
+          "DPR-004",
+          "DPR-005",
+          "DPR-008",
+          "DPR-010"
+        ],
+        "total_graph_nodes": 15,
+        "impact_percentage": 35.7
+      },
+      "assumption_checks": [
+        {
+          "assumption": "INFERRED: Can run frequently enough",
+          "holds": true,
+          "confidence": 0.5,
+          "reason": "High decay risk with 5 active workarounds suggests assumption pressure. Workarounds: Autovacuum tuning, Partitioning, pg_repack",
+          "severity": "warning"
+        },
+        {
+          "assumption": "INFERRED: Maintenance windows exist",
+          "holds": true,
+          "confidence": 0.5,
+          "reason": "High decay risk with 5 active workarounds suggests assumption pressure. Workarounds: Autovacuum tuning, Partitioning, pg_repack",
+          "severity": "warning"
+        },
+        {
+          "assumption": "INFERRED: Vacuum I/O manageable",
+          "holds": true,
+          "confidence": 0.5,
+          "reason": "High decay risk with 5 active workarounds suggests assumption pressure. Workarounds: Autovacuum tuning, Partitioning, pg_repack",
+          "severity": "warning"
+        },
+        {
+          "assumption": "INFERRED: Tables small enough",
+          "holds": false,
+          "confidence": 0.3,
+          "reason": "TB-scale tables taking 6-12 hours to vacuum, cloud storage IOPS limits making vacuum expensive",
+          "severity": "critical"
+        }
+      ],
+      "active_workarounds": [
+        "Autovacuum tuning",
+        "Partitioning",
+        "pg_repack",
+        "Bloat monitoring",
+        "PG13+ parallel vacuum"
+      ],
+      "recommendation": "URGENT: Vacuum as Separate Maintenance Process has decaying assumptions with 5 downstream dependencies. Schedule immediate architectural review. Consider: Autovacuum tuning, Partitioning."
+    },
+    {
+      "dpr_id": "DPR-007",
+      "title": "Write-Ahead Logging (WAL) for Durability",
+      "component": "WAL",
+      "overall_status": "stable",
+      "blast_radius": {
+        "downstream_count": 3,
+        "downstream_dprs": [
+          "DPR-012",
+          "DPR-013",
+          "DPR-014"
+        ],
+        "total_graph_nodes": 15,
+        "impact_percentage": 21.4
+      },
+      "assumption_checks": [
+        {
+          "assumption": "INFERRED: Sequential WAL >> random data writes",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "INFERRED: fsync actually persists",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "INFERRED: WAL volume manageable",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        }
+      ],
+      "active_workarounds": [
+        "wal_compression",
+        "wal_buffers tuning",
+        "synchronous_commit=off",
+        "WAL archiving"
+      ],
+      "recommendation": "STABLE: Write-Ahead Logging (WAL) for Durability assumptions appear to hold. Continue routine monitoring."
+    },
+    {
+      "dpr_id": "DPR-008",
+      "title": "Autovacuum as Background Daemon",
+      "component": "Autovacuum",
+      "overall_status": "warning",
+      "blast_radius": {
+        "downstream_count": 0,
+        "downstream_dprs": [],
+        "total_graph_nodes": 15,
+        "impact_percentage": 0.0
+      },
+      "assumption_checks": [
+        {
+          "assumption": "INFERRED: 20% threshold appropriate",
+          "holds": true,
+          "confidence": 0.5,
+          "reason": "High decay risk with 5 active workarounds suggests assumption pressure. Workarounds: Per-table settings, Increase max_workers, Lower scale_factor (0.01)",
+          "severity": "warning"
+        },
+        {
+          "assumption": "INFERRED: 3 workers sufficient",
+          "holds": true,
+          "confidence": 0.5,
+          "reason": "High decay risk with 5 active workarounds suggests assumption pressure. Workarounds: Per-table settings, Increase max_workers, Lower scale_factor (0.01)",
+          "severity": "warning"
+        },
+        {
+          "assumption": "INFERRED: Cost throttling prevents I/O overwhelm",
+          "holds": true,
+          "confidence": 0.5,
+          "reason": "High decay risk with 5 active workarounds suggests assumption pressure. Workarounds: Per-table settings, Increase max_workers, Lower scale_factor (0.01)",
+          "severity": "warning"
+        }
+      ],
+      "active_workarounds": [
+        "Per-table settings",
+        "Increase max_workers",
+        "Lower scale_factor (0.01)",
+        "Disable cost delay",
+        "Manual vacuum"
+      ],
+      "recommendation": "MONITOR: Autovacuum as Background Daemon shows early warning signs. Track metrics and prepare contingency plan."
+    },
+    {
+      "dpr_id": "DPR-009",
+      "title": "Multi-Process Architecture",
+      "component": "ProcessModel",
+      "overall_status": "stable",
+      "blast_radius": {
+        "downstream_count": 4,
+        "downstream_dprs": [
+          "DPR-011",
+          "DPR-012",
+          "DPR-013",
+          "DPR-015"
+        ],
+        "total_graph_nodes": 15,
+        "impact_percentage": 28.6
+      },
+      "assumption_checks": [
+        {
+          "assumption": "INFERRED: Process overhead acceptable",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "INFERRED: External pooling (pgBouncer)",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "INFERRED: Process isolation = stability",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        }
+      ],
+      "active_workarounds": [
+        "pgBouncer/pgPool-II",
+        "Increase shared_buffers",
+        "Connection limits",
+        "App-level pooling"
+      ],
+      "recommendation": "STABLE: Multi-Process Architecture assumptions appear to hold. Continue routine monitoring."
+    },
+    {
+      "dpr_id": "DPR-010",
+      "title": "Snapshot Isolation as Default",
+      "component": "MVCC",
+      "overall_status": "stable",
+      "blast_radius": {
+        "downstream_count": 5,
+        "downstream_dprs": [
+          "DPR-003",
+          "DPR-004",
+          "DPR-005",
+          "DPR-006",
+          "DPR-008"
+        ],
+        "total_graph_nodes": 15,
+        "impact_percentage": 35.7
+      },
+      "assumption_checks": [
+        {
+          "assumption": "INFERRED: Apps tolerate non-repeatable reads",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "INFERRED: Write skew rare",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "INFERRED: Apps use explicit locking when needed",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        }
+      ],
+      "active_workarounds": [
+        "SERIALIZABLE for critical transactions",
+        "SELECT FOR UPDATE",
+        "App-level conflict detection"
+      ],
+      "recommendation": "STABLE: Snapshot Isolation as Default assumptions appear to hold. Continue routine monitoring."
+    },
+    {
+      "dpr_id": "DPR-011",
+      "title": "Shared Buffer Pool with Clock-Sweep",
+      "component": "Storage",
+      "overall_status": "warning",
+      "blast_radius": {
+        "downstream_count": 2,
+        "downstream_dprs": [
+          "DPR-012",
+          "DPR-013"
+        ],
+        "total_graph_nodes": 15,
+        "impact_percentage": 14.3
+      },
+      "assumption_checks": [
+        {
+          "assumption": "INFERRED: Clock-sweep \u2248 LRU",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "INFERRED: 25-40% RAM for shared_buffers",
+          "holds": true,
+          "confidence": 0.6,
+          "reason": "Cloud instances with limited RAM make large buffer pools expensive, NVMe reducing cache miss penalty",
+          "severity": "warning"
+        },
+        {
+          "assumption": "INFERRED: OS cache helps",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        }
+      ],
+      "active_workarounds": [
+        "Tune shared_buffers",
+        "Huge pages",
+        "Monitor hit ratio",
+        "pg_prewarm"
+      ],
+      "recommendation": "MONITOR: Shared Buffer Pool with Clock-Sweep shows early warning signs. Track metrics and prepare contingency plan."
+    },
+    {
+      "dpr_id": "DPR-012",
+      "title": "Checkpoint-Based Crash Recovery",
+      "component": "WAL",
+      "overall_status": "stable",
+      "blast_radius": {
+        "downstream_count": 1,
+        "downstream_dprs": [
+          "DPR-013"
+        ],
+        "total_graph_nodes": 15,
+        "impact_percentage": 7.1
+      },
+      "assumption_checks": [
+        {
+          "assumption": "INFERRED: Checkpoint I/O completes in time",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "INFERRED: Recovery time acceptable",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "INFERRED: Checkpoint I/O manageable",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        }
+      ],
+      "active_workarounds": [
+        "Tune checkpoint_timeout/max_wal_size",
+        "checkpoint_completion_target=0.9",
+        "Monitor pg_stat_bgwriter",
+        "Faster storage"
+      ],
+      "recommendation": "STABLE: Checkpoint-Based Crash Recovery assumptions appear to hold. Continue routine monitoring."
+    },
+    {
+      "dpr_id": "DPR-013",
+      "title": "Full-Page Writes for Torn Page Protection",
+      "component": "WAL",
+      "overall_status": "stable",
+      "blast_radius": {
+        "downstream_count": 0,
+        "downstream_dprs": [],
+        "total_graph_nodes": 15,
+        "impact_percentage": 0.0
+      },
+      "assumption_checks": [
+        {
+          "assumption": "INFERRED: Storage doesn't guarantee atomic 8KB",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "INFERRED: Torn pages rare but catastrophic",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "INFERRED: WAL increase acceptable",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        }
+      ],
+      "active_workarounds": [
+        "wal_compression (PG9.5+)",
+        "Increase checkpoint_timeout",
+        "Monitor WAL rate",
+        "PG13+ LZ4 compression"
+      ],
+      "recommendation": "STABLE: Full-Page Writes for Torn Page Protection assumptions appear to hold. Continue routine monitoring."
+    },
+    {
+      "dpr_id": "DPR-014",
+      "title": "Streaming Replication via WAL Shipping",
+      "component": "Replication",
+      "overall_status": "stable",
+      "blast_radius": {
+        "downstream_count": 0,
+        "downstream_dprs": [],
+        "total_graph_nodes": 15,
+        "impact_percentage": 0.0
+      },
+      "assumption_checks": [
+        {
+          "assumption": "INFERRED: Network bandwidth sufficient",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "INFERRED: Standby can keep up",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "INFERRED: WAL contains all needed info",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        }
+      ],
+      "active_workarounds": [
+        "Monitor replication lag",
+        "Tune wal_sender/receiver",
+        "Network optimization",
+        "Logical replication for cross-version"
+      ],
+      "recommendation": "STABLE: Streaming Replication via WAL Shipping assumptions appear to hold. Continue routine monitoring."
+    },
+    {
+      "dpr_id": "DPR-015",
+      "title": "External Connection Pooling Required",
+      "component": "ProcessModel",
+      "overall_status": "stable",
+      "blast_radius": {
+        "downstream_count": 0,
+        "downstream_dprs": [],
+        "total_graph_nodes": 15,
+        "impact_percentage": 0.0
+      },
+      "assumption_checks": [
+        {
+          "assumption": "INFERRED: External pooling acceptable",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        },
+        {
+          "assumption": "INFERRED: Pooler won't be bottleneck",
+          "holds": true,
+          "confidence": 0.8,
+          "reason": "No decay signals detected in current monitoring cycle",
+          "severity": "stable"
+        }
+      ],
+      "active_workarounds": [
+        "pgBouncer (most common)",
+        "pgPool-II",
+        "Application-level pooling",
+        "Cloud provider pooling"
+      ],
+      "recommendation": "STABLE: External Connection Pooling Required assumptions appear to hold. Continue routine monitoring."
+    }
+  ],
+  "summary": {
+    "critical": 2,
+    "warning": 3,
+    "stable": 10,
+    "most_impactful_dprs": [
+      {
+        "dpr_id": "DPR-001",
+        "title": "8KB Fixed Page Size",
+        "downstream_count": 10,
+        "status": "stable"
+      },
+      {
+        "dpr_id": "DPR-002",
+        "title": "TOAST - The Oversized-Attribute Storage Technique",
+        "downstream_count": 6,
+        "status": "stable"
+      },
+      {
+        "dpr_id": "DPR-003",
+        "title": "MVCC via Tuple Versioning in Heap",
+        "downstream_count": 5,
+        "status": "warning"
+      }
+    ]
+  }
+}
